@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Game Xadrez</title>
+</head>
+<body>
+	<h1>Xadrez</h1>
+
+	<table>
+		
+		<tr>
+		{% for i in rows %}
+			<tr>
+				{% for j in range(8) %}
+					{% if i % 2 == j % 2 %}
+						<td id="" style="height: 50px; width: 50px; background-color: #AAAAAA">
+							{{letras[j]}}{{i}}
+						</td>
+					{% else %}
+						<td style="height: 50px; width: 50px; background-color: #333333">
+							{{letras[j]}}{{i}}
+						</td>
+					{% endif %}
+				{% endfor %}
+			</tr>
+		{% endfor %}
+		</tr>
+
+	</table>
+
+</body>
+</html>
