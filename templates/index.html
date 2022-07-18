@@ -4,9 +4,12 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Game Xadrez</title>
+	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/index.css')}}">
 </head>
 <body>
 	<h1>Xadrez</h1>
+
+	<span id="partida" style="display: none;">{{partida}}</span>
 
 	<table>
 		
@@ -15,13 +18,9 @@
 			<tr>
 				{% for j in range(8) %}
 					{% if i % 2 == j % 2 %}
-						<td id="" style="height: 50px; width: 50px; background-color: #AAAAAA">
-							{{letras[j]}}{{i}}
-						</td>
+						<td onclick="valorCasa(this)" id="{{letras[j]}}{{i}}" style="height: 70px; width: 70px; background-color: #AAAAAA"></td>
 					{% else %}
-						<td style="height: 50px; width: 50px; background-color: #333333">
-							{{letras[j]}}{{i}}
-						</td>
+						<td onclick="valorCasa({{letras[j]}}{{i}})" id="{{letras[j]}}{{i}}" style="height: 70px; width: 70px; background-color: #333333"></td>
 					{% endif %}
 				{% endfor %}
 			</tr>
@@ -29,6 +28,8 @@
 		</tr>
 
 	</table>
+
+	<script src="{{url_for('static', filename='js/index.js')}}"></script>
 
 </body>
 </html>
