@@ -7,27 +7,29 @@
 	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/index.css')}}">
 </head>
 <body>
-	<h1>Xadrez</h1>
 
-	<span id="partida" style="display: none;">{{partida}}</span>
+	<div class="container">
 
-	<table>
-		
-		<tr>
-		{% for i in rows %}
+		<span id="partida" style="display: none;">{{partida}}</span>
+
+		<table>
+			
 			<tr>
-				{% for j in range(8) %}
-					{% if i % 2 == j % 2 %}
-						<td onclick="valorCasa(this)" id="{{letras[j]}}{{i}}" style="height: 70px; width: 70px; background-color: #AAAAAA"></td>
-					{% else %}
-						<td onclick="valorCasa({{letras[j]}}{{i}})" id="{{letras[j]}}{{i}}" style="height: 70px; width: 70px; background-color: #333333"></td>
-					{% endif %}
-				{% endfor %}
+			{% for i in rows %}
+				<tr>
+					{% for j in range(8) %}
+						{% if i % 2 == j % 2 %}
+							<td onclick="moverPeca(this)" id="{{letras[j]}}{{i}}" style="height: 70px; width: 70px; background-color: #AAAAAA"></td>
+						{% else %}
+							<td onclick="moverPeca({{letras[j]}}{{i}})" id="{{letras[j]}}{{i}}" style="height: 70px; width: 70px; background-color: #333333"></td>
+						{% endif %}
+					{% endfor %}
+				</tr>
+			{% endfor %}
 			</tr>
-		{% endfor %}
-		</tr>
 
-	</table>
+		</table>
+	</div>
 
 	<script src="{{url_for('static', filename='js/index.js')}}"></script>
 

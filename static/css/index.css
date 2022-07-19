@@ -1,4 +1,11 @@
+.container{
+	text-align: center;
+}
+
+table{
+	margin: 0 auto;
+}
+
 img{
-	position: relative;
-	left: 10px;
+	
 }

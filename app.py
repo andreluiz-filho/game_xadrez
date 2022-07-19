@@ -1,9 +1,11 @@
-from flask import Flask, render_template, redirect
+from flask import Flask, request, render_template, redirect, jsonify
 from datetime import datetime
 import json
 import os
 
 app = Flask(__name__)
+
+#----------------------------------------------------------------------------
 
 @app.route("/")
 def index():
@@ -11,8 +13,8 @@ def index():
     rows = [8, 7, 6, 5, 4, 3, 2, 1]
     letras = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 
-    arquivo = [i for i in os.listdir("dados/partidas") if ".json" in i]
-    with open(f"dados/partidas/{arquivo[0]}") as arq:
+    arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if "partida_" in i]
+    with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
         partida = json.load(arq)
 
     partida = str(partida).replace("'", "\"")
@@ -23,6 +25,7 @@ def index():
                             partida=partida
                             )
 
+#----------------------------------------------------------------------------
 
 @app.route("/new_game")
 def new_game():
@@ -91,7 +94,47 @@ def new_game():
 
     data_formatada = "{}_{}_{}_{}_{}_{}".format(dia, mes, ano, hora, minuto, segundo)
 
-    with open(f"dados/partidas/partida_{data_formatada}.json", "w") as arq:
+    with open(f"dados/partidas/em_andamento/partida_{data_formatada}.json", "w") as arq:
         json.dump(partida, arq)
 
     return redirect("/")
+
+#----------------------------------------------------------------------------
+
+@app.route('/moverPeca', methods=['POST'])
+def update_record():
+    dados = json.loads(request.data)
+    print(dados)
+    if dados['nome_peca'] == "":
+        mover_peca_para = dados["posicao"]
+        print(mover_peca_para)
+
+        with open("dados/partidas/em_andamento/ultima_jogada.json") as arq:
+            ultima_jogada = json.load(arq)
+
+
+        arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if "partida_" in i]
+        with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
+            partida = json.load(arq)
+
+
+        for pecas in partida["pecas"]:
+            if pecas['nome_peca'] == ultima_jogada["nome_peca"]:
+                print(pecas)
+                print(mover_peca_para)
+                pecas["posicao"] = mover_peca_para
+
+
+        arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if "partida_" in i]
+        with open(f"dados/partidas/em_andamento/{arquivo[0]}", "w") as arq:
+            json.dump(partida, arq)
+
+    else:
+        with open("dados/partidas/em_andamento/ultima_jogada.json", "w") as arq:
+            json.dump(dados, arq)
+    
+    #dados.headers.add("Access-Control-Allow-Origin", "*")
+    #print(dados)
+    return jsonify(dados)
+
+#----------------------------------------------------------------------------

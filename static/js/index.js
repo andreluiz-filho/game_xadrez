@@ -347,12 +347,76 @@ for(i = 0; i < pecas_partida.length; i++){
 	}
 }
 
-function valorCasa(e){
+var url = 'http://172.20.17.54:5000/moverPeca'
+
+function moverPeca(e){
+
+	if(e.children.length == 1){
+		nome_peca = e.children[0].alt
+		posicao = e.id
+
+		data = {"nome_peca":nome_peca, "posicao":posicao}
+
+		
+		fetch(url, {
+		  method: 'POST',
+		  body: JSON.stringify(data),
+		  headers:{
+		    'Content-Type': 'application/json'
+		  }
+		}).then(res => res.json())
+		.catch(error => console.error('Error:', error))
+		.then(response => console.log('Success:', response));
+
+	}else if(e.children.length == 0){
+		
+		data = {"nome_peca":"", "posicao":e.id}
+
+		fetch(url, {
+		  method: 'POST',
+		  body: JSON.stringify(data),
+		  headers:{
+		    'Content-Type': 'application/json'
+		  }
+		}).then(res => res.json())
+		.catch(error => console.error('Error:', error))
+		.then(response => location.reload());
+		
+	}
+
+
+	
+
+	/*
 	id_casa = e.id
 
+	posicao_atual = ""
+
 	for(i = 0; i < pecas_partida.length; i++){
+		
 		if(pecas_partida[i]['posicao'] == id_casa){
-			console.log(pecas_partida[i])
+			nome_peca = pecas_partida[i].nome_peca
+			posicao = pecas_partida[i].posicao
+			posicao_atual = posicao
+
+			data = {"nome_peca":nome_peca, "posicao":posicao}
+
+			var url = 'http://127.0.0.1:5000/moverPeca'
+			fetch(url, {
+			  method: 'POST',
+			  body: JSON.stringify(data),
+			  headers:{
+			    'Content-Type': 'application/json'
+			  }
+			}).then(res => res.json())
+			.catch(error => console.error('Error:', error))
+			.then(response => console.log('Success:', response));
+			
 		}
+		
 	}
+	*/
+
 }
+
+
