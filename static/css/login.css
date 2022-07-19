@@ -1,0 +1,36 @@
+body{
+	background-color: #ccc;
+}
+
+#container{
+	text-align: center;
+}
+
+#conteudo{
+	border: 1px solid black;
+	border-radius: 10px;
+	width: 505px;
+	padding: 20px;
+	margin: 0 auto;
+}
+
+#link_partida{
+	width: 500px;
+}
+
+#btn_link{
+	position: relative;
+	top: 0px;
+	background-color: #999;
+	border-radius: 10px;
+	width: 150px;
+	padding: 10px;
+	cursor: pointer;
+	margin: 0 auto;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+#btn_link:hover{
+	background-color: #b9b3b3;
+}

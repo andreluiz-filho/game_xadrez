@@ -14,6 +14,38 @@ img{
 	
 }
 
+/*************************************************************/
+
+#status_partida{
+	position: absolute;
+	border: 3px solid #999;
+	border-radius: 10px;
+	width: 350px;
+	height: 500px;
+	text-align: center;
+}
+
+
+#titulo_ultima_peca_selecionada{
+	font-weight: bold;
+}
+
+#conteudo_ultima_peca_selecionada{
+	position: relative;
+	top: 20px;
+}
+
+#tabela_status{
+	border: 1px solid;
+	padding: 5px;
+}
+
+#tabela_status td{
+	border: 1px solid;
+	padding: 5px;
+}
+
+/*************************************************************/
 
 .casa{
 	height: 70px; 
@@ -27,3 +59,5 @@ img{
 .casa_cor_primaria{
 	background-color: #333333
 }
+
+/*************************************************************/

@@ -8,8 +8,70 @@ app = Flask(__name__)
 
 #----------------------------------------------------------------------------
 
+@app.route("/")
+def login():
+    return render_template("login.html") 
+
+#----------------------------------------------------------------------------
+
 @app.route("/partida")
-def partida():
+def index():
+    return render_template("index.html") 
+
+#----------------------------------------------------------------------------
+
+@app.route("/novaPartida", methods=["POST"])
+def nova_partida():
+
+    chave_sala = "dhsjdhkjshdksk"
+
+    partida = {
+                "status": "aberta",
+                "pecas":[
+                    {"nome_peca": "branca__torre_1", "posicao":"a8", "imagem":"static/img/pecas/branca_torre.png"}, 
+                    {"nome_peca": "branca__cavalo_1", "posicao":"b8", "imagem":"static/img/pecas/branca_cavalo.png"}, 
+                    {"nome_peca": "branca__bispo_1", "posicao":"c8", "imagem":"static/img/pecas/branca_bispo.png"}, 
+                    {"nome_peca": "branca__rainha", "posicao":"d8", "imagem":"static/img/pecas/branca_rainha.png"},
+                    {"nome_peca": "branca__rei", "posicao":"e8", "imagem":"static/img/pecas/branca_rei.png"},
+                    {"nome_peca": "branca__bispo_2", "posicao":"f8", "imagem":"static/img/pecas/branca_bispo.png"},
+                    {"nome_peca": "branca__cavalo_2", "posicao":"g8", "imagem":"static/img/pecas/branca_cavalo.png"},
+                    {"nome_peca": "branca__torre_2", "posicao":"h8", "imagem":"static/img/pecas/branca_torre.png"},
+                    {"nome_peca": "branca__peao_1", "posicao":"a7", "imagem":"static/img/pecas/branca_peao.png"},
+                    {"nome_peca": "branca__peao_2", "posicao":"b7", "imagem":"static/img/pecas/branca_peao.png"},
+                    {"nome_peca": "branca__peao_3", "posicao":"c7", "imagem":"static/img/pecas/branca_peao.png"},
+                    {"nome_peca": "branca__peao_4", "posicao":"d7", "imagem":"static/img/pecas/branca_peao.png"},
+                    {"nome_peca": "branca__peao_5", "posicao":"e7", "imagem":"static/img/pecas/branca_peao.png"},
+                    {"nome_peca": "branca__peao_6", "posicao":"f7", "imagem":"static/img/pecas/branca_peao.png"},
+                    {"nome_peca": "branca__peao_7", "posicao":"g7", "imagem":"static/img/pecas/branca_peao.png"},
+                    {"nome_peca": "branca__peao_8", "posicao":"h7", "imagem":"static/img/pecas/branca_peao.png"},
+                    {"nome_peca": "preta__torre_1", "posicao":"a1", "imagem":"static/img/pecas/preta_torre.png"}, 
+                    {"nome_peca": "preta__cavalo_1", "posicao":"b1", "imagem":"static/img/pecas/preta_cavalo.png"}, 
+                    {"nome_peca": "preta__bispo_1", "posicao":"c1", "imagem":"static/img/pecas/preta_bispo.png"}, 
+                    {"nome_peca": "preta__rainha", "posicao":"d1", "imagem":"static/img/pecas/preta_rainha.png"},
+                    {"nome_peca": "preta__rei", "posicao":"e1", "imagem":"static/img/pecas/preta_rei.png"},
+                    {"nome_peca": "preta__bispo_2", "posicao":"f1", "imagem":"static/img/pecas/preta_bispo.png"},
+                    {"nome_peca": "preta__cavalo_2", "posicao":"g1", "imagem":"static/img/pecas/preta_cavalo.png"},
+                    {"nome_peca": "preta__torre_2", "posicao":"h1", "imagem":"static/img/pecas/preta_torre.png"},
+                    {"nome_peca": "preta__peao_1", "posicao":"a2", "imagem":"static/img/pecas/preta_peao.png"},
+                    {"nome_peca": "preta__peao_2", "posicao":"b2", "imagem":"static/img/pecas/preta_peao.png"},
+                    {"nome_peca": "preta__peao_3", "posicao":"c2", "imagem":"static/img/pecas/preta_peao.png"},
+                    {"nome_peca": "preta__peao_4", "posicao":"d2", "imagem":"static/img/pecas/preta_peao.png"},
+                    {"nome_peca": "preta__peao_5", "posicao":"e2", "imagem":"static/img/pecas/preta_peao.png"},
+                    {"nome_peca": "preta__peao_6", "posicao":"f2", "imagem":"static/img/pecas/preta_peao.png"},
+                    {"nome_peca": "preta__peao_7", "posicao":"g2", "imagem":"static/img/pecas/preta_peao.png"},
+                    {"nome_peca": "preta__peao_8", "posicao":"h2", "imagem":"static/img/pecas/preta_peao.png"},
+                ]
+        }
+
+    with open(f"dados/partidas/em_andamento/{chave_sala}.json", "w") as arq:
+        json.dump(partida, arq)
+
+    return jsonify({"chave_sala":chave_sala})
+
+#----------------------------------------------------------------------------
+
+@app.route("/api_partida")
+def api_partida():
 
     arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if "partida_" in i]
     with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
@@ -19,30 +81,36 @@ def partida():
 
 #----------------------------------------------------------------------------
 
-@app.route("/")
-def index():
-    """
-    rows = [8, 7, 6, 5, 4, 3, 2, 1]
-    letras = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+@app.route('/api_moverPeca', methods=['POST'])
+def api_moverPeca():
+
+    peca_selecionada = json.loads(request.data)
+
+    nome_peca       = peca_selecionada['nome_peca']
+    posicao_atual   = peca_selecionada['posicao_atual']
+    posicao_nova    = peca_selecionada['posicao_nova']
+
 
     arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if "partida_" in i]
     with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
         partida = json.load(arq)
 
-    partida = str(partida).replace("'", "\"")
+    for i in partida['pecas']:
+        if nome_peca == i['nome_peca']:
+            i["posicao"] = posicao_nova
 
-    return render_template("index.html", 
-                            rows=rows, 
-                            letras=letras,
-                            partida=partida
-                            )
-    """
+    arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if "partida_" in i]
+    with open(f"dados/partidas/em_andamento/{arquivo[0]}", "w") as arq:
+        json.dump(partida, arq)
 
-    return render_template("index.html") 
 
-"""
+
+
+    return jsonify(partida)
+
 #----------------------------------------------------------------------------
 
+"""
 @app.route("/new_game")
 def new_game():
 

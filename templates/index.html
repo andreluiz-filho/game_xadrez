@@ -9,29 +9,41 @@
 <body>
 
 	<div id="container">
+
+		<div id="status_partida">
+			<h4 id="titulo_status_partida"></h4>
+
+			<hr>
+
+			<span id="titulo_ultima_peca_selecionada">Mov. Atual: </span>
+			<div id="conteudo_ultima_peca_selecionada">
+				
+				<table id="tabela_status">
+					<tr>
+						<td>Nome da Peça: </td>
+						<td id="nome_peca_tabela_status" style="width: 120px"></td>
+					</tr>
+					<tr>
+						<td>Posição Anterior: </td>
+						<td id="posicao_peca_tabela_status"></td>
+					</tr>
+				</table>
+				
+			</div>
+
+			
+			<!--
+			<div id="conteudo_status_partida">
+				
+				<span id="titulo_ultima_peca_selecionada">Mov. Atual: </span>
+				<span id="conteudo_ultima_peca_selecionada"></span>
+
+			</div>
+		-->
+		</div>
+
 		<table id="table">
 		</table>
-		<!--
-		<span id="partida" style="display: none;">{{partida}}</span>
-
-		<table>
-			
-			<tr>
-			{% for i in rows %}
-				<tr>
-					{% for j in range(8) %}
-						{% if i % 2 == j % 2 %}
-							<td onclick="moverPeca(this)" id="{{letras[j]}}{{i}}" style=""></td>
-						{% else %}
-							<td onclick="moverPeca({{letras[j]}}{{i}})" id="{{letras[j]}}{{i}}" style="height: 70px; width: 70px; background-color: #333333"></td>
-						{% endif %}
-					{% endfor %}
-				</tr>
-			{% endfor %}
-			</tr>
-
-		</table>
-		-->
 	</div>
 
 	<script src="{{url_for('static', filename='js/index.js')}}"></script>
