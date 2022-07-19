@@ -6,6 +6,24 @@ table{
 	margin: 0 auto;
 }
 
+td{
+	text-align: center;
+}
+
 img{
 	
+}
+
+
+.casa{
+	height: 70px; 
+	width: 70px; 
+}
+
+.casa_cor_secundaria{
+	background-color: #AAAAAA
+}
+
+.casa_cor_primaria{
+	background-color: #333333
 }

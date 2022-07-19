@@ -5,11 +5,23 @@ import os
 
 app = Flask(__name__)
 
+
+#----------------------------------------------------------------------------
+
+@app.route("/partida")
+def partida():
+
+    arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if "partida_" in i]
+    with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
+        partida = json.load(arq)
+
+    return jsonify(partida)
+
 #----------------------------------------------------------------------------
 
 @app.route("/")
 def index():
-
+    """
     rows = [8, 7, 6, 5, 4, 3, 2, 1]
     letras = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 
@@ -24,7 +36,11 @@ def index():
                             letras=letras,
                             partida=partida
                             )
+    """
 
+    return render_template("index.html") 
+
+"""
 #----------------------------------------------------------------------------
 
 @app.route("/new_game")
@@ -136,5 +152,5 @@ def update_record():
     #dados.headers.add("Access-Control-Allow-Origin", "*")
     #print(dados)
     return jsonify(dados)
-
+"""
 #----------------------------------------------------------------------------

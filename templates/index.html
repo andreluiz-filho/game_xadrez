@@ -8,8 +8,10 @@
 </head>
 <body>
 
-	<div class="container">
-
+	<div id="container">
+		<table id="table">
+		</table>
+		<!--
 		<span id="partida" style="display: none;">{{partida}}</span>
 
 		<table>
@@ -19,7 +21,7 @@
 				<tr>
 					{% for j in range(8) %}
 						{% if i % 2 == j % 2 %}
-							<td onclick="moverPeca(this)" id="{{letras[j]}}{{i}}" style="height: 70px; width: 70px; background-color: #AAAAAA"></td>
+							<td onclick="moverPeca(this)" id="{{letras[j]}}{{i}}" style=""></td>
 						{% else %}
 							<td onclick="moverPeca({{letras[j]}}{{i}})" id="{{letras[j]}}{{i}}" style="height: 70px; width: 70px; background-color: #333333"></td>
 						{% endif %}
@@ -29,6 +31,7 @@
 			</tr>
 
 		</table>
+		-->
 	</div>
 
 	<script src="{{url_for('static', filename='js/index.js')}}"></script>

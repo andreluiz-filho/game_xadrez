@@ -1,4 +1,76 @@
 
+var url = 'http://172.20.17.54:5000/partida'
+
+fetch(url)
+.then((resp) => resp.json())
+.then(function(partida){
+	status_partida 	= partida['status']
+	pecas_partida 	= partida['pecas']
+
+	rows = [8, 7, 6, 5, 4, 3, 2, 1]
+	cols = [...Array(8).keys()]
+    letras = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+
+
+    for(row of rows){
+    	var tr = document.createElement('tr');
+
+    	for(col of cols){
+    		var td = document.createElement('td');
+
+    		if(row % 2 == col % 2){
+    			td.className = " casa casa_cor_secundaria";
+    		}else{
+    			td.className = " casa casa_cor_primaria";
+    		}
+
+    		nome_casa = letras[col]+row
+    		td.id = nome_casa
+
+    		for(peca of pecas_partida){
+		    	nome_peca 		= peca['nome_peca']
+		    	posicao_peca 	= peca['posicao']
+		    	imagem_peca		= peca['imagem']
+
+		    	var img = new Image();
+		    	img.src = imagem_peca
+		    	img.width = "70"
+		    	img.height = "70"
+		    	img.alt = posicao_peca
+
+		    	if(posicao_peca == nome_casa){
+		    		td.appendChild(img);
+		    	}
+		    	
+			}
+    		
+    		tr.appendChild(td);
+    		table.appendChild(tr);
+    	}
+    }
+
+    var casas = document.querySelectorAll("td")
+
+    for(casa of casas){
+		casa.addEventListener("click", (e)=> {
+		if(e.target.tagName == "IMG"){
+			console.log(e.target)
+			console.log("Casa com Peça", e.target.alt)
+			console.log()
+		}else if(e.target.tagName == "TD"){
+			console.log(e.target)
+			console.log("Casa Vazia", e.target.id)
+			console.log()
+		}
+		});	
+    }
+    
+
+})
+.catch(error => console.error('Error:', error))
+
+
+/*
 partida = JSON.parse(partida.textContent)
 status_partida = partida['status']
 pecas_partida = partida['pecas']
@@ -347,7 +419,8 @@ for(i = 0; i < pecas_partida.length; i++){
 	}
 }
 
-var url = 'http://172.20.17.54:5000/moverPeca'
+//var url = 'http://172.20.17.54:5000/moverPeca'
+var url = 'https://f132-190-15-103-154.sa.ngrok.io//moverPeca'
 
 function moverPeca(e){
 
@@ -383,40 +456,7 @@ function moverPeca(e){
 		.then(response => location.reload());
 		
 	}
-
-
-	
-
-	/*
-	id_casa = e.id
-
-	posicao_atual = ""
-
-	for(i = 0; i < pecas_partida.length; i++){
-		
-		if(pecas_partida[i]['posicao'] == id_casa){
-			nome_peca = pecas_partida[i].nome_peca
-			posicao = pecas_partida[i].posicao
-			posicao_atual = posicao
-
-			data = {"nome_peca":nome_peca, "posicao":posicao}
-
-			var url = 'http://127.0.0.1:5000/moverPeca'
-			fetch(url, {
-			  method: 'POST',
-			  body: JSON.stringify(data),
-			  headers:{
-			    'Content-Type': 'application/json'
-			  }
-			}).then(res => res.json())
-			.catch(error => console.error('Error:', error))
-			.then(response => console.log('Success:', response));
-			
-		}
-		
-	}
-	*/
-
 }
+*/
 
 
