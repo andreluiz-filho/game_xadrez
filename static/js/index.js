@@ -1,7 +1,13 @@
+
+//********************************************************
+//********************************************************
+
 var url = window.location.origin
 
-link_partida = sessionStorage.getItem('link_partida')
-titulo_status_partida.innerText = 'Chave Sala: '+link_partida
+chave_partida = sessionStorage.getItem('chave_partida')
+
+titulo_status_partida.innerText = 'Chave Sala: '+chave_partida
+
 
 //********************************************************
 //*******************CRIA O TABULEIRO*********************
@@ -71,16 +77,22 @@ function atualizarPartida(data){
 var api_partida 	= url+'/api_partida'
 var api_moverPeca 	= url+'/api_moverPeca'
 
-fetch(api_partida)
-.then((resp) => resp.json())
+fetch(api_partida, {
+	method: 'POST',
+	body: JSON.stringify({"chave_partida":chave_partida}),
+	headers:{
+	'Content-Type': 'application/json'
+	}
+})
+.then(res => res.json())
 .then(function(data){
-
 	status_partida 	= data['status']
 	pecas_partida 	= data['pecas']
 	
 	atualizarPartida(pecas_partida)
-
 })
+.catch(error => console.error('Error:', error))
+
 
 //********************************************************
 //***********************MOVER PEÇA***********************
@@ -90,7 +102,7 @@ var casas = document.querySelectorAll("td")
 for(casa of casas){
 
 	casa.addEventListener("click", (e)=> {
-	
+
 		if(e.target.tagName == "IMG"){
 			sessionStorage.setItem('peca_selecionada', e.target.alt)
 			
@@ -99,50 +111,42 @@ for(casa of casas){
 
 			nome_peca_tabela_status.innerText = nome_peca
 			posicao_peca_tabela_status.innerText = posicao_peca
-			
-			/*
-			conteudo_ultima_peca_selecionada.innerHTML = 
-			`
-				<table id="tabela_status">
-					<tr>
-						<td>Nome da Peça: </td>
-						<td>${nome_peca}</td>
-					</tr>
-					<tr>
-						<td>Posição Anterior: </td>
-						<td>${posicao_peca}</td>
-					</tr>
-				</table>
-			`
-			*/
 
 		}else if(e.target.tagName == "TD"){
 
-			const peca_selecionada 			= sessionStorage.getItem('peca_selecionada')
+			peca_selecionada = sessionStorage.getItem('peca_selecionada')
 			
-			nome_peca_selecionada 			= peca_selecionada.split('___')[0]
-			posicao_peca_selecionada 		= peca_selecionada.split('___')[1]
-			nova_posicao_peca_selecionada 	= e.target.id
 
-			data_mover_peca = {'nome_peca':nome_peca_selecionada, 'posicao_atual':posicao_peca_selecionada, 'posicao_nova':nova_posicao_peca_selecionada}
-
-			sessionStorage.removeItem('peca_selecionada')
-
-			fetch(api_moverPeca, {
-				  method: 'POST',
-				  body: JSON.stringify(data_mover_peca),
-				  headers:{
-				    'Content-Type': 'application/json'
-				  }
-				})
-			.then(res => res.json())
-			.then(function(data){
-				status_partida 	= data['status']
-				pecas_partida 	= data['pecas']
+			if(peca_selecionada){
 				
-				atualizarPartida(pecas_partida)
-			})
-			.catch(error => console.error('Error:', error))	
+				nome_peca_selecionada 			= peca_selecionada.split('___')[0]
+				posicao_peca_selecionada 		= peca_selecionada.split('___')[1]
+				nova_posicao_peca_selecionada 	= e.target.id
+
+				data_mover_peca = {'chave_partida':chave_partida, 'nome_peca':nome_peca_selecionada, 'posicao_atual':posicao_peca_selecionada, 'posicao_nova':nova_posicao_peca_selecionada}
+				
+				console.log(chave_partida)
+
+				sessionStorage.removeItem('peca_selecionada')
+
+				fetch(api_moverPeca, {
+					  method: 'POST',
+					  body: JSON.stringify(data_mover_peca),
+					  headers:{
+					    'Content-Type': 'application/json'
+					  }
+					})
+				.then(res => res.json())
+				.then(function(data){
+					status_partida 	= data['status']
+					pecas_partida 	= data['pecas']
+					
+					atualizarPartida(pecas_partida)
+				})
+				.catch(error => console.error('Error:', error))	
+			}
+			
+			
 		}
 	});	
 }

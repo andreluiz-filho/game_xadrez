@@ -70,12 +70,16 @@ def nova_partida():
 
 #----------------------------------------------------------------------------
 
-@app.route("/api_partida")
+@app.route("/api_partida", methods=['POST'])
 def api_partida():
 
-    arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if "partida_" in i]
+    chave_partida = json.loads(request.data)
+    chave_partida = chave_partida['chave_partida']
+    
+    arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if chave_partida in i]
     with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
         partida = json.load(arq)
+    
 
     return jsonify(partida)
 
@@ -89,9 +93,10 @@ def api_moverPeca():
     nome_peca       = peca_selecionada['nome_peca']
     posicao_atual   = peca_selecionada['posicao_atual']
     posicao_nova    = peca_selecionada['posicao_nova']
+    chave_partida    = peca_selecionada['chave_partida']
+    
 
-
-    arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if "partida_" in i]
+    arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if chave_partida in i]
     with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
         partida = json.load(arq)
 
@@ -99,11 +104,9 @@ def api_moverPeca():
         if nome_peca == i['nome_peca']:
             i["posicao"] = posicao_nova
 
-    arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if "partida_" in i]
+    arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if chave_partida in i]
     with open(f"dados/partidas/em_andamento/{arquivo[0]}", "w") as arq:
         json.dump(partida, arq)
-
-
 
 
     return jsonify(partida)

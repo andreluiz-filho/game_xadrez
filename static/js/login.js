@@ -1,4 +1,10 @@
+
+//********************************************************
+//********************************************************
+
 var url = window.location.origin
+
+//********************************************************
 
 function entrar_partida(){
 
@@ -12,6 +18,7 @@ function entrar_partida(){
 	*/
 }
 
+//********************************************************
 
 function nova_partida(){
 	
@@ -28,10 +35,12 @@ function nova_partida(){
 	.then(res => res.json())
 	.then(function(data){
 		console.log(data)
-		sessionStorage.setItem('link_partida', data['chave_sala'])
+		sessionStorage.setItem('chave_partida', data['chave_sala'])
 
 		window.location.href = url+'/partida';
 	})
-	.catch(error => console.error('Error:', error))	
+	.catch(error => console.error('Error:', error))
 	
 }
+
+//********************************************************
