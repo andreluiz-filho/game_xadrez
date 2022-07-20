@@ -37,6 +37,11 @@ img{
 	padding: 10px;
 }
 
+#erro_mover_captura{
+	font-weight: bold;
+	color: red;
+}
+
 .pecas_capturadas_brancas{
 	position: relative;
 	top: 5%;

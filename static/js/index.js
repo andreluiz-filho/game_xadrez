@@ -87,6 +87,8 @@ if(usuario == null){
 
 	function separaPecas(data){
 		
+		sessionStorage.removeItem('peca_selecionada')
+
 		lista_pecas_capturadas = []
 		lista_pecas_capturadas_brancas = []
 		lista_pecas_capturadas_pretas = []
@@ -153,6 +155,9 @@ if(usuario == null){
 	*/
 
 	if(chave_partida){
+		sessionStorage.removeItem('peca_selecionada')
+		
+
 		var api_partida 	= url+'/api_partida'
 		var api_moverPeca 	= url+'/api_moverPeca'
 
@@ -185,64 +190,81 @@ if(usuario == null){
 		casa.addEventListener("click", (e)=> {
 
 			if(e.target.tagName == "IMG"){
-				
 				peca_selecionada = sessionStorage.getItem('peca_selecionada')
 				
-
 				if(peca_selecionada){
 
-					peca_target_nome 		= e.target.alt.split("___")[0]
-					peca_target_posicao 	= e.target.alt.split("___")[1]
-					peca_target_cor 		= e.target.alt.split("__")[0]
-					peca_selecionada_cor 	= peca_selecionada.split("__")[0]
+					peca_selecionada_cor 		= peca_selecionada.split("__")[0]
+					peca_selecionada_nome 		= peca_selecionada.split("___")[0]
+					peca_selecionada_posicao 	= peca_selecionada.split('___')[1]
 					
-					nome_peca = peca_selecionada.split('___')[0]
-					posicao_peca = peca_selecionada.split('___')[1]
-
-					nome_peca_tabela_status.innerText = nome_peca
-					posicao_peca_tabela_status.innerText = posicao_peca
-
-					e.target.style.border = "thick solid green";
-
-					if(peca_selecionada_cor != peca_target_cor){
+					peca_target_cor 			= e.target.alt.split("__")[0]
+					peca_target_nome 			= e.target.alt.split("___")[0]
+					target_posicao 				= e.target.alt.split("___")[1]
+					
+					if(peca_selecionada_nome != peca_target_nome){
 						
-						data_capturar_peca = {'chave_partida':chave_partida, 
-												'nome_peca':peca_target_nome, 
-												'posicao_atual':peca_target_posicao, 
-												'nome_peca_dominante':peca_selecionada,
+						e.target.style.border = "thick solid green";
+
+						nome_peca_tabela_status.innerText = peca_selecionada_nome
+						posicao_peca_tabela_status.innerText = peca_selecionada_posicao
+
+						nome_peca_tabela_status.innerText = peca_selecionada_nome
+						posicao_peca_tabela_status.innerText = peca_selecionada_posicao
+
+						if(peca_selecionada_cor != peca_target_cor){
+
+							data_capturar_peca = {
+												'usuario':usuario,
+												'chave_partida':chave_partida, 
+												'peca_selecionada_nome':peca_selecionada_nome,
+												'peca_target_nome':peca_target_nome, 
+												'target_posicao':target_posicao, 
 												'funcao':'capturar'
 											}
 
-						fetch(api_moverPeca, {
-							  method: 'POST',
-							  body: JSON.stringify(data_capturar_peca),
-							  headers:{
-							    'Content-Type': 'application/json'
-							  }
+							fetch(api_moverPeca, {
+								  method: 'POST',
+								  body: JSON.stringify(data_capturar_peca),
+								  headers:{
+								    'Content-Type': 'application/json'
+								  }
+								})
+							.then(res => res.json())
+							.then(function(data){
+
+								key_data = Object.keys(data)
+
+								if(key_data.includes('erro')){
+									erro_mover_captura.textContent = data['erro']
+									sessionStorage.removeItem('peca_selecionada')
+								}
+								else{
+									erro_mover_captura.textContent = ""
+									status_partida 	= data['status']
+									pecas_partida 	= data['pecas']
+
+									separaPecas(pecas_partida)
+								}
 							})
-						.then(res => res.json())
-						.then(function(data){
-							status_partida 	= data['status']
-							pecas_partida 	= data['pecas']
+							.catch(error => console.error('Error:', error))	
+							
+							sessionStorage.removeItem('peca_selecionada')
 
-							separaPecas(pecas_partida)
-							atualizarPartida(lista_pecas_ativas)
+						}
 
-
-						})
-						.catch(error => console.error('Error:', error))	
-						
-						sessionStorage.removeItem('peca_selecionada')
 					}
+					
+					
 					
 				}else{
 					sessionStorage.setItem('peca_selecionada', e.target.alt)
 
-					nome_peca = e.target.alt.split('___')[0]
-					posicao_peca = e.target.alt.split('___')[1]
+					peca_selecionada_nome 		= e.target.alt.split('___')[0]
+					peca_selecionada_posicao 	= e.target.alt.split('___')[1]
 
-					nome_peca_tabela_status.innerText = nome_peca
-					posicao_peca_tabela_status.innerText = posicao_peca
+					nome_peca_tabela_status.innerText = peca_selecionada_nome
+					posicao_peca_tabela_status.innerText = peca_selecionada_posicao
 
 					e.target.style.border = "thick solid green";
 				}
@@ -253,21 +275,17 @@ if(usuario == null){
 				
 				if(peca_selecionada){
 					
-					nome_peca_selecionada 			= peca_selecionada.split('___')[0]
-					posicao_peca_selecionada 		= peca_selecionada.split('___')[1]
-					nova_posicao_peca_selecionada 	= e.target.id
+					peca_selecionada_nome		= peca_selecionada.split('___')[0]
+					peca_selecionada_posicao	= peca_selecionada.split('___')[1]
+					target_posicao 				= e.target.id
 
-					data_mover_peca = {'chave_partida':chave_partida, 
-										'nome_peca':nome_peca_selecionada, 
-										'posicao_atual':posicao_peca_selecionada, 
-										'posicao_nova':nova_posicao_peca_selecionada,
+					data_mover_peca = {
+										'usuario':usuario,
+										'chave_partida':chave_partida, 
+										'peca_selecionada_nome':peca_selecionada_nome,
+										'target_posicao':target_posicao, 
 										'funcao':'mover'
 									}
-
-					sessionStorage.removeItem('peca_selecionada')
-
-					nome_peca_tabela_status.innerText = ""
-					posicao_peca_tabela_status.innerText = ""
 
 					fetch(api_moverPeca, {
 						  method: 'POST',
@@ -278,12 +296,23 @@ if(usuario == null){
 						})
 					.then(res => res.json())
 					.then(function(data){
-						status_partida 	= data['status']
-						pecas_partida 	= data['pecas']
-						
-						separaPecas(pecas_partida)
+
+						key_data = Object.keys(data)
+
+						if(key_data.includes('erro')){
+							erro_mover_captura.textContent = data['erro']
+							sessionStorage.removeItem('peca_selecionada')
+						}
+						else{
+							erro_mover_captura.textContent = ""
+							status_partida 	= data['status']
+							pecas_partida 	= data['pecas']
+
+							separaPecas(pecas_partida)
+						}
 					})
 					.catch(error => console.error('Error:', error))	
+					
 				}
 			}
 		});	
@@ -311,9 +340,6 @@ if(usuario == null){
 	//********************************************************
 
 	function entrar_partida(){
-		
-		//sessionStorage.setItem('chave_partida', link_partida.value)
-		//window.location.href = url+'/partida';
 
 		var recurso = url+"/entrarPartida"
 

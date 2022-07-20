@@ -83,6 +83,7 @@ def nova_partida():
                         "status": "aberta",
                         "jogador_branca":usuario, 
                         "jogador_preta":"",
+                        "jogador_da_vez":"jogador_branca",
                         "pecas":[
                             {"nome_peca": "branca__torre_1", "posicao":"a1", "imagem":"static/img/pecas/branca_torre.png", "capturada":"false"}, 
                             {"nome_peca": "branca__cavalo_1", "posicao":"b1", "imagem":"static/img/pecas/branca_cavalo.png", "capturada":"false"}, 
@@ -121,6 +122,9 @@ def nova_partida():
 
             with open(f"dados/partidas/em_andamento/{chave_sala}.json", "w") as arq:
                 json.dump(partida, arq)
+
+            with open(f"dados/partidas/em_andamento/jogador_da_vez.json", "w") as arq:
+                json.dump({"jogador": usuario}, arq)
 
             return jsonify({"chave_sala":chave_sala})
         else:
@@ -168,89 +172,51 @@ def api_moverPeca():
 
     peca_selecionada = json.loads(request.data)
     
-    chave_partida   = peca_selecionada['chave_partida']
-    nome_peca       = peca_selecionada['nome_peca']
-    posicao_atual   = peca_selecionada['posicao_atual']
+    usuario                 = peca_selecionada['usuario']
+    chave_partida           = peca_selecionada['chave_partida']
 
-    if peca_selecionada['funcao'] == 'capturar':
-        nome_peca_dominante = peca_selecionada['nome_peca_dominante']
-        nome_peca_dominante = nome_peca_dominante.split("___")[0]
-
-        partida = consulta_Partida()
-
-        for i in partida['pecas']:
-            if nome_peca == i['nome_peca']:
-                i['capturada'] = 'true'
-
-            if nome_peca_dominante == i['nome_peca']:
-                i['posicao'] = posicao_atual
-
-        salva_Partida(partida)
-        
-    elif peca_selecionada['funcao'] == 'mover':
-        posicao_nova = peca_selecionada['posicao_nova']
-        
-        partida = consulta_Partida()
-
-        for i in partida['pecas']:
-            if nome_peca == i['nome_peca']:
-                i["posicao"] = posicao_nova
-
-        salva_Partida(partida)
-
-    #---------------------------------------------------------------------
-
-    """
-    funcao = ""
-
-    print("nome_peca", nome_peca)
-    print("posicao_atual", posicao_atual)
-
-    try:
-        nome_peca_dominante = peca_selecionada['nome_peca_dominante']
-        nome_peca_dominante = nome_peca_dominante.split("___")[0]
-        funcao = "captura"
-
-        print("nome_peca_dominante", nome_peca_dominante)
-    except:
-        posicao_nova = peca_selecionada['posicao_nova']
-        funcao = "mover"
-
-        print("posicao_nova", posicao_nova)
-
-
-    if funcao == "captura":
-        arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if chave_partida in i]
-        with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
-            partida = json.load(arq)
-
-        for i in partida['pecas']:
-            if nome_peca == i['nome_peca']:
-                i['capturada'] = 'true'
-
-            if nome_peca_dominante == i['nome_peca']:
-                i['posicao'] = posicao_atual
-
-        arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if chave_partida in i]
-        with open(f"dados/partidas/em_andamento/{arquivo[0]}", "w") as arq:
-            json.dump(partida, arq)
-
-    elif funcao == "mover":
-        arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if chave_partida in i]
-        with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
-            partida = json.load(arq)
-
-        for i in partida['pecas']:
-            if nome_peca == i['nome_peca']:
-                i["posicao"] = posicao_nova
-
-        arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if chave_partida in i]
-        with open(f"dados/partidas/em_andamento/{arquivo[0]}", "w") as arq:
-            json.dump(partida, arq)
+    peca_selecionada_nome   = peca_selecionada['peca_selecionada_nome']
+    target_posicao          = peca_selecionada['target_posicao']
     
-    """
-    
-    return jsonify(partida)
+    partida = consulta_Partida()
+    jogador_da_vez = partida['jogador_da_vez']
+
+    if usuario == partida[jogador_da_vez]:
+
+        if peca_selecionada_nome.split("_")[0] == jogador_da_vez.split("_")[1]:
+            
+            if peca_selecionada['funcao'] == 'capturar':
+                
+                peca_target_nome  = peca_selecionada['peca_target_nome']
+
+                for i in partida['pecas']:
+
+                    if peca_target_nome == i['nome_peca']:
+                        i['capturada'] = 'true'
+
+                    if peca_selecionada_nome == i['nome_peca']:
+                        i['posicao'] = target_posicao
+                    
+                salva_Partida(partida)
+                
+                return jsonify(partida)
+
+                
+            elif peca_selecionada['funcao'] == 'mover':
+                
+                
+                for i in partida['pecas']:
+                    if peca_selecionada_nome == i['nome_peca']:
+                        i["posicao"] = target_posicao
+
+                salva_Partida(partida)
+                
+                return jsonify(partida)
+
+        else:
+            return jsonify({'erro':'Não pode mover essa Peça'})  
+    else:
+        return jsonify({'erro':'Não é a sua vez'})        
 
 #----------------------------------------------------------------------------
 
