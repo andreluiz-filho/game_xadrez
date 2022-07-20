@@ -13,28 +13,44 @@
 		<div id="status_partida">
 			<h4 id="titulo_status_partida"></h4>
 
-			<hr>
+			<div class="area_status">
+				<span id="titulos_status">Mov. Atual: </span>
 
-			<span id="titulo_ultima_peca_selecionada">Mov. Atual: </span>
-			<div id="conteudo_ultima_peca_selecionada">
-				
-				<table id="tabela_status">
-					<tr>
-						<td>Nome da Peça: </td>
-						<td id="nome_peca_tabela_status" style="width: 120px"></td>
-					</tr>
-					<tr>
-						<td>Posição Anterior: </td>
-						<td id="posicao_peca_tabela_status"></td>
-					</tr>
-				</table>
-				
+				<div id="conteudo_ultima_peca_selecionada">
+					
+					<table class="tabela_status">
+						<tr>
+							<td>Nome da Peça: </td>
+							<td id="nome_peca_tabela_status" style="width: 120px"></td>
+						</tr>
+						<tr>
+							<td>Posição Anterior: </td>
+							<td id="posicao_peca_tabela_status"></td>
+						</tr>
+					</table>
+					
+				</div>
+			</div>	
+			
+			<div class="area_status pecas_capturadas">
+				<span id="titulos_status">Peças Capturadas </span>
+
+				<div id="conteudo_pecas_capturadas">
+					
+					<table class="tabela_status tabela_status_pecas_capturadas">
+						<tr>
+							<th>Nome da Peça:</th>
+							<th>QTD:</th>
+						</tr>
+					</table>
+					
+				</div>
 			</div>
-
 		</div>
 
 		<table id="table">
 		</table>
+
 	</div>
 
 	<script src="{{url_for('static', filename='js/index.js')}}"></script>

@@ -8,6 +8,13 @@ table{
 
 td{
 	text-align: center;
+	border: 1px solid;
+	padding: 5px;
+}
+
+th{
+	border: 1px solid;
+	padding: 5px;
 }
 
 img{
@@ -25,8 +32,17 @@ img{
 	text-align: center;
 }
 
+.area_status{
+	border-top: 2px solid;
+	padding: 10px;
+}
 
-#titulo_ultima_peca_selecionada{
+.pecas_capturadas{
+	position: relative;
+	top: 10%;
+}
+
+#titulos_status{
 	font-weight: bold;
 }
 
@@ -35,14 +51,13 @@ img{
 	top: 20px;
 }
 
-#tabela_status{
+.tabela_status{
 	border: 1px solid;
 	padding: 5px;
 }
 
-#tabela_status td{
-	border: 1px solid;
-	padding: 5px;
+.tabela_status td{
+	
 }
 
 /*************************************************************/
