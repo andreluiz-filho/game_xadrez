@@ -28,7 +28,7 @@ img{
 	border: 3px solid #999;
 	border-radius: 10px;
 	width: 350px;
-	height: 500px;
+	height: 800px;
 	text-align: center;
 }
 
@@ -37,12 +37,17 @@ img{
 	padding: 10px;
 }
 
-.pecas_capturadas{
+.pecas_capturadas_brancas{
 	position: relative;
-	top: 10%;
+	top: 5%;
 }
 
-#titulos_status{
+.pecas_capturadas_pretas{
+	position: relative;
+	top: 5%;
+}
+
+.titulos_status{
 	font-weight: bold;
 }
 

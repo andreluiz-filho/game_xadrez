@@ -77,35 +77,63 @@ function atualizarPartida(data){
 function separaPecas(data){
 	
 	lista_pecas_capturadas = []
+	lista_pecas_capturadas_brancas = []
+	lista_pecas_capturadas_pretas = []
+
 	lista_pecas_ativas = []
 	
 	for(peca of data){
 		if(peca['capturada'] == 'true'){
-			lista_pecas_capturadas.push(peca)
+			cor_peca = peca['nome_peca'].split('__')[0]
+			nome_peca = peca['nome_peca'].split('__')[1].split('_')[0]
+			
+			nome_peca = cor_peca+'_'+nome_peca
+
+			lista_pecas_capturadas.push(nome_peca)
+
+			if(cor_peca == 'preta'){
+				lista_pecas_capturadas_pretas.push(nome_peca)
+
+			}else if(cor_peca == 'branca'){
+				lista_pecas_capturadas_brancas.push(nome_peca)
+			}
 
 		}else if(peca['capturada'] == 'false'){
 			lista_pecas_ativas.push(peca)
 		}
 	}
+	
+	atualizarPartida(lista_pecas_ativas)
 
-	var tabela_status_pecas_capturadas = document.querySelector(".tabela_status_pecas_capturadas")
 
-	for(capturadas of lista_pecas_capturadas){
-		var tr = document.createElement('tr');
+	capturadas_brancas = document.querySelectorAll('.capturadas_brancas')
+	capturadas_pretas = document.querySelectorAll('.capturadas_pretas')
 
-		var td_nome_peca = document.createElement('td');
-		var td_qtd = document.createElement('td');
-		
-		td_nome_peca.innerText = capturadas['nome_peca']
-		td_qtd.innerText = 1
+	function qtd_pecas_capturadas(area_capturadas, lista_pecas_capturadas){
 
-		tr.appendChild(td_nome_peca)
-		tr.appendChild(td_qtd)
+		for(i = 0; i < area_capturadas.length; i++){
+			area_qtd = area_capturadas[i].children[1]
 
-		tabela_status_pecas_capturadas.appendChild(tr)
+			area_qtd.innerText = 0
+
+			id_qtd = area_qtd.id.split('_')[1]
+			
+			for(item of lista_pecas_capturadas){
+
+				nome_peca = item.split('_')[1]
+				if(nome_peca == id_qtd){
+					area_qtd.innerText = parseInt(area_qtd.innerText)+1
+				}
+				
+			}
+			
+		}
 	}
 
-	atualizarPartida(lista_pecas_ativas)
+	qtd_pecas_capturadas(capturadas_brancas, lista_pecas_capturadas_brancas)
+	qtd_pecas_capturadas(capturadas_pretas, lista_pecas_capturadas_pretas)
+
+	
 }
 
 //********************************************************
@@ -129,45 +157,14 @@ fetch(api_partida, {
 .then(function(data){
 	status_partida 	= data['status']
 	pecas_partida 	= data['pecas']
+
 	separaPecas(pecas_partida)
-	/*
-	lista_pecas_capturadas = []
-	lista_pecas_ativas = []
-	
-	for(peca of data['pecas']){
-		if(peca['capturada'] == 'true'){
-			lista_pecas_capturadas.push(peca)
-
-		}else if(peca['capturada'] == 'false'){
-			lista_pecas_ativas.push(peca)
-		}
-	}
-
-	var tabela_status_pecas_capturadas = document.querySelector(".tabela_status_pecas_capturadas")
-
-	for(capturadas of lista_pecas_capturadas){
-		var tr = document.createElement('tr');
-
-		var td_nome_peca = document.createElement('td');
-		var td_qtd = document.createElement('td');
-		
-		td_nome_peca.innerText = capturadas['nome_peca']
-		td_qtd.innerText = 1
-
-		tr.appendChild(td_nome_peca)
-		tr.appendChild(td_qtd)
-
-		tabela_status_pecas_capturadas.appendChild(tr)
-	}
-
-	atualizarPartida(lista_pecas_ativas)
-	*/
 })
 .catch(error => console.error('Error:', error))
 
 
 //********************************************************
-//***********************MOVER PEÇA***********************
+//*********************MOVER/CAPTURAR*********************
 
 var casas = document.querySelectorAll("td")
 
@@ -212,36 +209,8 @@ for(casa of casas){
 					.then(function(data){
 						status_partida 	= data['status']
 						pecas_partida 	= data['pecas']
-						
-						lista_pecas_capturadas = []
-						lista_pecas_ativas = []
-						
-						for(peca of data['pecas']){
-							if(peca['capturada'] == 'true'){
-								lista_pecas_capturadas.push(peca)
 
-							}else if(peca['capturada'] == 'false'){
-								lista_pecas_ativas.push(peca)
-							}
-						}
-
-						var tabela_status_pecas_capturadas = document.querySelector(".tabela_status_pecas_capturadas")
-
-						for(capturadas of lista_pecas_capturadas){
-							var tr = document.createElement('tr');
-
-							var td_nome_peca = document.createElement('td');
-							var td_qtd = document.createElement('td');
-							
-							td_nome_peca.innerText = capturadas['nome_peca']
-							td_qtd.innerText = 1
-
-							tr.appendChild(td_nome_peca)
-							tr.appendChild(td_qtd)
-
-							tabela_status_pecas_capturadas.appendChild(tr)
-						}
-
+						separaPecas(pecas_partida)
 						atualizarPartida(lista_pecas_ativas)
 
 
