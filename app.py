@@ -21,54 +21,112 @@ def index():
 
 #----------------------------------------------------------------------------
 
+@app.route("/entrarPartida", methods=["POST"])
+def entrar_partida():
+
+    data = json.loads(request.data)
+    usuario = data['usuario']
+    chave_partida = data['chave_partida']
+
+    arquivo = [i for i in os.listdir('dados') if 'usuarios.json' in i]
+
+    if arquivo:
+        with open('dados/usuarios.json') as arq:
+            dados = json.load(arq)
+
+        user = usuario in dados
+        if user:
+            chave_partida = chave_partida+".json"
+            arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if chave_partida in i]
+            if arquivo:
+
+                with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
+                    partida = json.load(arq)
+
+                if partida['jogador_branca'] == usuario:
+                    chave_partida = chave_partida.split(".")[0]
+                    return jsonify({"chave_partida":chave_partida})
+
+                elif partida['jogador_preta'] == "" or partida['jogador_preta'] == usuario:
+                    partida['jogador_preta'] = usuario
+
+                    with open(f"dados/partidas/em_andamento/{chave_partida}", "w") as arq:
+                        json.dump(partida, arq)
+
+                    chave_partida = chave_partida.split(".")[0]
+                    return jsonify({"chave_partida":chave_partida})
+
+                return jsonify({"erro": "Falha ao Entrar na  Partida"})
+
+    return jsonify({"erro": "Falha ao Entrar na  Partida"})
+
+#----------------------------------------------------------------------------
+
 @app.route("/novaPartida", methods=["POST"])
 def nova_partida():
 
-    chave_sala = secrets.token_hex(10)
-    #chave_sala = "dhsjdhkjshdksk"
+    usuario = json.loads(request.data)
+    usuario = usuario['usuario']
 
-    partida = {
-                "status": "aberta",
-                "pecas":[
-                    {"nome_peca": "branca__torre_1", "posicao":"a1", "imagem":"static/img/pecas/branca_torre.png", "capturada":"false"}, 
-                    {"nome_peca": "branca__cavalo_1", "posicao":"b1", "imagem":"static/img/pecas/branca_cavalo.png", "capturada":"false"}, 
-                    {"nome_peca": "branca__bispo_1", "posicao":"c1", "imagem":"static/img/pecas/branca_bispo.png", "capturada":"false"}, 
-                    {"nome_peca": "branca__rainha", "posicao":"d1", "imagem":"static/img/pecas/branca_rainha.png", "capturada":"false"},
-                    {"nome_peca": "branca__rei", "posicao":"e1", "imagem":"static/img/pecas/branca_rei.png", "capturada":"false"},
-                    {"nome_peca": "branca__bispo_2", "posicao":"f1", "imagem":"static/img/pecas/branca_bispo.png", "capturada":"false"},
-                    {"nome_peca": "branca__cavalo_2", "posicao":"g1", "imagem":"static/img/pecas/branca_cavalo.png", "capturada":"false"},
-                    {"nome_peca": "branca__torre_2", "posicao":"h1", "imagem":"static/img/pecas/branca_torre.png", "capturada":"false"},
-                    {"nome_peca": "branca__peao_1", "posicao":"a2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
-                    {"nome_peca": "branca__peao_2", "posicao":"b2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
-                    {"nome_peca": "branca__peao_3", "posicao":"c2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
-                    {"nome_peca": "branca__peao_4", "posicao":"d2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
-                    {"nome_peca": "branca__peao_5", "posicao":"e2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
-                    {"nome_peca": "branca__peao_6", "posicao":"f2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
-                    {"nome_peca": "branca__peao_7", "posicao":"g2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
-                    {"nome_peca": "branca__peao_8", "posicao":"h2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
-                    {"nome_peca": "preta__torre_1", "posicao":"a8", "imagem":"static/img/pecas/preta_torre.png", "capturada":"false"}, 
-                    {"nome_peca": "preta__cavalo_1", "posicao":"b8", "imagem":"static/img/pecas/preta_cavalo.png", "capturada":"false"}, 
-                    {"nome_peca": "preta__bispo_1", "posicao":"c8", "imagem":"static/img/pecas/preta_bispo.png", "capturada":"false"}, 
-                    {"nome_peca": "preta__rainha", "posicao":"d8", "imagem":"static/img/pecas/preta_rainha.png", "capturada":"false"},
-                    {"nome_peca": "preta__rei", "posicao":"e8", "imagem":"static/img/pecas/preta_rei.png", "capturada":"false"},
-                    {"nome_peca": "preta__bispo_2", "posicao":"f8", "imagem":"static/img/pecas/preta_bispo.png", "capturada":"false"},
-                    {"nome_peca": "preta__cavalo_2", "posicao":"g8", "imagem":"static/img/pecas/preta_cavalo.png", "capturada":"false"},
-                    {"nome_peca": "preta__torre_2", "posicao":"h8", "imagem":"static/img/pecas/preta_torre.png", "capturada":"false"},
-                    {"nome_peca": "preta__peao_1", "posicao":"a7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
-                    {"nome_peca": "preta__peao_2", "posicao":"b7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
-                    {"nome_peca": "preta__peao_3", "posicao":"c7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
-                    {"nome_peca": "preta__peao_4", "posicao":"d7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
-                    {"nome_peca": "preta__peao_5", "posicao":"e7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
-                    {"nome_peca": "preta__peao_6", "posicao":"f7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
-                    {"nome_peca": "preta__peao_7", "posicao":"g7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
-                    {"nome_peca": "preta__peao_8", "posicao":"h7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
-                ]
-        }
+    arquivo = [i for i in os.listdir('dados') if 'usuarios.json' in i]
 
-    with open(f"dados/partidas/em_andamento/{chave_sala}.json", "w") as arq:
-        json.dump(partida, arq)
+    if arquivo:
+        with open('dados/usuarios.json') as arq:
+            dados = json.load(arq)
 
-    return jsonify({"chave_sala":chave_sala})
+        user = usuario in dados
+        if user:
+            
+            chave_sala = secrets.token_hex(10)
+
+            partida = {
+                        "status": "aberta",
+                        "jogador_branca":usuario, 
+                        "jogador_preta":"",
+                        "pecas":[
+                            {"nome_peca": "branca__torre_1", "posicao":"a1", "imagem":"static/img/pecas/branca_torre.png", "capturada":"false"}, 
+                            {"nome_peca": "branca__cavalo_1", "posicao":"b1", "imagem":"static/img/pecas/branca_cavalo.png", "capturada":"false"}, 
+                            {"nome_peca": "branca__bispo_1", "posicao":"c1", "imagem":"static/img/pecas/branca_bispo.png", "capturada":"false"}, 
+                            {"nome_peca": "branca__rainha", "posicao":"d1", "imagem":"static/img/pecas/branca_rainha.png", "capturada":"false"},
+                            {"nome_peca": "branca__rei", "posicao":"e1", "imagem":"static/img/pecas/branca_rei.png", "capturada":"false"},
+                            {"nome_peca": "branca__bispo_2", "posicao":"f1", "imagem":"static/img/pecas/branca_bispo.png", "capturada":"false"},
+                            {"nome_peca": "branca__cavalo_2", "posicao":"g1", "imagem":"static/img/pecas/branca_cavalo.png", "capturada":"false"},
+                            {"nome_peca": "branca__torre_2", "posicao":"h1", "imagem":"static/img/pecas/branca_torre.png", "capturada":"false"},
+                            {"nome_peca": "branca__peao_1", "posicao":"a2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
+                            {"nome_peca": "branca__peao_2", "posicao":"b2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
+                            {"nome_peca": "branca__peao_3", "posicao":"c2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
+                            {"nome_peca": "branca__peao_4", "posicao":"d2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
+                            {"nome_peca": "branca__peao_5", "posicao":"e2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
+                            {"nome_peca": "branca__peao_6", "posicao":"f2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
+                            {"nome_peca": "branca__peao_7", "posicao":"g2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
+                            {"nome_peca": "branca__peao_8", "posicao":"h2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
+                            {"nome_peca": "preta__torre_1", "posicao":"a8", "imagem":"static/img/pecas/preta_torre.png", "capturada":"false"}, 
+                            {"nome_peca": "preta__cavalo_1", "posicao":"b8", "imagem":"static/img/pecas/preta_cavalo.png", "capturada":"false"}, 
+                            {"nome_peca": "preta__bispo_1", "posicao":"c8", "imagem":"static/img/pecas/preta_bispo.png", "capturada":"false"}, 
+                            {"nome_peca": "preta__rainha", "posicao":"d8", "imagem":"static/img/pecas/preta_rainha.png", "capturada":"false"},
+                            {"nome_peca": "preta__rei", "posicao":"e8", "imagem":"static/img/pecas/preta_rei.png", "capturada":"false"},
+                            {"nome_peca": "preta__bispo_2", "posicao":"f8", "imagem":"static/img/pecas/preta_bispo.png", "capturada":"false"},
+                            {"nome_peca": "preta__cavalo_2", "posicao":"g8", "imagem":"static/img/pecas/preta_cavalo.png", "capturada":"false"},
+                            {"nome_peca": "preta__torre_2", "posicao":"h8", "imagem":"static/img/pecas/preta_torre.png", "capturada":"false"},
+                            {"nome_peca": "preta__peao_1", "posicao":"a7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
+                            {"nome_peca": "preta__peao_2", "posicao":"b7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
+                            {"nome_peca": "preta__peao_3", "posicao":"c7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
+                            {"nome_peca": "preta__peao_4", "posicao":"d7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
+                            {"nome_peca": "preta__peao_5", "posicao":"e7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
+                            {"nome_peca": "preta__peao_6", "posicao":"f7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
+                            {"nome_peca": "preta__peao_7", "posicao":"g7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
+                            {"nome_peca": "preta__peao_8", "posicao":"h7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
+                        ]
+                }
+
+            with open(f"dados/partidas/em_andamento/{chave_sala}.json", "w") as arq:
+                json.dump(partida, arq)
+
+            return jsonify({"chave_sala":chave_sala})
+        else:
+            return redirect("/api_login_usuario")
+    else:
+        return redirect("/api_login_usuario")
 
 #----------------------------------------------------------------------------
 
@@ -76,7 +134,9 @@ def nova_partida():
 def api_partida():
 
     chave_partida = json.loads(request.data)
+
     chave_partida = chave_partida['chave_partida']
+    chave_partida = chave_partida+".json"
     
     arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if chave_partida in i]
     with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
@@ -191,6 +251,48 @@ def api_moverPeca():
     """
     
     return jsonify(partida)
+
+#----------------------------------------------------------------------------
+
+@app.route('/api_login_usuario', methods=['POST'])
+def api_login_usuario():
+
+    usuario = json.loads(request.data)
+    usuario = usuario['usuario']
+    
+    arquivo = [i for i in os.listdir('dados') if 'usuarios.json' in i]
+    
+    if arquivo:
+        with open('dados/usuarios.json') as arq:
+            dados = json.load(arq)
+
+        user = usuario in dados
+        if user:
+            return jsonify({'usuario':usuario})
+
+    return jsonify({'erro':'Login Incorreto'})
+    
+#----------------------------------------------------------------------------
+
+@app.route('/api_criar_usuario', methods=['GET', 'POST'])
+def api_criar_usuario():
+
+    #usuario = json.loads(request.data)
+
+    arquivo = [i for i in os.listdir('dados') if 'usuarios.json' in i]
+    
+    if arquivo:
+        with open('dados/usuarios.json') as arq:
+            dados = json.load(arq)
+
+        print(dados)
+    else:
+        with open('dados/usuarios.json', "w") as arq:
+            lista_usuarios = ['admin']
+            json.dump(lista_usuarios, arq)
+
+
+    return jsonify({'status':'Usuario criado com sucesso'})
 
 #----------------------------------------------------------------------------
 

@@ -8,16 +8,13 @@
 </head>
 <body>
 	<div id="container">
-		<h3>Partida de Xadrez</h3>
+		
 		<div id="conteudo">
 
-			<input type="text" name="link_partida" id="link_partida">
-			
-			<div id="btn_link" onclick="entrar_partida()">Entrar Partida</div>
+			<input type="text" name="usuario" id="input_usuario">
+			<input type="button" name="btn_login" id="btn_login" value="Login" onclick="login_usuario()">
 
-			<hr>
-
-			<div id="btn_link" onclick="nova_partida()">Nova Partida</div>
+			<span id="mensagem_erro"></span>
 		</div>
 	</div>
 

@@ -6,38 +6,34 @@ var url = window.location.origin
 
 //********************************************************
 
-function entrar_partida(){
-
-	/*
-	sessionStorage.clear();
-
-	link_partida = document.querySelector("#link_partida")
-	sessionStorage.setItem('link_partida', link_partida.value)
-
-	window.location.href = "http://www.devmedia.com.br";
-	*/
-}
-
 //********************************************************
 
-function nova_partida(){
+function login_usuario(){
 	
-	var recurso = url+"/novaPartida"
+	var usuario = input_usuario.value
+	var api_login_usuario = url+'/api_login_usuario'
 
-	
-	fetch(recurso, {
-		  method: 'POST',
-		  body: JSON.stringify({"status":"Iniciar Partida"}),
-		  headers:{
-		    'Content-Type': 'application/json'
-		  }
-		})
+	fetch(api_login_usuario, {
+		method: 'POST',
+		body: JSON.stringify({"usuario":usuario}),
+		headers:{
+		'Content-Type': 'application/json'
+		}
+	})
 	.then(res => res.json())
 	.then(function(data){
-		console.log(data)
-		sessionStorage.setItem('chave_partida', data['chave_sala'])
+		key_data = Object.keys(data)
 
-		window.location.href = url+'/partida';
+		if(key_data.includes('erro')){
+			mensagem_erro.innerHTML = 'Falha no Login'
+		}
+		else if(key_data.includes('usuario')){
+			mensagem_erro.innerHTML = 'Login Realizado'
+
+			sessionStorage.setItem("usuario", data['usuario'])
+
+			window.location.href = url+'/partida';
+		}
 	})
 	.catch(error => console.error('Error:', error))
 	
