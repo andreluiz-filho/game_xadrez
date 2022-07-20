@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, redirect, jsonify
 from datetime import datetime
 import json
 import os
+import secrets
 
 app = Flask(__name__)
 
@@ -23,7 +24,8 @@ def index():
 @app.route("/novaPartida", methods=["POST"])
 def nova_partida():
 
-    chave_sala = "dhsjdhkjshdksk"
+    chave_sala = secrets.token_hex(10)
+    #chave_sala = "dhsjdhkjshdksk"
 
     partida = {
                 "status": "aberta",

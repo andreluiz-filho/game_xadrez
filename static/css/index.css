@@ -1,4 +1,4 @@
-.container{
+#container{
 	text-align: center;
 }
 
@@ -28,7 +28,7 @@ img{
 	border: 3px solid #999;
 	border-radius: 10px;
 	width: 350px;
-	height: 800px;
+	height: 750px;
 	text-align: center;
 }
 
@@ -78,6 +78,42 @@ img{
 
 .casa_cor_primaria{
 	background-color: #333333
+}
+
+/*************************************************************/
+
+#area_admin{
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	border: 1px solid;
+	border-radius: 10px;
+	width: 20%;
+	height: 30%;
+	float: right;
+}
+
+#link_partida{
+	width: 90%;
+	border-radius: 5px;
+	margin-top: 10px;
+}
+
+#btn_link{
+	position: relative;
+	top: 0px;
+	background-color: #999;
+	border-radius: 10px;
+	width: 150px;
+	padding: 10px;
+	cursor: pointer;
+	margin: 0 auto;
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+#btn_link:hover{
+	background-color: #b9b3b3;
 }
 
 /*************************************************************/

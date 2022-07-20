@@ -8,7 +8,6 @@ chave_partida = sessionStorage.getItem('chave_partida')
 
 titulo_status_partida.innerText = 'Chave Sala: '+chave_partida
 
-
 //********************************************************
 //*******************CRIA O TABULEIRO*********************
 
@@ -132,8 +131,6 @@ function separaPecas(data){
 
 	qtd_pecas_capturadas(capturadas_brancas, lista_pecas_capturadas_brancas)
 	qtd_pecas_capturadas(capturadas_pretas, lista_pecas_capturadas_pretas)
-
-	
 }
 
 //********************************************************
@@ -267,7 +264,53 @@ for(casa of casas){
 			}
 		}
 	});	
+
+	casa.addEventListener("dblclick", (e)=>{
+		sessionStorage.removeItem('peca_selecionada')
+		nome_peca_tabela_status.innerText = ""
+		posicao_peca_tabela_status.innerText = ""
+	});
 }
 
+//********************************************************
+//********************************************************
+///////////////////////////AREA ADMIN/////////////////////
+//********************************************************
+//********************************************************
+
+function entrar_partida(){
+	sessionStorage.setItem('chave_partida', link_partida.value)
+	window.location.href = url+'/partida';
+}
+
+function nova_partida(){
+	
+	var recurso = url+"/novaPartida"
+
+	
+	fetch(recurso, {
+		  method: 'POST',
+		  body: JSON.stringify({"status":"Iniciar Partida"}),
+		  headers:{
+		    'Content-Type': 'application/json'
+		  }
+		})
+	.then(res => res.json())
+	.then(function(data){
+		console.log(data)
+		sessionStorage.setItem('chave_partida', data['chave_sala'])
+
+		window.location.href = url+'/partida';
+	})
+	.catch(error => console.error('Error:', error))
+}
+
+function sair_partida(){
+	sessionStorage.clear()
+	window.location.href = url+'/partida';
+}
+
+//********************************************************
+//********************************************************
 //********************************************************
 //********************************************************
