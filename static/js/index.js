@@ -217,12 +217,15 @@ if(usuario == null){
 
 
 	if(chave_partida && chave_partida != 'undefined' && jogador_da_vez && usuario_cor){
-
+		
 		// --------------------------------------------------------------
+
+		sessionStorage.removeItem('peca_selecionada')
 
 		function func_api_partida(){
 			
-			usuario_logado.textContent += " - "+usuario_cor
+			usuario_logado.textContent = ""
+			usuario_logado.textContent = usuario+" - "+usuario_cor
 
 			fetch(api_partida, {
 				method: 'POST',
@@ -247,20 +250,25 @@ if(usuario == null){
 				}
 				else if(key_data.includes('pecas')){
 
+					sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
+					sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
+
 					status_partida 	= data['status']
 					pecas_partida 	= data['pecas']
 
 					separaPecas(pecas_partida)
+					
 				}
 			})
 			.catch(error => console.error('Error:', error))
 		}
 
 		func_api_partida();
-		setInterval(function() {func_api_partida()}, 10000);
-
-		sessionStorage.removeItem('peca_selecionada')
+		if(jogador_da_vez != usuario){
+			setInterval(function() {func_api_partida()}, 10000);
+		}
 		
+
 		// --------------------------------------------------------------
 	}
 
@@ -273,16 +281,124 @@ if(usuario == null){
 
 		casa.addEventListener("click", (e)=> {
 
+			jogador_da_vez = sessionStorage.getItem('jogador_da_vez')
+			cor_da_vez = sessionStorage.getItem('cor_da_vez')
+
+			function moverPeca(dados){
+
+				fetch(api_moverPeca, {
+					  method: 'POST',
+					  body: JSON.stringify(dados),
+					  headers:{
+					    'Content-Type': 'application/json'
+					  }
+					})
+				.then(res => res.json())
+				.then(function(data){
+
+					key_data = Object.keys(data)
+
+					if(key_data.includes('erro')){
+						erro_mover_captura.textContent = data['erro']
+						sessionStorage.removeItem('peca_selecionada')
+					}
+					else{
+						erro_mover_captura.textContent = ""
+						status_partida 	= data['status']
+						pecas_partida 	= data['pecas']
+
+						separaPecas(pecas_partida)
+
+						sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
+						sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
+					}
+				})
+				.catch(error => console.error('Error:', error))	
+
+			}
+
 			if(e.target.tagName == "IMG"){
 
 				if(usuario == jogador_da_vez && usuario_cor == cor_da_vez){
-					
+				
+					peca_selecionada = sessionStorage.getItem('peca_selecionada')
 					peca_target_cor = e.target.alt.split("__")[0]
 
-					if(usuario_cor == peca_target_cor){
+					if(cor_da_vez == peca_target_cor){
 
-						peca_selecionada = sessionStorage.getItem('peca_selecionada')
-			
+						if(usuario_cor == peca_target_cor){
+
+							if(peca_selecionada){
+
+								peca_selecionada_cor 		= peca_selecionada.split("__")[0]
+								peca_selecionada_nome 		= peca_selecionada.split("___")[0]
+								peca_selecionada_posicao 	= peca_selecionada.split('___')[1]
+								
+								peca_target_nome 			= e.target.alt.split("___")[0]
+								target_posicao 				= e.target.alt.split("___")[1]
+								
+								if(peca_selecionada_nome != peca_target_nome){
+									
+									e.target.style.border = "thick solid green";
+
+									//nome_peca_tabela_status.innerText = peca_selecionada_nome
+									//posicao_peca_tabela_status.innerText = peca_selecionada_posicao
+
+									//nome_peca_tabela_status.innerText = peca_selecionada_nome
+									//posicao_peca_tabela_status.innerText = peca_selecionada_posicao
+
+									if(peca_selecionada_cor != peca_target_cor){
+
+										data_capturar_peca = {
+															'usuario':usuario,
+															'usuario_cor':usuario_cor,
+															'chave_partida':chave_partida, 
+															'peca_selecionada_nome':peca_selecionada_nome,
+															'peca_target_nome':peca_target_nome, 
+															'target_posicao':target_posicao, 
+															'funcao':'capturar'
+														}
+										
+										moverPeca(data_capturar_peca)
+									
+									}
+								
+								}
+								
+							}else{
+								sessionStorage.setItem('peca_selecionada', e.target.alt)
+
+								peca_selecionada_nome 		= e.target.alt.split('___')[0]
+								peca_selecionada_posicao 	= e.target.alt.split('___')[1]
+
+								nome_peca_tabela_status.innerText = peca_selecionada_nome
+								posicao_peca_tabela_status.innerText = peca_selecionada_posicao
+
+								e.target.style.border = "thick solid green";
+							
+							}
+						
+						}else{
+							console.log("Não é possivel Movimentar Essa Peça")
+
+							e.target.style.border = "thick solid red";
+						
+							setInterval(function() {
+								e.target.style.border = "thick solid #ccc";
+							}, 1000);
+						
+						}
+
+					}else{
+						
+						console.log("Não é possivel Movimentar Essa Peça")
+
+						e.target.style.border = "thick solid red";
+					
+						setInterval(function() {
+							e.target.style.border = "thick solid #ccc";
+						}, 1000);
+						
 						if(peca_selecionada){
 
 							peca_selecionada_cor 		= peca_selecionada.split("__")[0]
@@ -292,79 +408,38 @@ if(usuario == null){
 							peca_target_nome 			= e.target.alt.split("___")[0]
 							target_posicao 				= e.target.alt.split("___")[1]
 							
+
 							if(peca_selecionada_nome != peca_target_nome){
 								
-								e.target.style.border = "thick solid green";
+								if(cor_da_vez == peca_selecionada_cor){
 
-								nome_peca_tabela_status.innerText = peca_selecionada_nome
-								posicao_peca_tabela_status.innerText = peca_selecionada_posicao
+									e.target.style.border = "thick solid green";
 
-								nome_peca_tabela_status.innerText = peca_selecionada_nome
-								posicao_peca_tabela_status.innerText = peca_selecionada_posicao
+									//nome_peca_tabela_status.innerText = peca_selecionada_nome
+									//posicao_peca_tabela_status.innerText = peca_selecionada_posicao
 
-								if(peca_selecionada_cor != peca_target_cor){
+									//nome_peca_tabela_status.innerText = peca_selecionada_nome
+									//posicao_peca_tabela_status.innerText = peca_selecionada_posicao
 
-									data_capturar_peca = {
-														'usuario':usuario,
-														'chave_partida':chave_partida, 
-														'peca_selecionada_nome':peca_selecionada_nome,
-														'peca_target_nome':peca_target_nome, 
-														'target_posicao':target_posicao, 
-														'funcao':'capturar'
-													}
+									if(peca_selecionada_cor != peca_target_cor){
 
-									fetch(api_moverPeca, {
-										  method: 'POST',
-										  body: JSON.stringify(data_capturar_peca),
-										  headers:{
-										    'Content-Type': 'application/json'
-										  }
-										})
-									.then(res => res.json())
-									.then(function(data){
-
-										key_data = Object.keys(data)
-
-										if(key_data.includes('erro')){
-											erro_mover_captura.textContent = data['erro']
-											sessionStorage.removeItem('peca_selecionada')
-										}
-										else{
-											erro_mover_captura.textContent = ""
-											status_partida 	= data['status']
-											pecas_partida 	= data['pecas']
-
-											separaPecas(pecas_partida)
-										}
-									})
-									.catch(error => console.error('Error:', error))	
-									
-									sessionStorage.removeItem('peca_selecionada')
-
+										data_capturar_peca = {
+															'usuario':usuario,
+															'usuario_cor':usuario_cor,
+															'chave_partida':chave_partida, 
+															'peca_selecionada_nome':peca_selecionada_nome,
+															'peca_target_nome':peca_target_nome, 
+															'target_posicao':target_posicao, 
+															'funcao':'capturar'
+														}
+										
+										moverPeca(data_capturar_peca)
+										
+									}						
 								}
-
 							}
-							
-						}else{
-							sessionStorage.setItem('peca_selecionada', e.target.alt)
 
-							peca_selecionada_nome 		= e.target.alt.split('___')[0]
-							peca_selecionada_posicao 	= e.target.alt.split('___')[1]
-
-							nome_peca_tabela_status.innerText = peca_selecionada_nome
-							posicao_peca_tabela_status.innerText = peca_selecionada_posicao
-
-							e.target.style.border = "thick solid green";
 						}
-					
-					}else{
-						console.log("Não é possivel Movimentar Essa Peça")
-
-						e.target.style.border = "thick solid red";
-					
-						setInterval(function() {
-							e.target.style.border = "thick solid #ccc";
-						}, 1000);
 					}
 
 				}else{
@@ -389,6 +464,7 @@ if(usuario == null){
 
 					data_mover_peca = {
 										'usuario':usuario,
+										'usuario_cor':usuario_cor,
 										'chave_partida':chave_partida, 
 										'peca_selecionada_nome':peca_selecionada_nome,
 										'target_posicao':target_posicao, 
@@ -404,17 +480,21 @@ if(usuario == null){
 						})
 					.then(res => res.json())
 					.then(function(data){
-
+						
 						key_data = Object.keys(data)
 
 						if(key_data.includes('erro')){
 							erro_mover_captura.textContent = data['erro']
 							sessionStorage.removeItem('peca_selecionada')
+
 						}
 						else{
 							erro_mover_captura.textContent = ""
 							status_partida 	= data['status']
 							pecas_partida 	= data['pecas']
+
+							sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
+							sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
 
 							separaPecas(pecas_partida)
 						}
@@ -422,6 +502,7 @@ if(usuario == null){
 					.catch(error => console.error('Error:', error))	
 					
 				}
+			
 			}
 		});	
 

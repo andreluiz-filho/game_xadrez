@@ -196,6 +196,7 @@ def api_moverPeca():
     peca_selecionada = json.loads(request.data)
     
     usuario                 = peca_selecionada['usuario']
+    usuario_cor             = peca_selecionada['usuario_cor']
     chave_partida           = peca_selecionada['chave_partida']
 
     peca_selecionada_nome   = peca_selecionada['peca_selecionada_nome']
@@ -204,9 +205,11 @@ def api_moverPeca():
     partida = consulta_Partida()
     jogador_da_vez = partida['jogador_da_vez']
 
-    if usuario == partida[jogador_da_vez]:
+    if usuario == jogador_da_vez:
 
-        if peca_selecionada_nome.split("_")[0] == jogador_da_vez.split("_")[1]:
+        peca_selecionada_cor = peca_selecionada_nome.split("_")[0]
+
+        if peca_selecionada_cor == usuario_cor:
             
             if peca_selecionada['funcao'] == 'capturar':
                 
@@ -220,11 +223,14 @@ def api_moverPeca():
                     if peca_selecionada_nome == i['nome_peca']:
                         i['posicao'] = target_posicao
 
-                    if jogador_da_vez == 'jogador_preta':
-                        partida['jogador_da_vez'] = 'jogador_branca'
+                    if usuario_cor == 'branca':
+                        partida['jogador_da_vez'] = partida['jogador_preta']
+                        partida['cor_da_vez'] = 'preta'
+                        
 
-                    if jogador_da_vez == 'jogador_branca':
-                        partida['jogador_da_vez'] = 'jogador_preta'
+                    elif usuario_cor == 'preta':
+                        partida['jogador_da_vez'] = partida['jogador_branca']
+                        partida['cor_da_vez'] = 'branca'
                     
                 salva_Partida(partida)
                 
@@ -232,15 +238,19 @@ def api_moverPeca():
 
                 
             elif peca_selecionada['funcao'] == 'mover':
-                
-                
+
                 for i in partida['pecas']:
                     if peca_selecionada_nome == i['nome_peca']:
                         i["posicao"] = target_posicao
-                        if jogador_da_vez == 'jogador_preta':
-                            partida['jogador_da_vez'] = 'jogador_branca'
-                        elif jogador_da_vez == 'jogador_branca':
-                            partida['jogador_da_vez'] = 'jogador_preta'
+
+                        if usuario_cor == 'branca':
+                            partida['jogador_da_vez'] = partida['jogador_preta']
+                            partida['cor_da_vez'] = 'preta'
+                            
+
+                        elif usuario_cor == 'preta':
+                            partida['jogador_da_vez'] = partida['jogador_branca']
+                            partida['cor_da_vez'] = 'branca'
 
                 salva_Partida(partida)
                 
