@@ -4,6 +4,9 @@
 
 var url = window.location.origin
 
+var api_partida 	= url+'/api_partida'
+var api_moverPeca 	= url+'/api_moverPeca'
+
 usuario = sessionStorage.getItem('usuario')
 
 if(usuario == null){
@@ -15,37 +18,93 @@ if(usuario == null){
 
 	chave_partida = sessionStorage.getItem('chave_partida')
 
-
 	titulo_status_partida.innerText = 'Chave Sala: '+chave_partida
-	usuario_logado.innerText = usuario
+	//usuario_logado.innerText = usuario
 
 	//********************************************************
 	//*******************CRIA O TABULEIRO*********************
 
-	rows = [8, 7, 6, 5, 4, 3, 2, 1]
+	rows = [9, 8, 7, 6, 5, 4, 3, 2, 1]
 	cols = [...Array(8).keys()]
 	letras = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 
 	for(row of rows){
 
 		var tr = document.createElement('tr');
+		tr.className = " row"
+		if(row == 9){
 
-		for(col of cols){
-			var td = document.createElement('td');
+			// -----------------------------------------------------------
+			// Area Entrar Partida
+			// -----------------------------------------------------------
 
-			if(row % 2 == col % 2){
-				td.className = " casa casa_cor_secundaria";
-			}else{
-				td.className = " casa casa_cor_primaria";
-			}
+			var td_entrar = document.createElement('td');
+			var h3_entrar = document.createElement('h3');
+			var input_entrar = document.createElement('input');
+			var button_entrar = document.createElement('button');
+			
+			h3_entrar.id = "usuario_logado"
+			h3_entrar.textContent = usuario
 
-			nome_casa = letras[col]+row
-			td.id = nome_casa
+			input_entrar.type = 'text'
+			input_entrar.name = 'link_partida'
+			input_entrar.id   = 'link_partida'
 
-			tr.appendChild(td);
-	    	table.appendChild(tr);
 
-	    }
+			button_entrar.type = 'button'
+			button_entrar.className = ' btn btn-secondary entrar_partida'
+			button_entrar.textContent = 'Entrar Partida'
+			
+			td_entrar.appendChild(h3_entrar)
+			td_entrar.appendChild(input_entrar)
+			td_entrar.appendChild(button_entrar)
+			td_entrar.className = " topo_menu col";
+			
+			// -----------------------------------------------------------
+			// Area Nova Partida
+			// -----------------------------------------------------------
+
+			var td_nova = document.createElement('td');
+			var button_nova = document.createElement('button');
+			var button_sair = document.createElement('button');
+
+			button_nova.type = 'button'
+			button_nova.className = ' btn btn-secondary'
+			button_nova.textContent = 'Nova Partida'
+
+			button_sair.type = 'button'
+			button_sair.className = ' btn btn-secondary'
+			button_sair.textContent = 'Sair'
+
+			td_nova.appendChild(button_nova)
+			td_nova.appendChild(button_sair)
+			td_nova.className = " topo_menu col";
+
+			// -----------------------------------------------------------
+
+			tr.appendChild(td_entrar)
+			tr.appendChild(td_nova)
+			table.appendChild(tr)
+
+		}else if(row != 9){
+
+			for(col of cols){
+				var td = document.createElement('td');
+
+				if(row % 2 == col % 2){
+					td.className = " casa casa_cor_secundaria col";
+				}else{
+					td.className = " casa casa_cor_primaria col";
+				}
+
+				nome_casa = letras[col]+row
+				td.id = nome_casa
+
+				tr.appendChild(td);
+		    	table.appendChild(tr);
+
+		    }
+		}
 	}
 
 	//********************************************************
@@ -154,15 +213,15 @@ if(usuario == null){
 		as peças e seus atributos
 	*/
 
-	if(chave_partida){
+	if(chave_partida && chave_partida != 'undefined'){
+
 		sessionStorage.removeItem('peca_selecionada')
-		
+		chave_partida = sessionStorage.getItem('chave_partida')
 
-		var api_partida 	= url+'/api_partida'
-		var api_moverPeca 	= url+'/api_moverPeca'
+		// --------------------------------------------------------------
 
-		setInterval(function() {
-			
+		function func_api_partida(){
+
 			fetch(api_partida, {
 				method: 'POST',
 				body: JSON.stringify({"chave_partida":chave_partida}),
@@ -172,19 +231,33 @@ if(usuario == null){
 			})
 			.then(res => res.json())
 			.then(function(data){
-				status_partida 	= data['status']
-				pecas_partida 	= data['pecas']
 
-				separaPecas(pecas_partida)
+				key_data = Object.keys(data)
+
+				if(key_data.includes('erro')){
+					
+					
+					//****************************
+					//Adicionar a Mensagem de Erro
+					//****************************
+
+
+				}
+				else if(key_data.includes('pecas')){
+					status_partida 	= data['status']
+					pecas_partida 	= data['pecas']
+
+					separaPecas(pecas_partida)
+				}
 			})
 			.catch(error => console.error('Error:', error))
+		}
 
-		}, 5000);
+		func_api_partida();
+		setInterval(function() {func_api_partida()}, 10000);
 
-		
+		// --------------------------------------------------------------
 	}
-
-
 
 	//********************************************************
 	//*********************MOVER/CAPTURAR*********************
@@ -345,6 +418,32 @@ if(usuario == null){
 	//********************************************************
 	//********************************************************
 
+
+	entrar_partida = document.querySelector('.entrar_partida')
+	entrar_partida.addEventListener("click", (e)=>{
+		
+		var recurso = url+"/entrarPartida"
+		if(link_partida.value != ""){
+
+			fetch(recurso, {
+				  method: 'POST',
+				  body: JSON.stringify({"usuario":usuario, "chave_partida":link_partida.value}),
+				  headers:{
+				    'Content-Type': 'application/json'
+				  }
+				})
+			.then(res => res.json())
+			.then(function(data){
+				console.log("****", data)
+
+				sessionStorage.setItem('chave_partida', data['chave_partida'])
+				window.location.href = url+'/partida';
+			})
+			.catch(error => console.error('Error:', error))
+		}
+	});
+
+	/*
 	function entrar_partida(){
 
 		var recurso = url+"/entrarPartida"
@@ -364,6 +463,7 @@ if(usuario == null){
 		})
 		.catch(error => console.error('Error:', error))
 	}
+	*/
 
 	function nova_partida(){
 		

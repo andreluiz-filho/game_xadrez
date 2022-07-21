@@ -143,10 +143,14 @@ def api_partida():
     chave_partida = chave_partida+".json"
     
     arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if chave_partida in i]
-    with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
-        partida = json.load(arq)
-
-    return jsonify(partida)
+    if arquivo:
+        
+        with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
+            partida = json.load(arq)
+        
+        return jsonify(partida)
+    else:
+        return jsonify({"erro":"ID da Partida Inválido"})
 
 #----------------------------------------------------------------------------
 

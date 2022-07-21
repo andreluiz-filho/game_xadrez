@@ -4,11 +4,30 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Game Xadrez</title>
+
+	<link rel="stylesheet" type="text/css" href="../static/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/index.css')}}">
 </head>
 <body>
 
 	<div id="container">
+
+		<div id="area_admin">
+			<!--
+			
+			<h3 id="usuario_logado"></h3>
+			<input type="text" name="link_partida" id="link_partida">
+
+			<div id="btn_link" onclick="entrar_partida()">Entrar Partida</div>
+			<hr>		
+			<div id="btn_link" onclick="nova_partida()">Nova Partida</div>
+			<hr>
+			<div id="btn_link" onclick="sair_partida()">Sair</div>
+			-->
+		</div>
+
+		<table id="table" class="tabuleiro">
+		</table>
 
 		<div id="status_partida" style="display: none;">
 			<h4 id="titulo_status_partida"></h4>
@@ -151,19 +170,6 @@
 					</table>
 				</div>
 			</div>
-		</div>
-
-		<table id="table" class="tabuleiro">
-		</table>
-
-		<div id="area_admin">
-			<h3 id="usuario_logado"></h3>
-			<input type="text" name="link_partida" id="link_partida">
-			<div id="btn_link" onclick="entrar_partida()">Entrar Partida</div>
-			<hr>		
-			<div id="btn_link" onclick="nova_partida()">Nova Partida</div>
-			<hr>
-			<div id="btn_link" onclick="sair_partida()">Sair</div>
 		</div>
 
 	</div>
