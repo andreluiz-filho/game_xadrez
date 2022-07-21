@@ -7,7 +7,8 @@ var url = window.location.origin
 var api_partida 	= url+'/api_partida'
 var api_moverPeca 	= url+'/api_moverPeca'
 
-usuario = sessionStorage.getItem('usuario')
+usuario 	= sessionStorage.getItem('usuario')
+usuario_cor = sessionStorage.getItem('usuario_cor')
 
 if(usuario == null){
 	window.location.href = url+'/';
@@ -16,7 +17,9 @@ if(usuario == null){
 
 }else{
 
-	chave_partida = sessionStorage.getItem('chave_partida')
+	chave_partida 	= sessionStorage.getItem('chave_partida')
+	jogador_da_vez 	= sessionStorage.getItem('jogador_da_vez')
+	cor_da_vez 		= sessionStorage.getItem('cor_da_vez')
 
 	titulo_status_partida.innerText = 'Chave Sala: '+chave_partida
 	//usuario_logado.innerText = usuario
@@ -50,7 +53,6 @@ if(usuario == null){
 			input_entrar.name = 'link_partida'
 			input_entrar.id   = 'link_partida'
 
-
 			button_entrar.type = 'button'
 			button_entrar.className = ' btn btn-secondary entrar_partida'
 			button_entrar.textContent = 'Entrar Partida'
@@ -69,11 +71,11 @@ if(usuario == null){
 			var button_sair = document.createElement('button');
 
 			button_nova.type = 'button'
-			button_nova.className = ' btn btn-secondary'
+			button_nova.className = ' btn btn-secondary nova_partida'
 			button_nova.textContent = 'Nova Partida'
 
 			button_sair.type = 'button'
-			button_sair.className = ' btn btn-secondary'
+			button_sair.className = ' btn btn-secondary sair_partida'
 			button_sair.textContent = 'Sair'
 
 			td_nova.appendChild(button_nova)
@@ -213,14 +215,14 @@ if(usuario == null){
 		as peças e seus atributos
 	*/
 
-	if(chave_partida && chave_partida != 'undefined'){
 
-		sessionStorage.removeItem('peca_selecionada')
-		chave_partida = sessionStorage.getItem('chave_partida')
+	if(chave_partida && chave_partida != 'undefined' && jogador_da_vez && usuario_cor){
 
 		// --------------------------------------------------------------
 
 		function func_api_partida(){
+			
+			usuario_logado.textContent += " - "+usuario_cor
 
 			fetch(api_partida, {
 				method: 'POST',
@@ -244,6 +246,7 @@ if(usuario == null){
 
 				}
 				else if(key_data.includes('pecas')){
+
 					status_partida 	= data['status']
 					pecas_partida 	= data['pecas']
 
@@ -256,6 +259,8 @@ if(usuario == null){
 		func_api_partida();
 		setInterval(function() {func_api_partida()}, 10000);
 
+		sessionStorage.removeItem('peca_selecionada')
+		
 		// --------------------------------------------------------------
 	}
 
@@ -269,83 +274,107 @@ if(usuario == null){
 		casa.addEventListener("click", (e)=> {
 
 			if(e.target.tagName == "IMG"){
-				peca_selecionada = sessionStorage.getItem('peca_selecionada')
-				
-				if(peca_selecionada){
 
-					peca_selecionada_cor 		= peca_selecionada.split("__")[0]
-					peca_selecionada_nome 		= peca_selecionada.split("___")[0]
-					peca_selecionada_posicao 	= peca_selecionada.split('___')[1]
+				if(usuario == jogador_da_vez && usuario_cor == cor_da_vez){
 					
-					peca_target_cor 			= e.target.alt.split("__")[0]
-					peca_target_nome 			= e.target.alt.split("___")[0]
-					target_posicao 				= e.target.alt.split("___")[1]
-					
-					if(peca_selecionada_nome != peca_target_nome){
-						
-						e.target.style.border = "thick solid green";
+					peca_target_cor = e.target.alt.split("__")[0]
 
-						nome_peca_tabela_status.innerText = peca_selecionada_nome
-						posicao_peca_tabela_status.innerText = peca_selecionada_posicao
+					if(usuario_cor == peca_target_cor){
 
-						nome_peca_tabela_status.innerText = peca_selecionada_nome
-						posicao_peca_tabela_status.innerText = peca_selecionada_posicao
+						peca_selecionada = sessionStorage.getItem('peca_selecionada')
+			
+						if(peca_selecionada){
 
-						if(peca_selecionada_cor != peca_target_cor){
-
-							data_capturar_peca = {
-												'usuario':usuario,
-												'chave_partida':chave_partida, 
-												'peca_selecionada_nome':peca_selecionada_nome,
-												'peca_target_nome':peca_target_nome, 
-												'target_posicao':target_posicao, 
-												'funcao':'capturar'
-											}
-
-							fetch(api_moverPeca, {
-								  method: 'POST',
-								  body: JSON.stringify(data_capturar_peca),
-								  headers:{
-								    'Content-Type': 'application/json'
-								  }
-								})
-							.then(res => res.json())
-							.then(function(data){
-
-								key_data = Object.keys(data)
-
-								if(key_data.includes('erro')){
-									erro_mover_captura.textContent = data['erro']
-									sessionStorage.removeItem('peca_selecionada')
-								}
-								else{
-									erro_mover_captura.textContent = ""
-									status_partida 	= data['status']
-									pecas_partida 	= data['pecas']
-
-									separaPecas(pecas_partida)
-								}
-							})
-							.catch(error => console.error('Error:', error))	
+							peca_selecionada_cor 		= peca_selecionada.split("__")[0]
+							peca_selecionada_nome 		= peca_selecionada.split("___")[0]
+							peca_selecionada_posicao 	= peca_selecionada.split('___')[1]
 							
-							sessionStorage.removeItem('peca_selecionada')
+							peca_target_nome 			= e.target.alt.split("___")[0]
+							target_posicao 				= e.target.alt.split("___")[1]
+							
+							if(peca_selecionada_nome != peca_target_nome){
+								
+								e.target.style.border = "thick solid green";
 
+								nome_peca_tabela_status.innerText = peca_selecionada_nome
+								posicao_peca_tabela_status.innerText = peca_selecionada_posicao
+
+								nome_peca_tabela_status.innerText = peca_selecionada_nome
+								posicao_peca_tabela_status.innerText = peca_selecionada_posicao
+
+								if(peca_selecionada_cor != peca_target_cor){
+
+									data_capturar_peca = {
+														'usuario':usuario,
+														'chave_partida':chave_partida, 
+														'peca_selecionada_nome':peca_selecionada_nome,
+														'peca_target_nome':peca_target_nome, 
+														'target_posicao':target_posicao, 
+														'funcao':'capturar'
+													}
+
+									fetch(api_moverPeca, {
+										  method: 'POST',
+										  body: JSON.stringify(data_capturar_peca),
+										  headers:{
+										    'Content-Type': 'application/json'
+										  }
+										})
+									.then(res => res.json())
+									.then(function(data){
+
+										key_data = Object.keys(data)
+
+										if(key_data.includes('erro')){
+											erro_mover_captura.textContent = data['erro']
+											sessionStorage.removeItem('peca_selecionada')
+										}
+										else{
+											erro_mover_captura.textContent = ""
+											status_partida 	= data['status']
+											pecas_partida 	= data['pecas']
+
+											separaPecas(pecas_partida)
+										}
+									})
+									.catch(error => console.error('Error:', error))	
+									
+									sessionStorage.removeItem('peca_selecionada')
+
+								}
+
+							}
+							
+						}else{
+							sessionStorage.setItem('peca_selecionada', e.target.alt)
+
+							peca_selecionada_nome 		= e.target.alt.split('___')[0]
+							peca_selecionada_posicao 	= e.target.alt.split('___')[1]
+
+							nome_peca_tabela_status.innerText = peca_selecionada_nome
+							posicao_peca_tabela_status.innerText = peca_selecionada_posicao
+
+							e.target.style.border = "thick solid green";
 						}
+					
+					}else{
+						console.log("Não é possivel Movimentar Essa Peça")
 
+						e.target.style.border = "thick solid red";
+					
+						setInterval(function() {
+							e.target.style.border = "thick solid #ccc";
+						}, 1000);
 					}
-					
-					
-					
+
 				}else{
-					sessionStorage.setItem('peca_selecionada', e.target.alt)
-
-					peca_selecionada_nome 		= e.target.alt.split('___')[0]
-					peca_selecionada_posicao 	= e.target.alt.split('___')[1]
-
-					nome_peca_tabela_status.innerText = peca_selecionada_nome
-					posicao_peca_tabela_status.innerText = peca_selecionada_posicao
-
-					e.target.style.border = "thick solid green";
+					console.log("Não é a sua vez")
+					
+					e.target.style.border = "thick solid red";
+					
+					setInterval(function() {
+						e.target.style.border = "thick solid #ccc";
+					}, 1000);
 				}
 
 			}else if(e.target.tagName == "TD"){
@@ -415,9 +444,8 @@ if(usuario == null){
 	//********************************************************
 	//********************************************************
 	///////////////////////////AREA ADMIN/////////////////////
-	//********************************************************
-	//********************************************************
 
+	// ------------------- ENTRAR PARTIDA -------------------
 
 	entrar_partida = document.querySelector('.entrar_partida')
 	entrar_partida.addEventListener("click", (e)=>{
@@ -434,37 +462,63 @@ if(usuario == null){
 				})
 			.then(res => res.json())
 			.then(function(data){
-				console.log("****", data)
 
 				sessionStorage.setItem('chave_partida', data['chave_partida'])
+				sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
+				sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
+				sessionStorage.setItem('usuario_cor', data['usuario_cor'])
+
 				window.location.href = url+'/partida';
 			})
 			.catch(error => console.error('Error:', error))
 		}
 	});
 
-	/*
-	function entrar_partida(){
+	//********************************************************
+	//********************************************************
 
-		var recurso = url+"/entrarPartida"
+	// -------------------- NOVA PARTIDA --------------------
 
+	nova_partida = document.querySelector('.nova_partida')
+	nova_partida.addEventListener("click", (e)=>{
+		
+		var recurso = url+"/novaPartida"
 		
 		fetch(recurso, {
 			  method: 'POST',
-			  body: JSON.stringify({"usuario":usuario, "chave_partida":link_partida.value}),
+			  body: JSON.stringify({"usuario":usuario}),
 			  headers:{
 			    'Content-Type': 'application/json'
 			  }
 			})
 		.then(res => res.json())
 		.then(function(data){
+			
 			sessionStorage.setItem('chave_partida', data['chave_partida'])
+			sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
+			sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
+			sessionStorage.setItem('usuario_cor', data['usuario_cor'])
+
 			window.location.href = url+'/partida';
 		})
 		.catch(error => console.error('Error:', error))
-	}
-	*/
+	});
 
+	//********************************************************
+	//********************************************************
+
+	// -------------------- SAIR PARTIDA --------------------
+
+	sair_partida = document.querySelector('.sair_partida')
+	sair_partida.addEventListener("click", (e)=>{
+		sessionStorage.clear()
+		window.location.href = url+'/partida';
+	});
+
+	//********************************************************
+	//********************************************************
+
+	/*
 	function nova_partida(){
 		
 		var recurso = url+"/novaPartida"
@@ -479,8 +533,9 @@ if(usuario == null){
 			})
 		.then(res => res.json())
 		.then(function(data){
-			console.log(data)
-			sessionStorage.setItem('chave_partida', data['chave_sala'])
+			
+			sessionStorage.setItem('chave_partida', data['chave_partida'])
+			sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
 
 			window.location.href = url+'/partida';
 		})
@@ -491,9 +546,7 @@ if(usuario == null){
 		sessionStorage.clear()
 		window.location.href = url+'/partida';
 	}
-
-	//********************************************************
-	//********************************************************
+	*/
 	//********************************************************
 	//********************************************************
 }

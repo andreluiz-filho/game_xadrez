@@ -45,7 +45,14 @@ def entrar_partida():
 
                 if partida['jogador_branca'] == usuario:
                     chave_partida = chave_partida.split(".")[0]
-                    return jsonify({"chave_partida":chave_partida})
+                    
+                    dados_returno = {
+                        "chave_partida":chave_partida, 
+                        "jogador_da_vez":partida['jogador_da_vez'], 
+                        "cor_da_vez":partida['cor_da_vez'],
+                        "usuario_cor":"branca"
+                    }
+                    return jsonify(dados_returno)
 
                 elif partida['jogador_preta'] == "" or partida['jogador_preta'] == usuario:
                     partida['jogador_preta'] = usuario
@@ -54,7 +61,14 @@ def entrar_partida():
                         json.dump(partida, arq)
 
                     chave_partida = chave_partida.split(".")[0]
-                    return jsonify({"chave_partida":chave_partida})
+                    
+                    dados_returno = {
+                        "chave_partida":chave_partida, 
+                        "jogador_da_vez":partida['jogador_da_vez'], 
+                        "cor_da_vez":partida['cor_da_vez'],
+                        "usuario_cor":"preta"
+                    }
+                    return jsonify(dados_returno)
 
                 return jsonify({"erro": "Falha ao Entrar na  Partida"})
 
@@ -77,13 +91,14 @@ def nova_partida():
         user = usuario in dados
         if user:
             
-            chave_sala = secrets.token_hex(10)
+            chave_partida = secrets.token_hex(10)
 
             partida = {
                         "status": "aberta",
                         "jogador_branca":usuario, 
                         "jogador_preta":"",
-                        "jogador_da_vez":"jogador_branca",
+                        "jogador_da_vez":usuario,
+                        "cor_da_vez":"branca",
                         "pecas":[
                             {"nome_peca": "branca__torre_1", "posicao":"a1", "imagem":"static/img/pecas/branca_torre.png", "capturada":"false"}, 
                             {"nome_peca": "branca__cavalo_1", "posicao":"b1", "imagem":"static/img/pecas/branca_cavalo.png", "capturada":"false"}, 
@@ -120,13 +135,17 @@ def nova_partida():
                         ]
                 }
 
-            with open(f"dados/partidas/em_andamento/{chave_sala}.json", "w") as arq:
+            with open(f"dados/partidas/em_andamento/{chave_partida}.json", "w") as arq:
                 json.dump(partida, arq)
 
-            with open(f"dados/partidas/em_andamento/jogador_da_vez.json", "w") as arq:
-                json.dump({"jogador": usuario}, arq)
+            dados_returno = {
+                    "chave_partida":chave_partida, 
+                    "jogador_da_vez":partida['jogador_da_vez'], 
+                    "cor_da_vez":partida['cor_da_vez'],
+                    "usuario_cor":"branca"
+                    }
 
-            return jsonify({"chave_sala":chave_sala})
+            return jsonify(dados_returno)
         else:
             return redirect("/api_login_usuario")
     else:
