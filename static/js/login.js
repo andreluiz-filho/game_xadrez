@@ -25,7 +25,14 @@ function login_usuario(){
 		key_data = Object.keys(data)
 
 		if(key_data.includes('erro')){
+			mensagem_erro.style.display = "grid"
 			mensagem_erro.innerHTML = 'Falha no Login'
+
+			setTimeout(function() {
+				mensagem_erro.style.display = "none"
+				mensagem_erro.innerHTML = ""
+			}, 2000);
+
 		}
 		else if(key_data.includes('usuario')){
 			mensagem_erro.innerHTML = 'Login Realizado'

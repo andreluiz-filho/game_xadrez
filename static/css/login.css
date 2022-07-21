@@ -58,3 +58,13 @@ label{
 #btn_login:hover{
 	background-color: #999;
 }
+
+#mensagem_erro{
+	display: none;
+	position: relative;
+	top: 5%;
+	border: 1px solid red;
+	border-radius: 5px;
+	padding: 2px;
+	color: red;
+}
