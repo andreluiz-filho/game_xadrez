@@ -161,21 +161,27 @@ if(usuario == null){
 		var api_partida 	= url+'/api_partida'
 		var api_moverPeca 	= url+'/api_moverPeca'
 
-		fetch(api_partida, {
-			method: 'POST',
-			body: JSON.stringify({"chave_partida":chave_partida}),
-			headers:{
-			'Content-Type': 'application/json'
-			}
-		})
-		.then(res => res.json())
-		.then(function(data){
-			status_partida 	= data['status']
-			pecas_partida 	= data['pecas']
+		setInterval(function() {
+			
+			fetch(api_partida, {
+				method: 'POST',
+				body: JSON.stringify({"chave_partida":chave_partida}),
+				headers:{
+				'Content-Type': 'application/json'
+				}
+			})
+			.then(res => res.json())
+			.then(function(data){
+				status_partida 	= data['status']
+				pecas_partida 	= data['pecas']
 
-			separaPecas(pecas_partida)
-		})
-		.catch(error => console.error('Error:', error))
+				separaPecas(pecas_partida)
+			})
+			.catch(error => console.error('Error:', error))
+
+		}, 5000);
+
+		
 	}
 
 

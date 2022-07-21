@@ -3,13 +3,16 @@ body{
 }
 
 #container{
+	margin-top: 10px;
 	text-align: center;
+	height: 300px;
 }
 
 #conteudo{
-	border: 1px solid black;
+	border: 1px solid #999;
 	border-radius: 10px;
-	width: 505px;
+	width: 20%;
+	height: 30%;
 	padding: 20px;
 	margin: 0 auto;
 }
@@ -33,4 +36,25 @@ body{
 
 #btn_link:hover{
 	background-color: #b9b3b3;
+}
+
+label{
+	font-weight: bold;
+}
+
+#input_usuario{
+	border-radius: 5px;
+}
+
+#btn_login{
+	border-radius: 5px;
+	width: 20%;
+	margin-top: 5px;
+	padding: 5px;
+	cursor: pointer;
+	font-weight: bold;
+}
+
+#btn_login:hover{
+	background-color: #999;
 }
