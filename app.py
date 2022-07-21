@@ -196,6 +196,12 @@ def api_moverPeca():
 
                     if peca_selecionada_nome == i['nome_peca']:
                         i['posicao'] = target_posicao
+
+                    if jogador_da_vez == 'jogador_preta':
+                        partida['jogador_da_vez'] = 'jogador_branca'
+
+                    if jogador_da_vez == 'jogador_branca':
+                        partida['jogador_da_vez'] = 'jogador_preta'
                     
                 salva_Partida(partida)
                 
@@ -208,6 +214,10 @@ def api_moverPeca():
                 for i in partida['pecas']:
                     if peca_selecionada_nome == i['nome_peca']:
                         i["posicao"] = target_posicao
+                        if jogador_da_vez == 'jogador_preta':
+                            partida['jogador_da_vez'] = 'jogador_branca'
+                        elif jogador_da_vez == 'jogador_branca':
+                            partida['jogador_da_vez'] = 'jogador_preta'
 
                 salva_Partida(partida)
                 
