@@ -11,23 +11,130 @@
 <body>
 
 	<div id="container">
-
+		
 		{% if dados_returno %}
+
 			<input type="hidden" name="get_usuario" id="get_usuario" value="{{dados_returno['usuario']}}">
 			<input type="hidden" name="get_id_partida" id="get_id_partida" value="{{dados_returno['id_partida']}}">
 			<input type="hidden" name="get_jogador_da_vez" id="get_jogador_da_vez" value="{{dados_returno['jogador_da_vez']}}">
 			<input type="hidden" name="get_cor_da_vez" id="get_cor_da_vez" value="{{dados_returno['cor_da_vez']}}">
 			<input type="hidden" name="get_usuario_cor" id="get_usuario_cor" value="{{dados_returno['usuario_cor']}}">
+
+			{% if dados_returno['visitante'] %}
+				<input type="hidden" name="get_visitante" id="get_visitante" value="{{dados_returno['visitante']}}">
+			{% else %}
+				<input type="hidden" name="get_visitante" id="get_visitante" value="false">
+			{% endif %}
+
 		{% else %}
 			<input type="hidden" name="get_usuario" id="get_usuario" value="">
 		{% endif %}
 		
-		<div id="area_admin"></div>
+		<div id="area_admin">
+
+			<div id="area_admin_hide_show" onclick="area_admin_hide_show()">
+				
+			</div>
+			<div id="area_admin_topo" style="display: ;">
+				<img src="/static/img/plus.svg" id="nova_partida">
+				<img src="/static/img/door-closed.svg" id="sair_partida">
+				<!--
+				<h3 id="area_usuario">
+					<img src="/static/img/plus.svg" id="nova_partida">
+					<span>admin - Branca</span>
+					<img src="/static/img/door-closed.svg" id="sair_partida">
+				</h3>
+				-->
+				
+			
+			</div>
+
+			<div id="area_admin_conteudo" style="display: ;">
+				<table class="table">
+					<thead>
+						<tr>
+							<th scope="col">Jogador</th>
+							<th scope="col">Cor</th>
+							<th scope="col">Torre</th>
+							<th scope="col">Cavalo</th>
+							<th scope="col">Bispo</th>
+							<th scope="col">Rainha</th>
+							<th scope="col">Peão</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td id="area_admin_jogador_branca"></td>
+							<td>Brancas</td>
+							<td id="status_torre_branca">0</td>
+							<td id="status_cavalo_branca">0</td>
+							<td id="status_bispo_branca">0</td>
+							<td id="status_rainha_branca">0</td>
+							<td id="status_peao_branca">0</td>
+						</tr>
+						<tr>
+							<td id="area_admin_jogador_preta"></td>
+							<td>Pretas</td>
+							<td id="status_torre_preta">0</td>
+							<td id="status_cavalo_preta">0</td>
+							<td id="status_bispo_preta">0</td>
+							<td id="status_rainha_preta">0</td>
+							<td id="status_peao_preta">0</td>
+						</tr>
+					</tbody>
+
+					<!--
+					<tr>
+						<td>
+							Branca
+						</td>
+						<td>
+							<button type="button" class="btn btn-secondary" id="status_torre_branca">Torre(0)</button>
+						</td>
+						<td>
+							<button type="button" class="btn btn-secondary" id="status_cavalo_branca">Cavalo(0)</button>
+						</td>
+						<td>
+							<button type="button" class="btn btn-secondary" id="status_bispo_branca">Bispo(0)</button>
+						</td>
+						<td>
+							<button type="button" class="btn btn-secondary" id="status_rainha_branca">Rainha(0)</button>
+						</td>
+						<td>
+							<button type="button" class="btn btn-secondary" id="status_peao_branca">Peao(0)</button>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Preta
+						</td>
+						<td>
+							<button type="button" class="btn btn-secondary" id="status_torre_preta">Torre(0)</button>
+						</td>
+						<td>
+							<button type="button" class="btn btn-secondary" id="status_cavalo_preta">Cavalo(0)</button>
+						</td>
+						<td>
+							<button type="button" class="btn btn-secondary" id="status_bispo_preta">Bispo(0)</button>
+						</td>
+						<td>
+							<button type="button" class="btn btn-secondary" id="status_rainha_preta">Rainha(0)</button>
+						</td>
+						<td>
+							<button type="button" class="btn btn-secondary" id="status_peao_preta">Peao(0)</button>
+						</td>
+					</tr>
+					-->
+				</table>
+				
+			</div>
+
+		</div>
 
 		<table id="table" class="tabuleiro">
 		</table>
 
-		<div id="status_partida" style="display: none;">
+		<div id="status_partida" style="display: none; width: 20%;">
 			<h4 id="titulo_status_partida"></h4>
 
 			<div class="area_status">

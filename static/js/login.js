@@ -5,6 +5,8 @@ var url = window.location.origin
 
 //********************************************************
 
+sessionStorage.clear()
+
 function login_usuario(){
 	
 	var usuario 	= input_usuario.value

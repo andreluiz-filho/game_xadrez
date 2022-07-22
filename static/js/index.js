@@ -12,7 +12,14 @@ usuario_cor = sessionStorage.getItem('usuario_cor')
 
 if(usuario == null){
 
-	if(get_usuario.value != ""){
+	key_session = Object.keys(sessionStorage)
+
+	if(key_session.length == 0){
+		
+		if(get_usuario_cor.value == ""){
+			sessionStorage.setItem('visitante', 'true')
+		}
+
 		sessionStorage.setItem('usuario', get_usuario.value)
 		sessionStorage.setItem('id_partida', get_id_partida.value)
 		sessionStorage.setItem('jogador_da_vez', get_jogador_da_vez.value)
@@ -20,20 +27,19 @@ if(usuario == null){
 		sessionStorage.setItem('usuario_cor', get_usuario_cor.value)
 
 		window.location.href = url+'/partida';
+
 	}else{
 		sessionStorage.clear()
 		window.location.href = url+'/';
 	}
-	
 
 }else{
 
-	id_partida 	= sessionStorage.getItem('id_partida')
+	id_partida 		= sessionStorage.getItem('id_partida')
 	jogador_da_vez 	= sessionStorage.getItem('jogador_da_vez')
 	cor_da_vez 		= sessionStorage.getItem('cor_da_vez')
 
 	titulo_status_partida.innerText = 'Chave Sala: '+id_partida
-	//usuario_logado.innerText = usuario
 
 	//********************************************************
 	//*******************CRIA O TABULEIRO*********************
@@ -51,7 +57,7 @@ if(usuario == null){
 			// -----------------------------------------------------------
 			// Area Entrar Partida
 			// -----------------------------------------------------------
-
+			/*
 			var td_entrar = document.createElement('td');
 			var h3_entrar = document.createElement('h3');
 			var input_entrar = document.createElement('input');
@@ -72,18 +78,30 @@ if(usuario == null){
 			td_entrar.appendChild(input_entrar)
 			td_entrar.appendChild(button_entrar)
 			td_entrar.className = " topo_menu col";
-			
+			*/
 			// -----------------------------------------------------------
 			// Area Nova Partida
 			// -----------------------------------------------------------
 
-			var td_nova = document.createElement('td');
+
+
+
+
+			/*
+			var td_nova 	= document.createElement('td');
 			var button_nova = document.createElement('button');
 			var button_sair = document.createElement('button');
+			var img_nova 	= new Image();
 
 			button_nova.type = 'button'
 			button_nova.className = ' btn btn-secondary nova_partida'
-			button_nova.textContent = 'Nova Partida'
+			//button_nova.textContent = 'Nova Partida'
+
+			img_nova.src = '/static/img/plus.svg'
+	    	img_nova.width = "20"
+	    	img_nova.height = "20"
+
+			button_nova.appendChild(img_nova)
 
 			button_sair.type = 'button'
 			button_sair.className = ' btn btn-secondary sair_partida'
@@ -95,9 +113,12 @@ if(usuario == null){
 
 			// -----------------------------------------------------------
 
-			tr.appendChild(td_entrar)
+			//tr.appendChild(td_entrar)
 			tr.appendChild(td_nova)
 			table.appendChild(tr)
+			*/
+
+
 
 		}else if(row != 9){
 
@@ -227,19 +248,25 @@ if(usuario == null){
 	*/
 
 
-	if(id_partida && id_partida != 'undefined' && jogador_da_vez && usuario_cor){
+	if(id_partida && id_partida != 'undefined' && jogador_da_vez){
 		
 		// --------------------------------------------------------------
 
 		sessionStorage.removeItem('peca_selecionada')
 
 		function func_api_partida(){
+
+			usuario 	= sessionStorage.getItem('usuario')
+			usuario_cor = sessionStorage.getItem('usuario_cor')
 			
+			key_session = Object.keys(sessionStorage)
+			if(key_session.includes("visitante")){
+				//usuario_logado.textContent = ""
+				//usuario_logado.textContent = usuario+" - "+usuario_cor
+			}
+
 			jogador_da_vez 	= sessionStorage.getItem('jogador_da_vez')
 			cor_da_vez 		= sessionStorage.getItem('cor_da_vez')
-
-			usuario_logado.textContent = ""
-			usuario_logado.textContent = usuario+" - "+usuario_cor
 
 			fetch(api_partida, {
 				method: 'POST',
@@ -544,8 +571,47 @@ if(usuario == null){
 	//********************************************************
 	///////////////////////////AREA ADMIN/////////////////////
 
-	// ------------------- ENTRAR PARTIDA -------------------
+	function area_admin_hide_show(){
 
+		if(area_admin_topo.style.display == 'none' && area_admin_conteudo.style.display == 'none'){
+			area_admin_topo.style.display = 'block'
+			area_admin_conteudo.style.display = 'block'
+		}else{
+			area_admin_topo.style.display = 'none'
+			area_admin_conteudo.style.display = 'none'
+		}
+		
+	}
+
+	/*
+	area_admin.addEventListener("click", (e)=>{
+		
+		//console.log(e)
+
+		console.log(area_admin_topo, area_admin_topo.style.display)
+		console.log(area_admin_conteudo, area_admin_conteudo.style.display)
+
+		area_admin_topo.style.display = 'none'
+		area_admin_conteudo.style.display = 'none'
+
+	});
+
+	
+	area_admin_hide_show.addEventListener("click", (e)=>{
+		
+		console.log(area_admin_topo, area_admin_topo.style.display)
+		console.log(area_admin_conteudo, area_admin_conteudo.style.display)
+
+		area_admin_topo.style.display = 'block'
+		area_admin_conteudo.style.display = 'block'
+
+	});
+	*/
+	
+
+
+	// ------------------- ENTRAR PARTIDA -------------------
+	/*
 	entrar_partida = document.querySelector('.entrar_partida')
 	entrar_partida.addEventListener("click", (e)=>{
 		
@@ -572,12 +638,12 @@ if(usuario == null){
 			.catch(error => console.error('Error:', error))
 		}
 	});
-
+	*/
 	//********************************************************
 	//********************************************************
 
 	// -------------------- NOVA PARTIDA --------------------
-
+	/*
 	nova_partida = document.querySelector('.nova_partida')
 	nova_partida.addEventListener("click", (e)=>{
 		
@@ -602,7 +668,7 @@ if(usuario == null){
 		})
 		.catch(error => console.error('Error:', error))
 	});
-
+	
 	//********************************************************
 	//********************************************************
 
@@ -613,7 +679,7 @@ if(usuario == null){
 		sessionStorage.clear()
 		window.location.href = url+'/';
 	});
-
+	*/
 	//********************************************************
 	//********************************************************
 

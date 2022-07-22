@@ -1,27 +1,10 @@
+/*************************************************************/
+
 #container{
 	text-align: center;
 }
 
-table{
-	margin: 0 auto;
-}
-
-td{
-	text-align: center;
-	border: 1px solid;
-	padding: 5px;
-}
-
-th{
-	border: 1px solid;
-	padding: 5px;
-}
-
-img{
-	
-}
-
-/*************************************************************/
+/*--------------------------------------------------------------*/
 
 #status_partida{
 	position: absolute;
@@ -70,7 +53,7 @@ img{
 	
 }
 
-/*************************************************************/
+/*--------------------------------------------------------------*/
 
 .casa{
 	height: 70px; 
@@ -91,9 +74,15 @@ img{
 	background-color: #333333
 }
 
-/*************************************************************/
+/*--------------------------------------------------------------*/
 
 #area_admin{
+
+	border: 1px solid #ccc;
+	border-radius: 5px; 
+	width: 41.5%; 
+	margin: 0 auto;
+
 	/*
 	border: 1px solid;
 	width: 70%;
@@ -109,6 +98,56 @@ img{
 	float: right;
 	*/
 }
+
+#area_admin #area_admin_hide_show{
+	height: 10px;
+	background-color: green;
+	cursor: pointer;
+}
+
+#area_admin #area_admin_topo{
+
+}
+
+#area_admin #area_admin_topo #nova_partida{
+	position: relative;
+	left: 0%;
+	cursor: pointer;
+	width: 4%;
+}
+
+
+#area_admin #area_admin_topo #sair_partida{
+	position: relative;
+	right: 0%;
+	cursor: pointer;
+	width: 5%;
+}
+
+
+
+#area_admin #area_admin_conteudo{
+	position: relative;
+}
+
+/*--------------------------------------------------------------*/
+
+table.tabuleiro{
+	margin: 0 auto;
+}
+
+table.tabuleiro th{
+	border: 1px solid;
+	padding: 5px;
+}
+
+table.tabuleiro td{
+	text-align: center;
+	border: 1px solid;
+	padding: 5px;
+}
+
+/*--------------------------------------------------------------*/
 
 #link_partida{
 	width: 90%;

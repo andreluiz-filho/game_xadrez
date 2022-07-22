@@ -103,6 +103,22 @@ def entrar_partida():
                     elif metodo_dados == 'post':
                         return jsonify(dados_returno)
 
+                else:
+                    id_partida = id_partida.split(".")[0]
+                    dados_returno = {
+                        "usuario":usuario,
+                        "id_partida":id_partida, 
+                        "jogador_da_vez":partida['jogador_da_vez'], 
+                        "cor_da_vez":partida['cor_da_vez'],
+                        "usuario_cor":"",
+                        "visitante":"true"
+                    }
+                    print("***Visitante Convidado")
+                    print(dados_returno)
+                    return render_template("index.html", dados_returno=dados_returno)
+
+
+
                 #Usuario não esta na Partida
                 if metodo_dados == 'get':
                     return redirect("/")
