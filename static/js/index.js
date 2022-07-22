@@ -47,8 +47,6 @@ if(usuario == null){
 	jogador_da_vez 	= sessionStorage.getItem('jogador_da_vez')
 	cor_da_vez 		= sessionStorage.getItem('cor_da_vez')
 
-	titulo_status_partida.innerText = 'Chave Sala: '+id_partida
-
 	//********************************************************
 	//*******************CRIA O TABULEIRO*********************
 
@@ -90,11 +88,6 @@ if(usuario == null){
 			// -----------------------------------------------------------
 			// Area Nova Partida
 			// -----------------------------------------------------------
-
-
-
-
-
 			/*
 			var td_nova 	= document.createElement('td');
 			var button_nova = document.createElement('button');
@@ -245,8 +238,52 @@ if(usuario == null){
 		}
 		
 		atualizarPartida(lista_pecas_ativas)
+		console.log()
+		//console.log("lista_pecas_capturadas_brancas", lista_pecas_capturadas_brancas)
+		//console.log("lista_pecas_capturadas_pretas", lista_pecas_capturadas_pretas)
 
+		// BRANCAS
 
+		lista_qtd_capturadas = [
+						'torre_branca', 
+						'cavalo_branca', 
+						'bispo_branca', 
+						'rainha_branca', 
+						'peao_branca',
+						'torre_preta', 
+						'cavalo_preta', 
+						'bispo_preta', 
+						'rainha_preta', 
+						'peao_preta'
+						]
+		
+		pecas_capturadas = document.querySelectorAll(".pecas_capturadas")
+
+		for(p of lista_qtd_capturadas){
+			qtd = 0
+			for(i = 0; i < pecas_capturadas.length; i++){
+				if(p == pecas_capturadas[i].id.split("__")[1]){
+					qtd += 1
+				}
+			}
+			console.log(p)
+			console.log("QTD", qtd)
+		}
+		//console.log("qtd_branca_peao", qtd_branca_peao)
+		status__torre_branca.textContent 	= 0
+		status__cavalo_branca.textContent 	= 0
+		status__bispo_branca.textContent 	= 0
+		status__rainha_branca.textContent 	= 0
+		status__peao_branca.textContent 		= 0
+
+		//PRETAS
+		status__torre_preta.textContent 		= 0
+		status__cavalo_preta.textContent 	= 0
+		status__bispo_preta.textContent 		= 0
+		status__rainha_preta.textContent 	= 0
+		status__peao_preta.textContent 		= 0		
+
+		/*
 		capturadas_brancas = document.querySelectorAll('.capturadas_brancas')
 		capturadas_pretas = document.querySelectorAll('.capturadas_pretas')
 
@@ -273,6 +310,7 @@ if(usuario == null){
 
 		qtd_pecas_capturadas(capturadas_brancas, lista_pecas_capturadas_brancas)
 		qtd_pecas_capturadas(capturadas_pretas, lista_pecas_capturadas_pretas)
+		*/
 	}
 
 	//********************************************************
@@ -304,29 +342,6 @@ if(usuario == null){
 		else{
 			area_usuario_titulo.textContent = ""
 			area_usuario_titulo.textContent = usuario
-
-			/*			
-			area_admin_jogador_branca.textContent = jogador_branca
-			area_admin_jogador_preta.textContent = jogador_preta
-
-			area_admin_jogador_branca.style.background = ""
-			area_admin_jogador_preta.style.background = ""
-
-			if(jogador_da_vez == usuario){
-				area_admin_hide_show.style.background = "green"
-			}else{
-				area_admin_hide_show.style.background = "#4e82d2"
-			}
-
-			if(jogador_da_vez == jogador_branca){
-				area_admin_jogador_branca.style.background = "green"
-			}
-			else if(jogador_da_vez == jogador_preta){
-				area_admin_jogador_preta.style.background = "green"
-
-			}
-			*/
-
 		}
 
 		fetch(api_partida, {
@@ -413,11 +428,11 @@ if(usuario == null){
 					key_data = Object.keys(data)
 
 					if(key_data.includes('erro')){
+
 						erro_mover_captura.textContent = data['erro']
 						sessionStorage.removeItem('peca_selecionada')
 					}
 					else{
-						erro_mover_captura.textContent = ""
 						status_partida 	= data['status']
 						pecas_partida 	= data['pecas']
 
@@ -448,18 +463,13 @@ if(usuario == null){
 								peca_selecionada_nome 		= peca_selecionada.split("___")[0]
 								peca_selecionada_posicao 	= peca_selecionada.split('___')[1]
 								
+								console.log("e.target.alt", e.target.alt)
 								peca_target_nome 			= e.target.alt.split("___")[0]
 								target_posicao 				= e.target.alt.split("___")[1]
 								
 								if(peca_selecionada_nome != peca_target_nome){
 									
 									e.target.style.border = "thick solid green";
-
-									//nome_peca_tabela_status.innerText = peca_selecionada_nome
-									//posicao_peca_tabela_status.innerText = peca_selecionada_posicao
-
-									//nome_peca_tabela_status.innerText = peca_selecionada_nome
-									//posicao_peca_tabela_status.innerText = peca_selecionada_posicao
 
 									if(peca_selecionada_cor != peca_target_cor){
 
@@ -484,9 +494,6 @@ if(usuario == null){
 
 								peca_selecionada_nome 		= e.target.alt.split('___')[0]
 								peca_selecionada_posicao 	= e.target.alt.split('___')[1]
-
-								nome_peca_tabela_status.innerText = peca_selecionada_nome
-								posicao_peca_tabela_status.innerText = peca_selecionada_posicao
 
 								e.target.style.border = "thick solid green";
 							
@@ -600,12 +607,9 @@ if(usuario == null){
 						key_data = Object.keys(data)
 
 						if(key_data.includes('erro')){
-							erro_mover_captura.textContent = data['erro']
 							sessionStorage.removeItem('peca_selecionada')
-
 						}
 						else{
-							erro_mover_captura.textContent = ""
 							status_partida 	= data['status']
 							pecas_partida 	= data['pecas']
 
@@ -615,35 +619,12 @@ if(usuario == null){
 							sessionStorage.setItem('jogador_branca', data['jogador_branca'])
 							sessionStorage.setItem('jogador_preta', data['jogador_preta'])
 
-							/*
-							jogador_da_vez = sessionStorage.getItem('jogador_da_vez')
-
-							
-							if(jogador_da_vez == jogador_branca){
-								area_admin_jogador_branca.style.background = "green"
-								area_admin_jogador_preta.style.background = ""
-							}
-							else if(jogador_da_vez == jogador_preta){
-								area_admin_jogador_preta.style.background = "green"
-								area_admin_jogador_branca.style.background = ""
-							}
-							
-							area_admin_hide_show.style.background = ""
-							if(jogador_da_vez == usuario){
-								area_admin_hide_show.style.background = "green"
-							}else{
-								area_admin_hide_show.style.background = "#4e82d2"
-							}
-							*/
-
 							func_api_partida()
 							separaPecas(pecas_partida)
 						}
 					})
 					.catch(error => console.error('Error:', error))	
-					
 				}
-			
 			}
 		});	
 
@@ -679,33 +660,6 @@ if(usuario == null){
 		}
 
 	}
-
-	/*
-	area_admin.addEventListener("click", (e)=>{
-		
-		//console.log(e)
-
-		console.log(area_admin_topo, area_admin_topo.style.display)
-		console.log(area_admin_conteudo, area_admin_conteudo.style.display)
-
-		area_admin_topo.style.display = 'none'
-		area_admin_conteudo.style.display = 'none'
-
-	});
-
-	
-	area_admin_hide_show.addEventListener("click", (e)=>{
-		
-		console.log(area_admin_topo, area_admin_topo.style.display)
-		console.log(area_admin_conteudo, area_admin_conteudo.style.display)
-
-		area_admin_topo.style.display = 'block'
-		area_admin_conteudo.style.display = 'block'
-
-	});
-	*/
-	
-
 
 	// ------------------- ENTRAR PARTIDA -------------------
 	/*
