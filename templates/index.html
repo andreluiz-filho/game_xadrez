@@ -12,19 +12,17 @@
 
 	<div id="container">
 
-		<div id="area_admin">
-			<!--
-			
-			<h3 id="usuario_logado"></h3>
-			<input type="text" name="link_partida" id="link_partida">
-
-			<div id="btn_link" onclick="entrar_partida()">Entrar Partida</div>
-			<hr>		
-			<div id="btn_link" onclick="nova_partida()">Nova Partida</div>
-			<hr>
-			<div id="btn_link" onclick="sair_partida()">Sair</div>
-			-->
-		</div>
+		{% if dados_returno %}
+			<input type="hidden" name="get_usuario" id="get_usuario" value="{{dados_returno['usuario']}}">
+			<input type="hidden" name="get_id_partida" id="get_id_partida" value="{{dados_returno['id_partida']}}">
+			<input type="hidden" name="get_jogador_da_vez" id="get_jogador_da_vez" value="{{dados_returno['jogador_da_vez']}}">
+			<input type="hidden" name="get_cor_da_vez" id="get_cor_da_vez" value="{{dados_returno['cor_da_vez']}}">
+			<input type="hidden" name="get_usuario_cor" id="get_usuario_cor" value="{{dados_returno['usuario_cor']}}">
+		{% else %}
+			<input type="hidden" name="get_usuario" id="get_usuario" value="">
+		{% endif %}
+		
+		<div id="area_admin"></div>
 
 		<table id="table" class="tabuleiro">
 		</table>

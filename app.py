@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, redirect, jsonify
+from flask import url_for
 from datetime import datetime
 import json
 import os
@@ -6,6 +7,9 @@ import secrets
 
 app = Flask(__name__)
 
+app.config.update(
+    SECRET_KEY="secret_sauce",
+)
 
 #----------------------------------------------------------------------------
 
@@ -21,58 +25,97 @@ def index():
 
 #----------------------------------------------------------------------------
 
-@app.route("/entrarPartida", methods=["POST"])
+@app.route("/entrarPartida", methods=["GET", "POST"])
 def entrar_partida():
+    # 192.168.0.219:5000/entrarPartida?usuario=teste02&id_partida=2937e46c0dafa6c58fd8
 
-    data = json.loads(request.data)
-    usuario = data['usuario']
-    chave_partida = data['chave_partida']
+    metodo_dados = ""
+    if request.data:
+        dados = json.loads(request.data)
+        usuario = dados['usuario']
+        id_partida = dados['id_partida']
+        metodo_dados = 'post'
 
-    arquivo = [i for i in os.listdir('dados') if 'usuarios.json' in i]
+    dict_dados = {}
+    if request.args:
+        for i in request.args:
+            dict_dados[i] = request.args[i]
 
-    if arquivo:
+    if dict_dados:
+        usuario = dict_dados['usuario']
+        id_partida = dict_dados['id_partida']
+        metodo_dados = 'get'
+
+
+    arquivo_user = [i for i in os.listdir('dados') if 'usuarios.json' in i]
+
+    if arquivo_user:
         with open('dados/usuarios.json') as arq:
             dados = json.load(arq)
 
         user = usuario in dados
         if user:
-            chave_partida = chave_partida+".json"
-            arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if chave_partida in i]
-            if arquivo:
+            id_partida = id_partida+".json"
+            arquivo_id_partida = [i for i in os.listdir("dados/partidas/em_andamento") if id_partida in i]
+            if arquivo_id_partida:
 
-                with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
+                with open(f"dados/partidas/em_andamento/{arquivo_id_partida[0]}") as arq:
                     partida = json.load(arq)
 
                 if partida['jogador_branca'] == usuario:
-                    chave_partida = chave_partida.split(".")[0]
+                    id_partida = id_partida.split(".")[0]
                     
                     dados_returno = {
-                        "chave_partida":chave_partida, 
+                        "usuario":usuario,
+                        "id_partida":id_partida, 
                         "jogador_da_vez":partida['jogador_da_vez'], 
                         "cor_da_vez":partida['cor_da_vez'],
                         "usuario_cor":"branca"
                     }
-                    return jsonify(dados_returno)
+
+                    if metodo_dados == 'get':
+                        #return redirect(url_for("index", dados_returno=dados_returno))
+                        return render_template("index.html", dados_returno=dados_returno)
+
+                    elif metodo_dados == 'post':
+                        return jsonify(dados_returno)
 
                 elif partida['jogador_preta'] == "" or partida['jogador_preta'] == usuario:
                     partida['jogador_preta'] = usuario
 
-                    with open(f"dados/partidas/em_andamento/{chave_partida}", "w") as arq:
+                    with open(f"dados/partidas/em_andamento/{id_partida}", "w") as arq:
                         json.dump(partida, arq)
 
-                    chave_partida = chave_partida.split(".")[0]
+                    id_partida = id_partida.split(".")[0]
                     
                     dados_returno = {
-                        "chave_partida":chave_partida, 
+                        "usuario":usuario,
+                        "id_partida":id_partida, 
                         "jogador_da_vez":partida['jogador_da_vez'], 
                         "cor_da_vez":partida['cor_da_vez'],
                         "usuario_cor":"preta"
                     }
-                    return jsonify(dados_returno)
 
-                return jsonify({"erro": "Falha ao Entrar na  Partida"})
+                    if metodo_dados == 'get':
+                        #return redirect(url_for("index", dados_returno=dados_returno))
+                        return render_template("index.html", dados_returno=dados_returno)
 
-    return jsonify({"erro": "Falha ao Entrar na  Partida"})
+                    elif metodo_dados == 'post':
+                        return jsonify(dados_returno)
+
+                #Usuario não esta na Partida
+                if metodo_dados == 'get':
+                    return redirect("/")
+
+                elif metodo_dados == 'post':
+                    return jsonify({"erro": "Falha ao Entrar na  Partida"})
+    
+    if metodo_dados == 'get':
+        return redirect("/")
+
+    elif metodo_dados == 'post':
+        return jsonify({"erro": "Falha ao Entrar na  Partida"})
+    #return jsonify({"erro": "Falha ao Entrar na  Partida"})
 
 #----------------------------------------------------------------------------
 
@@ -91,7 +134,7 @@ def nova_partida():
         user = usuario in dados
         if user:
             
-            chave_partida = secrets.token_hex(10)
+            id_partida = secrets.token_hex(10)
 
             partida = {
                         "status": "aberta",
@@ -135,11 +178,11 @@ def nova_partida():
                         ]
                 }
 
-            with open(f"dados/partidas/em_andamento/{chave_partida}.json", "w") as arq:
+            with open(f"dados/partidas/em_andamento/{id_partida}.json", "w") as arq:
                 json.dump(partida, arq)
 
             dados_returno = {
-                    "chave_partida":chave_partida, 
+                    "id_partida":id_partida, 
                     "jogador_da_vez":partida['jogador_da_vez'], 
                     "cor_da_vez":partida['cor_da_vez'],
                     "usuario_cor":"branca"
@@ -156,12 +199,12 @@ def nova_partida():
 @app.route("/api_partida", methods=['POST'])
 def api_partida():
 
-    chave_partida = json.loads(request.data)
+    id_partida = json.loads(request.data)
 
-    chave_partida = chave_partida['chave_partida']
-    chave_partida = chave_partida+".json"
+    id_partida = id_partida['id_partida']
+    id_partida = id_partida+".json"
     
-    arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if chave_partida in i]
+    arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if id_partida in i]
     if arquivo:
         
         with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
@@ -179,7 +222,7 @@ def api_moverPeca():
     #---------------------------------------------------------------------
 
     def consulta_Partida():
-        arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if chave_partida in i]
+        arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if id_partida in i]
         with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
             partida = json.load(arq)
         return partida
@@ -187,7 +230,7 @@ def api_moverPeca():
     #---------------------------------------------------------------------
     
     def salva_Partida(data):
-        arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if chave_partida in i]
+        arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if id_partida in i]
         with open(f"dados/partidas/em_andamento/{arquivo[0]}", "w") as arq:
             json.dump(data, arq)
 
@@ -197,7 +240,7 @@ def api_moverPeca():
     
     usuario                 = peca_selecionada['usuario']
     usuario_cor             = peca_selecionada['usuario_cor']
-    chave_partida           = peca_selecionada['chave_partida']
+    id_partida           = peca_selecionada['id_partida']
 
     peca_selecionada_nome   = peca_selecionada['peca_selecionada_nome']
     target_posicao          = peca_selecionada['target_posicao']
@@ -263,22 +306,63 @@ def api_moverPeca():
 
 #----------------------------------------------------------------------------
 
-@app.route('/api_login_usuario', methods=['POST'])
+@app.route('/api_login_usuario', methods=['GET', 'POST'])
 def api_login_usuario():
 
-    usuario = json.loads(request.data)
-    usuario = usuario['usuario']
+    metodo_dados = ""
+    if request.data:
+        dados = json.loads(request.data)
+        usuario = dados['usuario']
+        id_partida = dados['id_partida']
+        metodo_dados = 'post'
+
+    dict_dados = {}
+    if request.args:
+        for i in request.args:
+            dict_dados[i] = request.args[i]
+
+    if dict_dados:
+        usuario = dict_dados['usuario']
+        id_partida = dict_dados['id_partida']
+        metodo_dados = 'get'
+
+    arquivo_user = [i for i in os.listdir('dados') if 'usuarios.json' in i]
     
-    arquivo = [i for i in os.listdir('dados') if 'usuarios.json' in i]
-    
-    if arquivo:
+    if arquivo_user:
         with open('dados/usuarios.json') as arq:
             dados = json.load(arq)
 
         user = usuario in dados
         if user:
-            return jsonify({'usuario':usuario})
 
+            if id_partida:
+
+                id_partida = id_partida+".json"
+                
+                arquivo_id_partida = [i for i in os.listdir("dados/partidas/em_andamento") if id_partida in i]
+                if arquivo_id_partida:
+                    
+                    with open(f"dados/partidas/em_andamento/{arquivo_id_partida[0]}") as arq:
+                        partida = json.load(arq)
+                    
+                    partida['usuario'] = usuario
+                    partida['id_partida'] = id_partida.split(".")[0]
+
+                    if usuario == partida['jogador_branca']:
+                        partida["usuario_cor"] = "branca"
+
+                    elif usuario == partida['jogador_preta']:
+                        partida["usuario_cor"] = "preta"
+
+                    if metodo_dados == 'post':
+                        return jsonify(partida)
+                    elif metodo_dados == 'get':
+                        return redirect("/")
+                else:
+                    return jsonify({"erro":"ID da Partida Inválido"})
+            else:
+                return jsonify({"usuario":usuario})
+    
     return jsonify({'erro':'Login Incorreto'})
     
 #----------------------------------------------------------------------------
@@ -294,7 +378,6 @@ def api_criar_usuario():
         with open('dados/usuarios.json') as arq:
             dados = json.load(arq)
 
-        print(dados)
     else:
         with open('dados/usuarios.json', "w") as arq:
             lista_usuarios = ['admin']

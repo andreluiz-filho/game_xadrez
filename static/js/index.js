@@ -11,17 +11,28 @@ usuario 	= sessionStorage.getItem('usuario')
 usuario_cor = sessionStorage.getItem('usuario_cor')
 
 if(usuario == null){
-	window.location.href = url+'/';
 
-	sessionStorage.removeItem('chave_partida')
+	if(get_usuario.value != ""){
+		sessionStorage.setItem('usuario', get_usuario.value)
+		sessionStorage.setItem('id_partida', get_id_partida.value)
+		sessionStorage.setItem('jogador_da_vez', get_jogador_da_vez.value)
+		sessionStorage.setItem('cor_da_vez', get_cor_da_vez.value)
+		sessionStorage.setItem('usuario_cor', get_usuario_cor.value)
+
+		window.location.href = url+'/partida';
+	}else{
+		sessionStorage.clear()
+		window.location.href = url+'/';
+	}
+	
 
 }else{
 
-	chave_partida 	= sessionStorage.getItem('chave_partida')
+	id_partida 	= sessionStorage.getItem('id_partida')
 	jogador_da_vez 	= sessionStorage.getItem('jogador_da_vez')
 	cor_da_vez 		= sessionStorage.getItem('cor_da_vez')
 
-	titulo_status_partida.innerText = 'Chave Sala: '+chave_partida
+	titulo_status_partida.innerText = 'Chave Sala: '+id_partida
 	//usuario_logado.innerText = usuario
 
 	//********************************************************
@@ -216,7 +227,7 @@ if(usuario == null){
 	*/
 
 
-	if(chave_partida && chave_partida != 'undefined' && jogador_da_vez && usuario_cor){
+	if(id_partida && id_partida != 'undefined' && jogador_da_vez && usuario_cor){
 		
 		// --------------------------------------------------------------
 
@@ -224,12 +235,15 @@ if(usuario == null){
 
 		function func_api_partida(){
 			
+			jogador_da_vez 	= sessionStorage.getItem('jogador_da_vez')
+			cor_da_vez 		= sessionStorage.getItem('cor_da_vez')
+
 			usuario_logado.textContent = ""
 			usuario_logado.textContent = usuario+" - "+usuario_cor
 
 			fetch(api_partida, {
 				method: 'POST',
-				body: JSON.stringify({"chave_partida":chave_partida}),
+				body: JSON.stringify({"id_partida":id_partida}),
 				headers:{
 				'Content-Type': 'application/json'
 				}
@@ -264,8 +278,12 @@ if(usuario == null){
 		}
 
 		func_api_partida();
+
 		if(jogador_da_vez != usuario){
-			setInterval(function() {func_api_partida()}, 10000);
+			setInterval(function() {func_api_partida()}, 5000);
+		}
+		else if(jogador_da_vez == usuario){
+			setTimeout(function() {func_api_partida()}, 20000);
 		}
 		
 
@@ -352,7 +370,7 @@ if(usuario == null){
 										data_capturar_peca = {
 															'usuario':usuario,
 															'usuario_cor':usuario_cor,
-															'chave_partida':chave_partida, 
+															'id_partida':id_partida, 
 															'peca_selecionada_nome':peca_selecionada_nome,
 															'peca_target_nome':peca_target_nome, 
 															'target_posicao':target_posicao, 
@@ -426,7 +444,7 @@ if(usuario == null){
 										data_capturar_peca = {
 															'usuario':usuario,
 															'usuario_cor':usuario_cor,
-															'chave_partida':chave_partida, 
+															'id_partida':id_partida, 
 															'peca_selecionada_nome':peca_selecionada_nome,
 															'peca_target_nome':peca_target_nome, 
 															'target_posicao':target_posicao, 
@@ -465,7 +483,7 @@ if(usuario == null){
 					data_mover_peca = {
 										'usuario':usuario,
 										'usuario_cor':usuario_cor,
-										'chave_partida':chave_partida, 
+										'id_partida':id_partida, 
 										'peca_selecionada_nome':peca_selecionada_nome,
 										'target_posicao':target_posicao, 
 										'funcao':'mover'
@@ -536,7 +554,7 @@ if(usuario == null){
 
 			fetch(recurso, {
 				  method: 'POST',
-				  body: JSON.stringify({"usuario":usuario, "chave_partida":link_partida.value}),
+				  body: JSON.stringify({"usuario":usuario, "id_partida":link_partida.value}),
 				  headers:{
 				    'Content-Type': 'application/json'
 				  }
@@ -544,7 +562,7 @@ if(usuario == null){
 			.then(res => res.json())
 			.then(function(data){
 
-				sessionStorage.setItem('chave_partida', data['chave_partida'])
+				sessionStorage.setItem('id_partida', data['id_partida'])
 				sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
 				sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
 				sessionStorage.setItem('usuario_cor', data['usuario_cor'])
@@ -575,7 +593,7 @@ if(usuario == null){
 		.then(res => res.json())
 		.then(function(data){
 			
-			sessionStorage.setItem('chave_partida', data['chave_partida'])
+			sessionStorage.setItem('id_partida', data['id_partida'])
 			sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
 			sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
 			sessionStorage.setItem('usuario_cor', data['usuario_cor'])
@@ -593,7 +611,7 @@ if(usuario == null){
 	sair_partida = document.querySelector('.sair_partida')
 	sair_partida.addEventListener("click", (e)=>{
 		sessionStorage.clear()
-		window.location.href = url+'/partida';
+		window.location.href = url+'/';
 	});
 
 	//********************************************************
