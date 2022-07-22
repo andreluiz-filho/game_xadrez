@@ -19,6 +19,11 @@
 			<input type="hidden" name="get_jogador_da_vez" id="get_jogador_da_vez" value="{{dados_returno['jogador_da_vez']}}">
 			<input type="hidden" name="get_cor_da_vez" id="get_cor_da_vez" value="{{dados_returno['cor_da_vez']}}">
 			<input type="hidden" name="get_usuario_cor" id="get_usuario_cor" value="{{dados_returno['usuario_cor']}}">
+			
+			<input type="hidden" name="get_jogador_branca" id="get_jogador_branca" value="{{dados_returno['jogador_branca']}}">
+			<input type="hidden" name="get_jogador_preta" id="get_jogador_preta" value="{{dados_returno['jogador_preta']}}">
+
+			
 
 			{% if dados_returno['visitante'] %}
 				<input type="hidden" name="get_visitante" id="get_visitante" value="{{dados_returno['visitante']}}">
@@ -28,28 +33,31 @@
 
 		{% else %}
 			<input type="hidden" name="get_usuario" id="get_usuario" value="">
+			<input type="hidden" name="get_id_partida" id="get_id_partida" value="">
+			<input type="hidden" name="get_jogador_da_vez" id="get_jogador_da_vez" value="">
+			<input type="hidden" name="get_cor_da_vez" id="get_cor_da_vez" value="">
+			<input type="hidden" name="get_usuario_cor" id="get_usuario_cor" value="">
+
+			<input type="hidden" name="get_jogador_branca" id="get_jogador_branca" value="">
+			<input type="hidden" name="get_jogador_preta" id="get_jogador_preta" value="">
 		{% endif %}
 		
 		<div id="area_admin">
 
-			<div id="area_admin_hide_show" onclick="area_admin_hide_show()">
+			<div id="area_admin_hide_show" onclick="func_area_admin_hide_show()">
 				
 			</div>
-			<div id="area_admin_topo" style="display: ;">
-				<img src="/static/img/plus.svg" id="nova_partida">
-				<img src="/static/img/door-closed.svg" id="sair_partida">
-				<!--
+			<div id="area_admin_topo" style="display: none;">
+				
 				<h3 id="area_usuario">
 					<img src="/static/img/plus.svg" id="nova_partida">
-					<span>admin - Branca</span>
+					<span id="area_usuario_titulo"></span>
 					<img src="/static/img/door-closed.svg" id="sair_partida">
 				</h3>
-				-->
 				
-			
 			</div>
 
-			<div id="area_admin_conteudo" style="display: ;">
+			<div id="area_admin_conteudo" style="display: none;">
 				<table class="table">
 					<thead>
 						<tr>

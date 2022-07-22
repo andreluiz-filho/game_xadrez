@@ -15,18 +15,26 @@ if(usuario == null){
 	key_session = Object.keys(sessionStorage)
 
 	if(key_session.length == 0){
-		
-		if(get_usuario_cor.value == ""){
-			sessionStorage.setItem('visitante', 'true')
+
+		if(get_usuario.value != '' && get_id_partida.value != '' && get_jogador_da_vez.value != '' && get_cor_da_vez.value != '' && get_jogador_branca.value != '' && get_jogador_preta.value != ''){
+			sessionStorage.setItem('usuario', get_usuario.value)
+			sessionStorage.setItem('id_partida', get_id_partida.value)
+			sessionStorage.setItem('jogador_da_vez', get_jogador_da_vez.value)
+			sessionStorage.setItem('cor_da_vez', get_cor_da_vez.value)
+			sessionStorage.setItem('usuario_cor', get_usuario_cor.value)
+
+			sessionStorage.setItem('jogador_branca', get_jogador_branca.value)
+			sessionStorage.setItem('jogador_preta', get_jogador_preta.value)
+
+			if(get_usuario_cor.value == ""){
+				sessionStorage.setItem('visitante', 'true')
+			}
+
+			window.location.href = url+'/partida';
+		}else if(get_usuario.value == ''){
+			sessionStorage.clear()
+			window.location.href = url+'/';
 		}
-
-		sessionStorage.setItem('usuario', get_usuario.value)
-		sessionStorage.setItem('id_partida', get_id_partida.value)
-		sessionStorage.setItem('jogador_da_vez', get_jogador_da_vez.value)
-		sessionStorage.setItem('cor_da_vez', get_cor_da_vez.value)
-		sessionStorage.setItem('usuario_cor', get_usuario_cor.value)
-
-		window.location.href = url+'/partida';
 
 	}else{
 		sessionStorage.clear()
@@ -179,7 +187,34 @@ if(usuario == null){
 	//********************************************************
 
 	function separaPecas(data){
-		
+
+		// ---------------------------------------------
+		jogador_da_vez 	= sessionStorage.getItem('jogador_da_vez')
+		jogador_branca 	= sessionStorage.getItem('jogador_branca')
+		jogador_preta 	= sessionStorage.getItem('jogador_preta')
+
+		area_admin_jogador_branca.textContent = jogador_branca
+		area_admin_jogador_preta.textContent = jogador_preta
+
+		area_admin_jogador_branca.style.background = ""
+		area_admin_jogador_preta.style.background = ""
+
+		if(jogador_da_vez == usuario){
+			area_admin_hide_show.style.background = "green"
+		}else{
+			area_admin_hide_show.style.background = "#4e82d2"
+		}
+
+		if(jogador_da_vez == jogador_branca){
+			area_admin_jogador_branca.style.background = "green"
+		}
+		else if(jogador_da_vez == jogador_preta){
+			area_admin_jogador_preta.style.background = "green"
+
+		}
+
+		// ---------------------------------------------
+
 		sessionStorage.removeItem('peca_selecionada')
 
 		lista_pecas_capturadas = []
@@ -248,61 +283,92 @@ if(usuario == null){
 	*/
 
 
+	function func_api_partida(){
+		
+		sessionStorage.removeItem('peca_selecionada')
+
+		usuario 	= sessionStorage.getItem('usuario')
+		usuario_cor = sessionStorage.getItem('usuario_cor')
+
+		jogador_branca = sessionStorage.getItem('jogador_branca')
+		jogador_preta = sessionStorage.getItem('jogador_preta')
+
+		jogador_da_vez 	= sessionStorage.getItem('jogador_da_vez')
+		cor_da_vez 		= sessionStorage.getItem('cor_da_vez')
+
+		key_session = Object.keys(sessionStorage)
+		if(key_session.includes("visitante")){
+			area_usuario_titulo.textContent = ""
+			area_usuario_titulo.textContent = usuario+" - Visitante"
+		}
+		else{
+			area_usuario_titulo.textContent = ""
+			area_usuario_titulo.textContent = usuario
+
+			/*			
+			area_admin_jogador_branca.textContent = jogador_branca
+			area_admin_jogador_preta.textContent = jogador_preta
+
+			area_admin_jogador_branca.style.background = ""
+			area_admin_jogador_preta.style.background = ""
+
+			if(jogador_da_vez == usuario){
+				area_admin_hide_show.style.background = "green"
+			}else{
+				area_admin_hide_show.style.background = "#4e82d2"
+			}
+
+			if(jogador_da_vez == jogador_branca){
+				area_admin_jogador_branca.style.background = "green"
+			}
+			else if(jogador_da_vez == jogador_preta){
+				area_admin_jogador_preta.style.background = "green"
+
+			}
+			*/
+
+		}
+
+		fetch(api_partida, {
+			method: 'POST',
+			body: JSON.stringify({"id_partida":id_partida}),
+			headers:{
+			'Content-Type': 'application/json'
+			}
+		})
+		.then(res => res.json())
+		.then(function(data){
+
+			key_data = Object.keys(data)
+
+			if(key_data.includes('erro')){
+				
+				
+				//****************************
+				//Adicionar a Mensagem de Erro
+				//****************************
+
+
+			}
+			else if(key_data.includes('pecas')){
+
+				sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
+				sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
+
+				status_partida 	= data['status']
+				pecas_partida 	= data['pecas']
+
+				separaPecas(pecas_partida)
+				
+			}
+		})
+		.catch(error => console.error('Error:', error))
+	
+	}
+
 	if(id_partida && id_partida != 'undefined' && jogador_da_vez){
 		
 		// --------------------------------------------------------------
-
-		sessionStorage.removeItem('peca_selecionada')
-
-		function func_api_partida(){
-
-			usuario 	= sessionStorage.getItem('usuario')
-			usuario_cor = sessionStorage.getItem('usuario_cor')
-			
-			key_session = Object.keys(sessionStorage)
-			if(key_session.includes("visitante")){
-				//usuario_logado.textContent = ""
-				//usuario_logado.textContent = usuario+" - "+usuario_cor
-			}
-
-			jogador_da_vez 	= sessionStorage.getItem('jogador_da_vez')
-			cor_da_vez 		= sessionStorage.getItem('cor_da_vez')
-
-			fetch(api_partida, {
-				method: 'POST',
-				body: JSON.stringify({"id_partida":id_partida}),
-				headers:{
-				'Content-Type': 'application/json'
-				}
-			})
-			.then(res => res.json())
-			.then(function(data){
-
-				key_data = Object.keys(data)
-
-				if(key_data.includes('erro')){
-					
-					
-					//****************************
-					//Adicionar a Mensagem de Erro
-					//****************************
-
-
-				}
-				else if(key_data.includes('pecas')){
-
-					sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
-					sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
-
-					status_partida 	= data['status']
-					pecas_partida 	= data['pecas']
-
-					separaPecas(pecas_partida)
-					
-				}
-			})
-			.catch(error => console.error('Error:', error))
-		}
 
 		func_api_partida();
 
@@ -328,6 +394,9 @@ if(usuario == null){
 
 			jogador_da_vez = sessionStorage.getItem('jogador_da_vez')
 			cor_da_vez = sessionStorage.getItem('cor_da_vez')
+
+			jogador_branca = sessionStorage.getItem('jogador_branca')
+			jogador_preta = sessionStorage.getItem('jogador_preta')
 
 			function moverPeca(dados){
 
@@ -513,6 +582,8 @@ if(usuario == null){
 										'id_partida':id_partida, 
 										'peca_selecionada_nome':peca_selecionada_nome,
 										'target_posicao':target_posicao, 
+										'jogador_branca':jogador_branca, 
+										'jogador_preta':jogador_preta, 
 										'funcao':'mover'
 									}
 
@@ -541,6 +612,31 @@ if(usuario == null){
 							sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
 							sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
 
+							sessionStorage.setItem('jogador_branca', data['jogador_branca'])
+							sessionStorage.setItem('jogador_preta', data['jogador_preta'])
+
+							/*
+							jogador_da_vez = sessionStorage.getItem('jogador_da_vez')
+
+							
+							if(jogador_da_vez == jogador_branca){
+								area_admin_jogador_branca.style.background = "green"
+								area_admin_jogador_preta.style.background = ""
+							}
+							else if(jogador_da_vez == jogador_preta){
+								area_admin_jogador_preta.style.background = "green"
+								area_admin_jogador_branca.style.background = ""
+							}
+							
+							area_admin_hide_show.style.background = ""
+							if(jogador_da_vez == usuario){
+								area_admin_hide_show.style.background = "green"
+							}else{
+								area_admin_hide_show.style.background = "#4e82d2"
+							}
+							*/
+
+							func_api_partida()
 							separaPecas(pecas_partida)
 						}
 					})
@@ -571,16 +667,17 @@ if(usuario == null){
 	//********************************************************
 	///////////////////////////AREA ADMIN/////////////////////
 
-	function area_admin_hide_show(){
+	function func_area_admin_hide_show(){
 
 		if(area_admin_topo.style.display == 'none' && area_admin_conteudo.style.display == 'none'){
 			area_admin_topo.style.display = 'block'
 			area_admin_conteudo.style.display = 'block'
+
 		}else{
 			area_admin_topo.style.display = 'none'
 			area_admin_conteudo.style.display = 'none'
 		}
-		
+
 	}
 
 	/*
@@ -643,8 +740,7 @@ if(usuario == null){
 	//********************************************************
 
 	// -------------------- NOVA PARTIDA --------------------
-	/*
-	nova_partida = document.querySelector('.nova_partida')
+	
 	nova_partida.addEventListener("click", (e)=>{
 		
 		var recurso = url+"/novaPartida"
@@ -664,6 +760,9 @@ if(usuario == null){
 			sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
 			sessionStorage.setItem('usuario_cor', data['usuario_cor'])
 
+			sessionStorage.setItem('jogador_branca', data['jogador_branca'])
+			sessionStorage.setItem('jogador_preta', data['jogador_preta'])
+
 			window.location.href = url+'/partida';
 		})
 		.catch(error => console.error('Error:', error))
@@ -674,12 +773,11 @@ if(usuario == null){
 
 	// -------------------- SAIR PARTIDA --------------------
 
-	sair_partida = document.querySelector('.sair_partida')
 	sair_partida.addEventListener("click", (e)=>{
 		sessionStorage.clear()
 		window.location.href = url+'/';
 	});
-	*/
+	
 	//********************************************************
 	//********************************************************
 

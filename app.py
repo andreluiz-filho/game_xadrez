@@ -62,15 +62,19 @@ def entrar_partida():
                 with open(f"dados/partidas/em_andamento/{arquivo_id_partida[0]}") as arq:
                     partida = json.load(arq)
 
+
                 if partida['jogador_branca'] == usuario:
+
                     id_partida = id_partida.split(".")[0]
                     
                     dados_returno = {
                         "usuario":usuario,
+                        "usuario_cor":"branca",
                         "id_partida":id_partida, 
-                        "jogador_da_vez":partida['jogador_da_vez'], 
+                        "jogador_da_vez":partida['jogador_da_vez'],
                         "cor_da_vez":partida['cor_da_vez'],
-                        "usuario_cor":"branca"
+                        "jogador_branca":partida['jogador_branca'],
+                        "jogador_preta":partida['jogador_preta']
                     }
 
                     if metodo_dados == 'get':
@@ -90,10 +94,12 @@ def entrar_partida():
                     
                     dados_returno = {
                         "usuario":usuario,
+                        "usuario_cor":"preta",
                         "id_partida":id_partida, 
-                        "jogador_da_vez":partida['jogador_da_vez'], 
+                        "jogador_da_vez":partida['jogador_da_vez'],
                         "cor_da_vez":partida['cor_da_vez'],
-                        "usuario_cor":"preta"
+                        "jogador_branca":partida['jogador_branca'],
+                        "jogador_preta":partida['jogador_preta']
                     }
 
                     if metodo_dados == 'get':
@@ -113,8 +119,7 @@ def entrar_partida():
                         "usuario_cor":"",
                         "visitante":"true"
                     }
-                    print("***Visitante Convidado")
-                    print(dados_returno)
+
                     return render_template("index.html", dados_returno=dados_returno)
 
 
@@ -196,13 +201,23 @@ def nova_partida():
 
             with open(f"dados/partidas/em_andamento/{id_partida}.json", "w") as arq:
                 json.dump(partida, arq)
-
+            """
             dados_returno = {
                     "id_partida":id_partida, 
                     "jogador_da_vez":partida['jogador_da_vez'], 
                     "cor_da_vez":partida['cor_da_vez'],
                     "usuario_cor":"branca"
                     }
+            """
+            dados_returno = {
+                        "usuario":usuario,
+                        "usuario_cor":"branca",
+                        "id_partida":id_partida, 
+                        "jogador_da_vez":partida['jogador_da_vez'],
+                        "cor_da_vez":partida['cor_da_vez'],
+                        "jogador_branca":partida['jogador_branca'],
+                        "jogador_preta":partida['jogador_preta']
+                        }
 
             return jsonify(dados_returno)
         else:
