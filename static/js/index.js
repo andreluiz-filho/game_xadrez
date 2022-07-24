@@ -109,8 +109,10 @@ if(usuario == null){
 
 		    	var img = new Image();
 		    	img.src = imagem_peca
-		    	img.width = "60"
-		    	img.height = "60"
+		    	//img.width = "60"
+		    	//img.height = "60"
+		    	img.width = "40"
+		    	img.height = "40"
 		    	img.alt = nome_peca+'___'+posicao_peca
 
 				if(posicao_peca == casas[i].id){
@@ -301,6 +303,11 @@ if(usuario == null){
 						sessionStorage.removeItem('peca_selecionada')
 					}
 					else{
+
+						if(key_data.includes('ultima_jogada')){
+							console.log("***", data['ultima_jogada'])
+						}
+						
 						status_partida 	= data['status']
 						pecas_partida 	= data['pecas']
 

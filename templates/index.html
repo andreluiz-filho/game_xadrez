@@ -23,8 +23,6 @@
 			<input type="hidden" name="get_jogador_branca" id="get_jogador_branca" value="{{dados_returno['jogador_branca']}}">
 			<input type="hidden" name="get_jogador_preta" id="get_jogador_preta" value="{{dados_returno['jogador_preta']}}">
 
-			
-
 			{% if dados_returno['visitante'] %}
 				<input type="hidden" name="get_visitante" id="get_visitante" value="{{dados_returno['visitante']}}">
 			{% else %}
@@ -63,11 +61,21 @@
 						<tr>
 							<th scope="col">Jogador</th>
 							<th scope="col">Cor</th>
-							<th scope="col">Torre</th>
-							<th scope="col">Cavalo</th>
-							<th scope="col">Bispo</th>
-							<th scope="col">Rainha</th>
-							<th scope="col">Peão</th>
+							<th scope="col">
+								<img src="/static/img/pecas/torre_branca.png" width="25" height="25">
+							</th>
+							<th scope="col">
+								<img src="/static/img/pecas/cavalo_branca.png" width="25" height="25">
+							</th>
+							<th scope="col">
+								<img src="/static/img/pecas/bispo_branca.png" width="25" height="25">
+							</th>
+							<th scope="col">
+								<img src="/static/img/pecas/rainha_branca.png" width="25" height="25">
+							</th>
+							<th scope="col">
+								<img src="/static/img/pecas/peao_branca.png" width="25" height="25">
+							</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -91,200 +99,14 @@
 						</tr>
 					</tbody>
 
-					<!--
-					<tr>
-						<td>
-							Branca
-						</td>
-						<td>
-							<button type="button" class="btn btn-secondary" id="status_torre_branca">Torre(0)</button>
-						</td>
-						<td>
-							<button type="button" class="btn btn-secondary" id="status_cavalo_branca">Cavalo(0)</button>
-						</td>
-						<td>
-							<button type="button" class="btn btn-secondary" id="status_bispo_branca">Bispo(0)</button>
-						</td>
-						<td>
-							<button type="button" class="btn btn-secondary" id="status_rainha_branca">Rainha(0)</button>
-						</td>
-						<td>
-							<button type="button" class="btn btn-secondary" id="status_peao_branca">Peao(0)</button>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							Preta
-						</td>
-						<td>
-							<button type="button" class="btn btn-secondary" id="status_torre_preta">Torre(0)</button>
-						</td>
-						<td>
-							<button type="button" class="btn btn-secondary" id="status_cavalo_preta">Cavalo(0)</button>
-						</td>
-						<td>
-							<button type="button" class="btn btn-secondary" id="status_bispo_preta">Bispo(0)</button>
-						</td>
-						<td>
-							<button type="button" class="btn btn-secondary" id="status_rainha_preta">Rainha(0)</button>
-						</td>
-						<td>
-							<button type="button" class="btn btn-secondary" id="status_peao_preta">Peao(0)</button>
-						</td>
-					</tr>
-					-->
 				</table>
 				
 			</div>
 
 		</div>
 
-		<table id="table" class="tabuleiro">
-		</table>
-		<!--
-		<div id="status_partida" style="display: none; width: 20%;">
-			<h4 id="titulo_status_partida"></h4>
+		<table id="table" class="tabuleiro"></table>
 
-			<div class="area_status">
-				<span id="titulos_status">Mov. Atual: </span>
-
-				<div id="conteudo_ultima_peca_selecionada">
-					
-					<table class="tabela_status">
-						<tr>
-							<td>Nome da Peça: </td>
-							<td id="nome_peca_tabela_status" style="width: 120px"></td>
-						</tr>
-						<tr>
-							<td>Posição Anterior: </td>
-							<td id="posicao_peca_tabela_status"></td>
-						</tr>
-					</table>
-
-					<div>
-						<span id="erro_mover_captura"></span>
-					</div>
-					
-				</div>
-			</div>	
-			
-			<div class="area_status pecas_capturadas_brancas">
-				<span class="titulos_status">Peças Capturadas (Brancas)</span>
-
-				<div id="conteudo_pecas_capturadas_brancas">
-					<table class="tabela_status tabela_status_pecas_capturadas_brancas">
-						<tr class="cabecalho">
-							<th>Nome da Peça:</th>
-							<th>QTD:</th>
-						</tr>
-						<tr class="capturadas_brancas">
-							<td>
-								Torre
-							</td>
-							<td id="qtd_torre_branca">
-								0
-							</td>
-						</tr>
-
-						<tr class="capturadas_brancas">
-							<td>
-								Cavalo
-							</td>
-							<td id="qtd_cavalo_branca">
-								0
-							</td>
-						</tr>
-
-						<tr class="capturadas_brancas">
-							<td>
-								Bispo
-							</td>
-							<td id="qtd_bispo_branca">
-								0
-							</td>
-						</tr>
-
-						<tr class="capturadas_brancas">
-							<td>
-								Rainha
-							</td>
-							<td id="qtd_rainha_branca">
-								0
-							</td>
-						</tr>
-
-						<tr class="capturadas_brancas">
-							<td>
-								Peao
-							</td>
-							<td id="qtd_peao_branca">
-								0
-							</td>
-						</tr>
-
-					</table>
-				</div>
-			</div>
-
-			<div class="area_status pecas_capturadas_pretas">
-				<span class="titulos_status">Peças Capturadas (Pretas)</span>
-
-				<div id="conteudo_pecas_capturadas_pretas">
-					<table class="tabela_status tabela_status_pecas_capturadas_pretas">
-						<tr class="cabecalho">
-							<th>Nome da Peça:</th>
-							<th>QTD:</th>
-						</tr>
-						<tr class="capturadas_pretas">
-							<td>
-								Torre
-							</td>
-							<td id="qtd_torre_preta">
-								0
-							</td>
-						</tr>
-
-						<tr class="capturadas_pretas">
-							<td>
-								Cavalo
-							</td>
-							<td id="qtd_cavalo_preta">
-								0
-							</td>
-						</tr>
-
-						<tr class="capturadas_pretas">
-							<td>
-								Bispo
-							</td>
-							<td id="qtd_bispo_preta">
-								0
-							</td>
-						</tr>
-
-						<tr class="capturadas_pretas">
-							<td>
-								Rainha
-							</td>
-							<td id="qtd_rainha_preta">
-								0
-							</td>
-						</tr>
-
-						<tr class="capturadas_pretas">
-							<td>
-								Peao
-							</td>
-							<td id="qtd_peao_preta">
-								0
-							</td>
-						</tr>
-
-					</table>
-				</div>
-			</div>
-		</div>
-		-->
 	</div>
 
 	<script src="{{url_for('static', filename='js/index.js')}}"></script>

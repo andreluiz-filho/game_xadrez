@@ -56,8 +56,8 @@
 /*--------------------------------------------------------------*/
 
 .casa{
-	height: 70px; 
-	width: 70px; 
+	height: 3em; 
+	width: 3em; 
 }
 
 .topo_menu{
@@ -66,37 +66,22 @@
 	border: 1px solid;
 }
 
+
 .casa_cor_secundaria{
-	background-color: #AAAAAA
+	background-color: #AAAAAA;
 }
 
 .casa_cor_primaria{
-	background-color: #333333
+	background-color: #588658;
 }
 
 /*--------------------------------------------------------------*/
 
 #area_admin{
-
 	border: 1px solid #ccc;
 	border-radius: 5px; 
-	width: 41.5%; 
+	width: 25em; 
 	margin: 0 auto;
-
-	/*
-	border: 1px solid;
-	width: 70%;
-	margin: 0 auto;
-	
-	position: absolute;
-	top: 10px;
-	right: 10px;
-	border: 1px solid;
-	border-radius: 10px;
-	width: 20%;
-	height: 30%;
-	float: right;
-	*/
 }
 
 #area_admin #area_admin_hide_show{

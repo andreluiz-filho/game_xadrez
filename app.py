@@ -310,11 +310,23 @@ def api_moverPeca():
 
     #---------------------------------------------------------------------
 
+    def salva_ultima_jogada(data):
+        id_partida = data['id_partida']
+
+        arq_ultima_jogada = f"ultima_jogada__{id_partida}.json"
+        
+        with open(f"dados/partidas/em_andamento/{arq_ultima_jogada}", "w") as arq:
+            json.dump(data, arq)    
+        
+    #---------------------------------------------------------------------
+
     peca_selecionada = json.loads(request.data)
     
     usuario                 = peca_selecionada['usuario']
     usuario_cor             = peca_selecionada['usuario_cor']
-    id_partida           = peca_selecionada['id_partida']
+    id_partida_cod          = peca_selecionada['id_partida']
+
+    id_partida = id_partida_cod+'.json'
 
     peca_selecionada_nome   = peca_selecionada['peca_selecionada_nome']
     target_posicao          = peca_selecionada['target_posicao']
@@ -358,6 +370,20 @@ def api_moverPeca():
 
                 for i in partida['pecas']:
                     if peca_selecionada_nome == i['nome_peca']:
+                        nome_peca = i['nome_peca']
+                        posicao_peca = i['posicao']
+                        target_posicao_peca = target_posicao
+
+                        ultima_jogada = {
+                                        'usuario':usuario, 
+                                        'id_partida':id_partida_cod,
+                                        'nome_peca':nome_peca, 
+                                        'posicao_peca':posicao_peca,
+                                        'target_posicao_peca':target_posicao_peca
+                                        }
+
+                        salva_ultima_jogada(ultima_jogada)
+
                         i["posicao"] = target_posicao
 
                         if usuario_cor == 'branca':
@@ -370,6 +396,8 @@ def api_moverPeca():
                             partida['cor_da_vez'] = 'branca'
 
                 salva_Partida(partida)
+                
+                partida['ultima_jogada'] = ultima_jogada
                 
                 return jsonify(partida)
 
