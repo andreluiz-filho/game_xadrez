@@ -135,21 +135,23 @@ if(usuario == null){
 		area_admin_jogador_branca.textContent = jogador_branca
 		area_admin_jogador_preta.textContent = jogador_preta
 
-		area_admin_jogador_branca.style.background = ""
-		area_admin_jogador_preta.style.background = ""
+		area_admin_jogador_branca_status.style.background = "white"
+		area_admin_jogador_preta_status.style.background = "white"
 
 		if(jogador_da_vez == usuario){
 			area_admin_hide_show.style.background = "green"
+			area_admin_jogador_branca_status.style.background = "green"
 		}else{
 			area_admin_hide_show.style.background = "#4e82d2"
 		}
 
 		if(jogador_da_vez == jogador_branca){
-			area_admin_jogador_branca.style.background = "green"
+			area_admin_jogador_branca_status.style.background = "green"
+			area_admin_jogador_preta_status.style.background = "white"
 		}
 		else if(jogador_da_vez == jogador_preta){
-			area_admin_jogador_preta.style.background = "green"
-
+			area_admin_jogador_preta_status.style.background = "green"
+			area_admin_jogador_branca_status.style.background = "white"
 		}
 
 		// ---------------------------------------------
@@ -215,8 +217,8 @@ if(usuario == null){
 			area_usuario_titulo.textContent = usuario+" - Visitante"
 		}
 		else{
-			area_usuario_titulo.textContent = ""
-			area_usuario_titulo.textContent = usuario
+			//area_usuario_titulo.textContent = ""
+			//area_usuario_titulo.textContent = usuario
 		}
 
 		fetch(api_partida, {

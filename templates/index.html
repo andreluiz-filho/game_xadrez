@@ -45,6 +45,7 @@
 			<div id="area_admin_hide_show" onclick="func_area_admin_hide_show()">
 				
 			</div>
+
 			<div id="area_admin_topo" style="display: none;">
 				
 				<h3 id="area_usuario">
@@ -56,11 +57,16 @@
 			</div>
 
 			<div id="area_admin_conteudo" style="display: none;">
+
 				<table class="table">
 					
 					<tbody>
+						<!--JOGADOR BRANCA-->
 						<tr>
-							<td id="area_admin_jogador_branca"></td>
+							<td>
+								<span id="area_admin_jogador_branca_status">&nbsp;</span>
+								<span id="area_admin_jogador_branca"></span>
+							</td>
 							<td>
 								<img src="/static/img/pecas/torre_branca.png" width="25" height="25">
 								<span id="status__torre_branca" class="pecas_capturadas">0</span>
@@ -82,8 +88,13 @@
 								<span id="status__peao_branca" class="pecas_capturadas">0</span>
 							</td>
 						</tr>
+
+						<!--JOGADOR PRETA-->
 						<tr>
-							<td id="area_admin_jogador_preta"></td>
+							<td>
+								<span id="area_admin_jogador_preta_status">&nbsp;</span>
+								<span id="area_admin_jogador_preta"></span>
+							</td>
 							<td>
 								<img src="/static/img/pecas/torre_preta.png" width="25" height="25">
 								<span id="status__torre_preta" class="pecas_capturadas">0</span>

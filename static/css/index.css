@@ -80,7 +80,7 @@
 #area_admin{
 	border: 1px solid #ccc;
 	border-radius: 5px; 
-	width: 25em; 
+	width: 24.1em; 
 	margin: 0 auto;
 }
 
@@ -101,7 +101,6 @@
 	width: 4%;
 }
 
-
 #area_admin #area_admin_topo #sair_partida{
 	position: relative;
 	right: 0%;
@@ -109,10 +108,23 @@
 	width: 5%;
 }
 
-
-
 #area_admin #area_admin_conteudo{
 	position: relative;
+}
+
+#area_admin #area_admin_jogador_branca_status, #area_admin_jogador_preta_status{
+	position: relative;
+	left: -10px;
+	padding: 0.2em;
+	border-radius: 10px;
+}
+
+#area_admin #area_admin_jogador_branca{
+	border-radius: 10px;
+}
+
+#area_admin #area_admin_jogador_preta{
+	border-radius: 10px;
 }
 
 /*--------------------------------------------------------------*/
