@@ -139,10 +139,10 @@ if(usuario == null){
 		area_admin_jogador_preta_status.style.background = "white"
 
 		if(jogador_da_vez == usuario){
-			area_admin_hide_show.style.background = "green"
+			area_admin_hide_show.style.background = "blue"
 			area_admin_jogador_branca_status.style.background = "green"
 		}else{
-			area_admin_hide_show.style.background = "#4e82d2"
+			area_admin_hide_show.style.background = "#999"
 		}
 
 		if(jogador_da_vez == jogador_branca){

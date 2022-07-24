@@ -79,14 +79,17 @@
 
 #area_admin{
 	border: 1px solid #ccc;
-	border-radius: 5px; 
+	border-radius: 5px;
 	width: 24.1em; 
 	margin: 0 auto;
 }
 
 #area_admin #area_admin_hide_show{
-	height: 10px;
-	background-color: #4e82d2;
+	border: 3px solid #000;
+	border-radius: 5px;
+	height: 20px;
+	/*background-color: #4e82d2;*/
+	/*background-color: #ccc;*/
 	cursor: pointer;
 }
 
