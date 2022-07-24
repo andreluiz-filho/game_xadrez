@@ -241,9 +241,12 @@ if(usuario == null){
 
 			}
 			else if(key_data.includes('pecas')){
-
+				
 				sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
 				sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
+
+				sessionStorage.setItem('jogador_branca', data['jogador_branca'])
+				sessionStorage.setItem('jogador_preta', data['jogador_preta'])
 
 				status_partida 	= data['status']
 				pecas_partida 	= data['pecas']
