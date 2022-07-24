@@ -156,7 +156,7 @@ def nova_partida():
         if user:
             
             id_partida = secrets.token_hex(10)
-
+            """
             partida = {
                         "status": "aberta",
                         "jogador_branca":usuario, 
@@ -196,6 +196,49 @@ def nova_partida():
                             {"nome_peca": "preta__peao_6", "posicao":"f7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
                             {"nome_peca": "preta__peao_7", "posicao":"g7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
                             {"nome_peca": "preta__peao_8", "posicao":"h7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
+                        ]
+                }
+            """
+
+            partida = {
+                        "status": "aberta",
+                        "jogador_branca":usuario, 
+                        "jogador_preta":"",
+                        "jogador_da_vez":usuario,
+                        "cor_da_vez":"branca",
+                        "pecas":[
+                            {"nome_peca": "branca__torre_1", "posicao":"a1", "capturada":"false"}, 
+                            {"nome_peca": "branca__cavalo_1", "posicao":"b1", "capturada":"false"}, 
+                            {"nome_peca": "branca__bispo_1", "posicao":"c1", "capturada":"false"}, 
+                            {"nome_peca": "branca__rainha", "posicao":"d1", "capturada":"false"},
+                            {"nome_peca": "branca__rei", "posicao":"e1", "capturada":"false"},
+                            {"nome_peca": "branca__bispo_2", "posicao":"f1", "capturada":"false"},
+                            {"nome_peca": "branca__cavalo_2", "posicao":"g1", "capturada":"false"},
+                            {"nome_peca": "branca__torre_2", "posicao":"h1", "capturada":"false"},
+                            {"nome_peca": "branca__peao_1", "posicao":"a2", "capturada":"false"},
+                            {"nome_peca": "branca__peao_2", "posicao":"b2", "capturada":"false"},
+                            {"nome_peca": "branca__peao_3", "posicao":"c2", "capturada":"false"},
+                            {"nome_peca": "branca__peao_4", "posicao":"d2", "capturada":"false"},
+                            {"nome_peca": "branca__peao_5", "posicao":"e2", "capturada":"false"},
+                            {"nome_peca": "branca__peao_6", "posicao":"f2", "capturada":"false"},
+                            {"nome_peca": "branca__peao_7", "posicao":"g2", "capturada":"false"},
+                            {"nome_peca": "branca__peao_8", "posicao":"h2", "capturada":"false"},
+                            {"nome_peca": "preta__torre_1", "posicao":"a8", "capturada":"false"}, 
+                            {"nome_peca": "preta__cavalo_1", "posicao":"b8", "capturada":"false"}, 
+                            {"nome_peca": "preta__bispo_1", "posicao":"c8", "capturada":"false"}, 
+                            {"nome_peca": "preta__rainha", "posicao":"d8", "capturada":"false"},
+                            {"nome_peca": "preta__rei", "posicao":"e8", "capturada":"false"},
+                            {"nome_peca": "preta__bispo_2", "posicao":"f8", "capturada":"false"},
+                            {"nome_peca": "preta__cavalo_2", "posicao":"g8", "capturada":"false"},
+                            {"nome_peca": "preta__torre_2", "posicao":"h8", "capturada":"false"},
+                            {"nome_peca": "preta__peao_1", "posicao":"a7", "capturada":"false", "rainha":"false"},
+                            {"nome_peca": "preta__peao_2", "posicao":"b7", "capturada":"false", "rainha":"false"},
+                            {"nome_peca": "preta__peao_3", "posicao":"c7", "capturada":"false", "rainha":"false"},
+                            {"nome_peca": "preta__peao_4", "posicao":"d7", "capturada":"false", "rainha":"false"},
+                            {"nome_peca": "preta__peao_5", "posicao":"e7", "capturada":"false", "rainha":"false"},
+                            {"nome_peca": "preta__peao_6", "posicao":"f7", "capturada":"false", "rainha":"false"},
+                            {"nome_peca": "preta__peao_7", "posicao":"g7", "capturada":"false", "rainha":"false"},
+                            {"nome_peca": "preta__peao_8", "posicao":"h7", "capturada":"false", "rainha":"false"},
                         ]
                 }
 
