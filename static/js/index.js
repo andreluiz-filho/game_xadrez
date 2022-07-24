@@ -100,21 +100,17 @@ if(usuario == null){
 
 			for(peca of data){
 				
-
 				nome_peca 			= peca['nome_peca']
 				nome_peca_cor 		= nome_peca.split("__")[0]
 				nome_peca_isolado 	= nome_peca.split("__")[1].split("_")[0]
 				nome_peca_formatada = nome_peca_isolado+"_"+nome_peca_cor
 		    	posicao_peca 		= peca['posicao']
 				imagem_peca 		= '/static/img/pecas'+'/'+nome_peca_formatada+'.png'
-				
-				
 
 		    	var img = new Image();
 		    	img.src = imagem_peca
 		    	img.width = "60"
 		    	img.height = "60"
-		    	img.style.border = "thick solid #ccc"
 		    	img.alt = nome_peca+'___'+posicao_peca
 
 				if(posicao_peca == casas[i].id){
@@ -122,7 +118,6 @@ if(usuario == null){
 				}
 			}
 		}
-	
 	}
 
 	//********************************************************
@@ -175,19 +170,6 @@ if(usuario == null){
 		}
 		
 		atualizarPartida(lista_pecas_ativas)	
-
-		lista_qtd_capturadas = [
-						'torre_branca', 
-						'cavalo_branca', 
-						'bispo_branca', 
-						'rainha_branca', 
-						'peao_branca',
-						'torre_preta', 
-						'cavalo_preta', 
-						'bispo_preta', 
-						'rainha_preta', 
-						'peao_preta'
-						]
 		
 		pecas_capturadas = document.querySelectorAll(".pecas_capturadas")
 		for(i = 0; i < pecas_capturadas.length; i++){
@@ -371,7 +353,6 @@ if(usuario == null){
 										moverPeca(data_capturar_peca)
 									
 									}
-								
 								}
 								
 							}else{
@@ -381,6 +362,7 @@ if(usuario == null){
 								peca_selecionada_posicao 	= e.target.alt.split('___')[1]
 
 								e.target.style.border = "thick solid green";
+								e.target.style.borderRadius = "30px";
 							
 							}
 						
@@ -388,11 +370,11 @@ if(usuario == null){
 							console.log("Não é possivel Movimentar Essa Peça")
 
 							e.target.style.border = "thick solid red";
+							e.target.style.borderRadius = "30px";
 						
 							setInterval(function() {
-								e.target.style.border = "thick solid #ccc";
+								e.target.style.border = "";
 							}, 1000);
-						
 						}
 
 					}else{
@@ -400,9 +382,10 @@ if(usuario == null){
 						console.log("Não é possivel Movimentar Essa Peça")
 
 						e.target.style.border = "thick solid red";
+						e.target.style.borderRadius = "30px";
 					
 						setInterval(function() {
-							e.target.style.border = "thick solid #ccc";
+							e.target.style.border = "";
 						}, 1000);
 						
 						if(peca_selecionada){
@@ -420,12 +403,7 @@ if(usuario == null){
 								if(cor_da_vez == peca_selecionada_cor){
 
 									e.target.style.border = "thick solid green";
-
-									//nome_peca_tabela_status.innerText = peca_selecionada_nome
-									//posicao_peca_tabela_status.innerText = peca_selecionada_posicao
-
-									//nome_peca_tabela_status.innerText = peca_selecionada_nome
-									//posicao_peca_tabela_status.innerText = peca_selecionada_posicao
+									e.target.style.borderRadius = "30px";
 
 									if(peca_selecionada_cor != peca_target_cor){
 
@@ -444,7 +422,6 @@ if(usuario == null){
 									}						
 								}
 							}
-
 						}
 					}
 
@@ -452,6 +429,7 @@ if(usuario == null){
 					console.log("Não é a sua vez")
 					
 					e.target.style.border = "thick solid red";
+					e.target.style.borderRadius = "30px";
 					
 					setInterval(function() {
 						e.target.style.border = "thick solid #ccc";
@@ -479,48 +457,10 @@ if(usuario == null){
 										'funcao':'mover'
 									}
 					moverPeca(data_mover_peca)
-					/*
-					fetch(api_moverPeca, {
-						  method: 'POST',
-						  body: JSON.stringify(data_mover_peca),
-						  headers:{
-						    'Content-Type': 'application/json'
-						  }
-						})
-					.then(res => res.json())
-					.then(function(data){
-						
-						key_data = Object.keys(data)
-
-						if(key_data.includes('erro')){
-							sessionStorage.removeItem('peca_selecionada')
-						}
-						else{
-							status_partida 	= data['status']
-							pecas_partida 	= data['pecas']
-
-							sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
-							sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
-
-							sessionStorage.setItem('jogador_branca', data['jogador_branca'])
-							sessionStorage.setItem('jogador_preta', data['jogador_preta'])
-
-							moverPeca(data_capturar_peca)
-						}
-					})
-					.catch(error => console.error('Error:', error))	
-					*/
 				}
 			
 			}
 		});	
-
-		casa.addEventListener("dblclick", (e)=>{
-			sessionStorage.removeItem('peca_selecionada')
-			nome_peca_tabela_status.innerText = ""
-			posicao_peca_tabela_status.innerText = ""
-			e.target.style.border = "thick solid #ccc";
-		});
 	
 	}
 
@@ -623,40 +563,6 @@ if(usuario == null){
 	
 	});
 	
-	//********************************************************
-	//********************************************************
-
-	/*
-	function nova_partida(){
-		
-		var recurso = url+"/novaPartida"
-
-		
-		fetch(recurso, {
-			  method: 'POST',
-			  body: JSON.stringify({"usuario":usuario}),
-			  headers:{
-			    'Content-Type': 'application/json'
-			  }
-			})
-		.then(res => res.json())
-		.then(function(data){
-			
-			sessionStorage.setItem('chave_partida', data['chave_partida'])
-			sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
-
-			window.location.href = url+'/partida';
-		})
-		.catch(error => console.error('Error:', error))
-	
-	}
-
-	function sair_partida(){
-		sessionStorage.clear()
-		window.location.href = url+'/partida';
-	
-	}
-	*/
 	//********************************************************
 	//********************************************************
 }
