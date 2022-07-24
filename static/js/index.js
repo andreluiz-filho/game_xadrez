@@ -49,97 +49,39 @@ if(usuario == null){
 
 	//********************************************************
 	//*******************CRIA O TABULEIRO*********************
-
-	rows = [9, 8, 7, 6, 5, 4, 3, 2, 1]
+	if(usuario_cor == 'preta'){
+		rows = [1, 2, 3, 4, 5, 6, 7, 8]
+		letras = ['h', 'g', 'f', 'e', 'd', 'c', 'b', 'a']
+	}
+	else{
+		rows = [8, 7, 6, 5, 4, 3, 2, 1]
+		letras = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+	}
+	
 	cols = [...Array(8).keys()]
-	letras = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+	
 
 	for(row of rows){
 
 		var tr = document.createElement('tr');
 		tr.className = " row"
-		if(row == 9){
+		
+		for(col of cols){
+			var td = document.createElement('td');
 
-			// -----------------------------------------------------------
-			// Area Entrar Partida
-			// -----------------------------------------------------------
-			/*
-			var td_entrar = document.createElement('td');
-			var h3_entrar = document.createElement('h3');
-			var input_entrar = document.createElement('input');
-			var button_entrar = document.createElement('button');
-			
-			h3_entrar.id = "usuario_logado"
-			h3_entrar.textContent = usuario
+			if(row % 2 == col % 2){
+				td.className = " casa casa_cor_secundaria col";
+			}else{
+				td.className = " casa casa_cor_primaria col";
+			}
 
-			input_entrar.type = 'text'
-			input_entrar.name = 'link_partida'
-			input_entrar.id   = 'link_partida'
+			nome_casa = letras[col]+row
+			td.id = nome_casa
 
-			button_entrar.type = 'button'
-			button_entrar.className = ' btn btn-secondary entrar_partida'
-			button_entrar.textContent = 'Entrar Partida'
-			
-			td_entrar.appendChild(h3_entrar)
-			td_entrar.appendChild(input_entrar)
-			td_entrar.appendChild(button_entrar)
-			td_entrar.className = " topo_menu col";
-			*/
-			// -----------------------------------------------------------
-			// Area Nova Partida
-			// -----------------------------------------------------------
-			/*
-			var td_nova 	= document.createElement('td');
-			var button_nova = document.createElement('button');
-			var button_sair = document.createElement('button');
-			var img_nova 	= new Image();
+			tr.appendChild(td);
+	    	table.appendChild(tr);
 
-			button_nova.type = 'button'
-			button_nova.className = ' btn btn-secondary nova_partida'
-			//button_nova.textContent = 'Nova Partida'
-
-			img_nova.src = '/static/img/plus.svg'
-	    	img_nova.width = "20"
-	    	img_nova.height = "20"
-
-			button_nova.appendChild(img_nova)
-
-			button_sair.type = 'button'
-			button_sair.className = ' btn btn-secondary sair_partida'
-			button_sair.textContent = 'Sair'
-
-			td_nova.appendChild(button_nova)
-			td_nova.appendChild(button_sair)
-			td_nova.className = " topo_menu col";
-
-			// -----------------------------------------------------------
-
-			//tr.appendChild(td_entrar)
-			tr.appendChild(td_nova)
-			table.appendChild(tr)
-			*/
-
-
-
-		}else if(row != 9){
-
-			for(col of cols){
-				var td = document.createElement('td');
-
-				if(row % 2 == col % 2){
-					td.className = " casa casa_cor_secundaria col";
-				}else{
-					td.className = " casa casa_cor_primaria col";
-				}
-
-				nome_casa = letras[col]+row
-				td.id = nome_casa
-
-				tr.appendChild(td);
-		    	table.appendChild(tr);
-
-		    }
-		}
+	    }
 	}
 
 	//********************************************************
