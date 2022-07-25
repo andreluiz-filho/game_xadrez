@@ -268,22 +268,26 @@ if(usuario == null){
 				pecas_partida 	= data['pecas']
 
 				separaPecas(pecas_partida)
+
+				// ---------------------- ICONE FINALIZAR PARTIDA ------------------------
+
+				jogador_branca 	= sessionStorage.getItem('jogador_branca')
+				if(usuario == jogador_branca){
+					finalizar_partida.style.display = "block"
+				}else{
+					finalizar_partida.style.display = "none"
+				}
 				
+				// -----------------------------------------------------------------------
 			}
 		})
 		.catch(error => console.error('Error:', error))
 	
 	}
 
-	jogador_branca 	= sessionStorage.getItem('jogador_branca')
-	if(usuario == jogador_branca){
-		finalizar_partida.style.display = "block"
-	}else{
-		finalizar_partida.style.display = "none"
-	}
 
 	if(id_partida && id_partida != 'undefined' && jogador_da_vez){
-		
+			
 		// --------------------------------------------------------------
 
 		func_api_partida();
