@@ -10,11 +10,10 @@ sessionStorage.clear()
 function login_usuario(){
 	
 	var usuario 	= input_usuario.value
-	var id_partida 	= input_id_partida.value
 
 	var api_login_usuario = url+'/api_login_usuario'
 
-	dados = {"usuario":usuario, "id_partida":id_partida}
+	dados = {"usuario":usuario}
 
 	fetch(api_login_usuario, {
 		method: 'POST',
@@ -49,6 +48,11 @@ function login_usuario(){
 			window.location.href = url+'/partida';
 		}
 		else if(key_data.includes('usuario')){
+
+			if(key_data.includes('partidas_em_andamento')){
+				sessionStorage.setItem("partidas_em_andamento", data['partidas_em_andamento'])
+			}
+
 			mensagem_erro.innerHTML = 'Login Realizado'
 
 			sessionStorage.setItem("usuario", data['usuario'])

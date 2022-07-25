@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, redirect, jsonify
+from cryptography.fernet import Fernet
 from flask import url_for
 from datetime import datetime
 import json
@@ -10,6 +11,9 @@ app = Flask(__name__)
 app.config.update(
     SECRET_KEY="secret_sauce",
 )
+
+caminho_partidas = "dados/partidas"
+caminho_partidas_em_andamento = caminho_partidas+"/em_andamento/"
 
 #----------------------------------------------------------------------------
 
@@ -29,23 +33,9 @@ def index():
 def entrar_partida():
     # 192.168.0.219:5000/entrarPartida?usuario=teste02&id_partida=2937e46c0dafa6c58fd8
 
-    metodo_dados = ""
-    if request.data:
-        dados = json.loads(request.data)
-        usuario = dados['usuario']
-        id_partida = dados['id_partida']
-        metodo_dados = 'post'
-
-    dict_dados = {}
-    if request.args:
-        for i in request.args:
-            dict_dados[i] = request.args[i]
-
-    if dict_dados:
-        usuario = dict_dados['usuario']
-        id_partida = dict_dados['id_partida']
-        metodo_dados = 'get'
-
+    dados = json.loads(request.data)
+    usuario = dados['usuario']
+    id_partida = dados['id_partida']
 
     arquivo_user = [i for i in os.listdir('dados') if 'usuarios.json' in i]
 
@@ -55,13 +45,15 @@ def entrar_partida():
 
         user = usuario in dados
         if user:
-            id_partida = id_partida+".json"
-            arquivo_id_partida = [i for i in os.listdir("dados/partidas/em_andamento") if id_partida in i]
-            if arquivo_id_partida:
+            pasta_partida = [i for i in os.listdir(caminho_partidas_em_andamento) if id_partida in i]
 
-                with open(f"dados/partidas/em_andamento/{arquivo_id_partida[0]}") as arq:
+            if pasta_partida:
+                caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
+
+                arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if "ultima_jogada" not in i]
+
+                with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}") as arq:
                     partida = json.load(arq)
-
 
                 if partida['jogador_branca'] == usuario:
 
@@ -77,18 +69,10 @@ def entrar_partida():
                         "jogador_preta":partida['jogador_preta']
                     }
 
-                    if metodo_dados == 'get':
-                        #return redirect(url_for("index", dados_returno=dados_returno))
-                        return render_template("index.html", dados_returno=dados_returno)
-
-                    elif metodo_dados == 'post':
-                        return jsonify(dados_returno)
+                    return jsonify(dados_returno)
 
                 elif partida['jogador_preta'] == "" or partida['jogador_preta'] == usuario:
                     partida['jogador_preta'] = usuario
-
-                    with open(f"dados/partidas/em_andamento/{id_partida}", "w") as arq:
-                        json.dump(partida, arq)
 
                     id_partida = id_partida.split(".")[0]
                     
@@ -102,12 +86,7 @@ def entrar_partida():
                         "jogador_preta":partida['jogador_preta']
                     }
 
-                    if metodo_dados == 'get':
-                        #return redirect(url_for("index", dados_returno=dados_returno))
-                        return render_template("index.html", dados_returno=dados_returno)
-
-                    elif metodo_dados == 'post':
-                        return jsonify(dados_returno)
+                    return jsonify(dados_returno)
 
                 else:
                     id_partida = id_partida.split(".")[0]
@@ -122,29 +101,17 @@ def entrar_partida():
 
                     return render_template("index.html", dados_returno=dados_returno)
 
-
-
-                #Usuario não esta na Partida
-                if metodo_dados == 'get':
-                    return redirect("/")
-
-                elif metodo_dados == 'post':
-                    return jsonify({"erro": "Falha ao Entrar na  Partida"})
-    
-    if metodo_dados == 'get':
-        return redirect("/")
-
-    elif metodo_dados == 'post':
-        return jsonify({"erro": "Falha ao Entrar na  Partida"})
-    #return jsonify({"erro": "Falha ao Entrar na  Partida"})
+                
+    return jsonify({"erro": "Falha ao Entrar na  Partida"})
 
 #----------------------------------------------------------------------------
 
 @app.route("/novaPartida", methods=["POST"])
 def nova_partida():
 
-    usuario = json.loads(request.data)
-    usuario = usuario['usuario']
+    dados_request = json.loads(request.data)
+    usuario = dados_request['usuario']
+    usuario_adversario = dados_request['usuario_adversario']
 
     arquivo = [i for i in os.listdir('dados') if 'usuarios.json' in i]
 
@@ -203,7 +170,7 @@ def nova_partida():
             partida = {
                         "status": "aberta",
                         "jogador_branca":usuario, 
-                        "jogador_preta":"",
+                        "jogador_preta":usuario_adversario,
                         "jogador_da_vez":usuario,
                         "cor_da_vez":"branca",
                         "pecas":[
@@ -242,7 +209,8 @@ def nova_partida():
                         ]
                 }
 
-            with open(f"dados/partidas/em_andamento/{id_partida}.json", "w") as arq:
+            os.mkdir(f"dados/partidas/em_andamento/{id_partida}")
+            with open(f"dados/partidas/em_andamento/{id_partida}/{id_partida}.json", "w") as arq:
                 json.dump(partida, arq)
             """
             dados_returno = {
@@ -276,15 +244,19 @@ def api_partida():
     id_partida = json.loads(request.data)
 
     id_partida = id_partida['id_partida']
-    id_partida = id_partida+".json"
+    #id_partida = id_partida+".json"
     
-    arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if id_partida in i]
-    if arquivo:
-        
-        with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
-            partida = json.load(arq)
-        
-        return jsonify(partida)
+    pasta_partida = [i for i in os.listdir(caminho_partidas_em_andamento) if id_partida in i]
+    if pasta_partida:
+        caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
+        arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if id_partida+".json" in i]
+        if arquivo_partida:
+            with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}") as arq:
+                partida = json.load(arq)
+            
+            return jsonify(partida)
+        else:
+            return jsonify({"erro":"ID da Partida Inválido"})
     else:
         return jsonify({"erro":"ID da Partida Inválido"})
 
@@ -296,16 +268,21 @@ def api_moverPeca():
     #---------------------------------------------------------------------
 
     def consulta_Partida():
-        arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if id_partida in i]
-        with open(f"dados/partidas/em_andamento/{arquivo[0]}") as arq:
-            partida = json.load(arq)
-        return partida
+        pasta_partida = [i for i in os.listdir(caminho_partidas_em_andamento) if id_partida in i]
+        if pasta_partida:
+            caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
+            arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if id_partida+".json" in i]
+            if arquivo_partida:
+                with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}") as arq:
+                    partida = json.load(arq)
+                return partida
 
     #---------------------------------------------------------------------
     
     def salva_Partida(data):
-        arquivo = [i for i in os.listdir("dados/partidas/em_andamento") if id_partida in i]
-        with open(f"dados/partidas/em_andamento/{arquivo[0]}", "w") as arq:
+        caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
+        arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if id_partida+'.json' in i]
+        with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}", "w") as arq:
             json.dump(data, arq)
 
     #---------------------------------------------------------------------
@@ -313,9 +290,11 @@ def api_moverPeca():
     def salva_ultima_jogada(data):
         id_partida = data['id_partida']
 
+        caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
+
         arq_ultima_jogada = f"ultima_jogada__{id_partida}.json"
         
-        with open(f"dados/partidas/em_andamento/{arq_ultima_jogada}", "w") as arq:
+        with open(f"{caminho_pasta_partida}/{arq_ultima_jogada}", "w") as arq:
             json.dump(data, arq)    
         
     #---------------------------------------------------------------------
@@ -324,67 +303,33 @@ def api_moverPeca():
     
     usuario                 = peca_selecionada['usuario']
     usuario_cor             = peca_selecionada['usuario_cor']
-    id_partida_cod          = peca_selecionada['id_partida']
-
-    id_partida = id_partida_cod+'.json'
+    id_partida              = peca_selecionada['id_partida']
 
     peca_selecionada_nome   = peca_selecionada['peca_selecionada_nome']
     target_posicao          = peca_selecionada['target_posicao']
     
     partida = consulta_Partida()
-    jogador_da_vez = partida['jogador_da_vez']
+    
+    if partida:
+        jogador_da_vez = partida['jogador_da_vez']
 
-    if usuario == jogador_da_vez:
+        if usuario == jogador_da_vez:
 
-        peca_selecionada_cor = peca_selecionada_nome.split("_")[0]
+            peca_selecionada_cor = peca_selecionada_nome.split("_")[0]
 
-        if peca_selecionada_cor == usuario_cor:
-            
-            if peca_selecionada['funcao'] == 'capturar':
+            if peca_selecionada_cor == usuario_cor:
                 
-                peca_target_nome  = peca_selecionada['peca_target_nome']
-
-                for i in partida['pecas']:
-
-                    if peca_target_nome == i['nome_peca']:
-                        i['capturada'] = 'true'
-
-                    if peca_selecionada_nome == i['nome_peca']:
-                        i['posicao'] = target_posicao
-
-                    if usuario_cor == 'branca':
-                        partida['jogador_da_vez'] = partida['jogador_preta']
-                        partida['cor_da_vez'] = 'preta'
-                        
-
-                    elif usuario_cor == 'preta':
-                        partida['jogador_da_vez'] = partida['jogador_branca']
-                        partida['cor_da_vez'] = 'branca'
+                if peca_selecionada['funcao'] == 'capturar':
                     
-                salva_Partida(partida)
-                
-                return jsonify(partida)
+                    peca_target_nome  = peca_selecionada['peca_target_nome']
 
-                
-            elif peca_selecionada['funcao'] == 'mover':
+                    for i in partida['pecas']:
 
-                for i in partida['pecas']:
-                    if peca_selecionada_nome == i['nome_peca']:
-                        nome_peca = i['nome_peca']
-                        posicao_peca = i['posicao']
-                        target_posicao_peca = target_posicao
+                        if peca_target_nome == i['nome_peca']:
+                            i['capturada'] = 'true'
 
-                        ultima_jogada = {
-                                        'usuario':usuario, 
-                                        'id_partida':id_partida_cod,
-                                        'nome_peca':nome_peca, 
-                                        'posicao_peca':posicao_peca,
-                                        'target_posicao_peca':target_posicao_peca
-                                        }
-
-                        salva_ultima_jogada(ultima_jogada)
-
-                        i["posicao"] = target_posicao
+                        if peca_selecionada_nome == i['nome_peca']:
+                            i['posicao'] = target_posicao
 
                         if usuario_cor == 'branca':
                             partida['jogador_da_vez'] = partida['jogador_preta']
@@ -394,17 +339,53 @@ def api_moverPeca():
                         elif usuario_cor == 'preta':
                             partida['jogador_da_vez'] = partida['jogador_branca']
                             partida['cor_da_vez'] = 'branca'
+                        
+                    salva_Partida(partida)
+                    
+                    return jsonify(partida)
 
-                salva_Partida(partida)
-                
-                partida['ultima_jogada'] = ultima_jogada
-                
-                return jsonify(partida)
+                    
+                elif peca_selecionada['funcao'] == 'mover':
 
+                    for i in partida['pecas']:
+                        if peca_selecionada_nome == i['nome_peca']:
+                            nome_peca = i['nome_peca']
+                            posicao_peca = i['posicao']
+                            target_posicao_peca = target_posicao
+
+                            ultima_jogada = {
+                                            'usuario':usuario, 
+                                            'id_partida':id_partida,
+                                            'nome_peca':nome_peca, 
+                                            'posicao_peca':posicao_peca,
+                                            'target_posicao_peca':target_posicao_peca
+                                            }
+
+                            salva_ultima_jogada(ultima_jogada)
+
+                            i["posicao"] = target_posicao
+
+                            if usuario_cor == 'branca':
+                                partida['jogador_da_vez'] = partida['jogador_preta']
+                                partida['cor_da_vez'] = 'preta'
+                                
+
+                            elif usuario_cor == 'preta':
+                                partida['jogador_da_vez'] = partida['jogador_branca']
+                                partida['cor_da_vez'] = 'branca'
+
+                    salva_Partida(partida)
+                    
+                    partida['ultima_jogada'] = ultima_jogada
+                    
+                    return jsonify(partida)
+
+            else:
+                return jsonify({'erro':'Não pode mover essa Peça'})  
         else:
-            return jsonify({'erro':'Não pode mover essa Peça'})  
+            return jsonify({'erro':'Não é a sua vez'})        
     else:
-        return jsonify({'erro':'Não é a sua vez'})        
+        return jsonify({"erro":"partida não existe"})
 
 #----------------------------------------------------------------------------
 
@@ -415,18 +396,7 @@ def api_login_usuario():
     if request.data:
         dados = json.loads(request.data)
         usuario = dados['usuario']
-        id_partida = dados['id_partida']
-        metodo_dados = 'post'
 
-    dict_dados = {}
-    if request.args:
-        for i in request.args:
-            dict_dados[i] = request.args[i]
-
-    if dict_dados:
-        usuario = dict_dados['usuario']
-        id_partida = dict_dados['id_partida']
-        metodo_dados = 'get'
 
     arquivo_user = [i for i in os.listdir('dados') if 'usuarios.json' in i]
     
@@ -437,33 +407,27 @@ def api_login_usuario():
         user = usuario in dados
         if user:
 
-            if id_partida:
-
-                id_partida = id_partida+".json"
+            partidas_em_andamento = []
+            
+            pastas_partidas = [i for i in os.listdir(caminho_partidas_em_andamento) if ".json" not in i]
+            
+            for p in pastas_partidas:
+                partidas = [i for i in os.listdir(caminho_partidas_em_andamento+p) if "ultima_jogada" not in i]
                 
-                arquivo_id_partida = [i for i in os.listdir("dados/partidas/em_andamento") if id_partida in i]
-                if arquivo_id_partida:
-                    
-                    with open(f"dados/partidas/em_andamento/{arquivo_id_partida[0]}") as arq:
-                        partida = json.load(arq)
-                    
-                    partida['usuario'] = usuario
-                    partida['id_partida'] = id_partida.split(".")[0]
+                for arq_partida in partidas:
 
-                    if usuario == partida['jogador_branca']:
-                        partida["usuario_cor"] = "branca"
+                    with open(caminho_partidas_em_andamento+p+"/"+arq_partida) as arq:
+                        dados = json.load(arq)
 
-                    elif usuario == partida['jogador_preta']:
-                        partida["usuario_cor"] = "preta"
+                    jogador_branca  = dados['jogador_branca']
+                    jogador_preta   = dados['jogador_preta']
 
-                    if metodo_dados == 'post':
-                        return jsonify(partida)
-                    elif metodo_dados == 'get':
-                        return redirect("/")
-                else:
-                    return jsonify({"erro":"ID da Partida Inválido"})
-            else:
-                return jsonify({"usuario":usuario})
+                    if usuario == jogador_branca or usuario == jogador_preta:
+                        partidas_em_andamento.append(p)
+
+            return jsonify({"usuario":usuario, "partidas_em_andamento":partidas_em_andamento})
+        
+        return jsonify({'erro':'Login Incorreto'})
     
     return jsonify({'erro':'Login Incorreto'})
     
@@ -487,6 +451,48 @@ def api_criar_usuario():
 
 
     return jsonify({'status':'Usuario criado com sucesso'})
+
+#----------------------------------------------------------------------------
+
+@app.route('/teste', methods=['GET', 'POST'])
+def teste():
+
+    #print(request.data)
+
+    usuario = "teste01"
+    id_id_partida = "c3ba626e064b94fb70d0"
+
+    convite = f"usuario={usuario}, id_partida={id_id_partida}"
+    convite = str.encode(convite)
+
+    arq_key = [i for i in os.listdir("dados/partidas/em_andamento") if 'key.json' in i]
+
+    if arq_key:
+        with open(f"dados/partidas/em_andamento/key.json") as arq:
+            dados = json.load(arq)
+
+        key = dados['key']
+        key_encode = str.encode(key)
+        
+        f = Fernet(key_encode)
+        
+        print()
+        print(convite)
+        convite_encrypt = f.encrypt(convite)
+        print(convite_encrypt)
+        print()
+        print(f.decrypt(convite_encrypt))
+
+    else:
+        key = Fernet.generate_key()
+        
+        key = key.decode()
+
+        with open(f"dados/partidas/em_andamento/key.json", "w") as arq:
+            json.dump({"key":key}, arq)
+        
+
+    return jsonify({"status":"sucesso"})
 
 #----------------------------------------------------------------------------
 

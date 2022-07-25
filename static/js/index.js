@@ -10,6 +10,19 @@ var api_moverPeca 	= url+'/api_moverPeca'
 usuario 	= sessionStorage.getItem('usuario')
 usuario_cor = sessionStorage.getItem('usuario_cor')
 
+partidas_em_andamento = sessionStorage.getItem('partidas_em_andamento')
+
+if(partidas_em_andamento){
+	for(i of partidas_em_andamento.split(",")){
+		var btn = document.createElement("button")
+		btn.textContent = i
+		btn.className = " btn btn-secondary entrar_partida"
+
+		area_partidas_em_andamento.appendChild(btn)
+	}
+	
+}
+
 if(usuario == null){
 
 	key_session = Object.keys(sessionStorage)
@@ -537,12 +550,22 @@ if(usuario == null){
 	// -------------------- NOVA PARTIDA --------------------
 	
 	nova_partida.addEventListener("click", (e)=>{
-		
+		usuario_adversario.value = ""
+		adicionar_adversario_partida.style.display = "block"
+	})
+
+	nova_partida_cancelar.addEventListener("click", (e)=>{
+		usuario_adversario.value = ""
+		adicionar_adversario_partida.style.display = "none"
+	})
+
+	nova_partida_confirmar.addEventListener("click", (e)=>{
+
 		var recurso = url+"/novaPartida"
 		
 		fetch(recurso, {
 			  method: 'POST',
-			  body: JSON.stringify({"usuario":usuario}),
+			  body: JSON.stringify({"usuario":usuario, "usuario_adversario":usuario_adversario.value}),
 			  headers:{
 			    'Content-Type': 'application/json'
 			  }
@@ -561,7 +584,7 @@ if(usuario == null){
 			window.location.href = url+'/partida';
 		})
 		.catch(error => console.error('Error:', error))
-	
+		
 	});
 	
 	//********************************************************
@@ -577,5 +600,39 @@ if(usuario == null){
 	
 	//********************************************************
 	//********************************************************
+
+	entrar_partida = document.querySelectorAll(".entrar_partida")
+	for(i = 0; i < entrar_partida.length; i++){
+
+		entrar_partida[i].addEventListener("click", (e)=>{
+
+			var recurso = url+"/entrarPartida"
+			fetch(recurso, {
+				  method: 'POST',
+				  body: JSON.stringify({"usuario":usuario, "id_partida":e.target.textContent}),
+				  headers:{
+				    'Content-Type': 'application/json'
+				  }
+				})
+			.then(res => res.json())
+			.then(function(data){
+
+				sessionStorage.setItem('id_partida', data['id_partida'])
+				sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
+				sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
+				sessionStorage.setItem('usuario_cor', data['usuario_cor'])
+
+				window.location.href = url+'/partida';
+			})
+			.catch(error => console.error('Error:', error))
+
+
+		})
+
+	}
+
+	//********************************************************
+	//********************************************************
+	
 }
 
