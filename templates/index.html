@@ -45,23 +45,43 @@
 			<div id="area_admin_hide_show" onclick="func_area_admin_hide_show()"></div>
 
 			<div id="area_admin_topo" style="display: none;">
-				
-				<h3 id="area_usuario">
-					<div id="adicionar_adversario_partida">
-						<div>
-							<label>Adversário: </label>
-						</div>
-						<div>
-							<input type="text" name="usuario_adversario" id="usuario_adversario" style="width: 30%; height: 25%" >
-						</div>
-						<button type="button" class="btn btn-secondary" id="nova_partida_confirmar">Confirmar</button>
-						<button type="button" class="btn btn-secondary" id="nova_partida_cancelar">Cancelar</button>
+
+				<div id="adicionar_adversario_partida">
+					<div>
+						<label style="font-size: 2em;">Adversário: </label>
+					</div>
+					<div>
+						<input type="text" name="usuario_adversario" id="usuario_adversario" style="width: 15em; height: 2em; border-radius: 5px; font-size: 1.2em;" >
+					</div>
+					<div style="margin-top: 0.5em;">
+						<button type="button" class="btn btn-secondary" id="nova_partida_confirmar" style="font-size: 1.2em">Confirmar</button>
+						<button type="button" class="btn btn-secondary" id="nova_partida_cancelar" style="font-size: 1.2em">Cancelar</button>
+					</div>
+				</div>
+
+				<div id="confirmacao_finalizar_partida">
+					<div>
+						<label style="font-size: 2em; font-weight: bold;">Tem certeza que deseja Finalizar a Partida? </label>
+					</div>
+					<div style="margin-top: 0.5em;">
+						<button type="button" class="btn btn-secondary" id="finalizar_partida_confirmar" style="font-size: 1.5em">Finalizar</button>
+						<button type="button" class="btn btn-secondary" id="finalizar_partida_cancelar" style="font-size: 1.5em">Cancelar</button>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col">
+						<img src="/static/img/plus.svg" id="nova_partida">	
 					</div>
 
-					<img src="/static/img/plus.svg" id="nova_partida">
-					<span id="area_usuario_titulo"></span>
-					<img src="/static/img/door-closed.svg" id="sair_partida">
-				</h3>
+					<div class="col">
+						<img src="/static/img/close.svg" id="finalizar_partida">
+					</div>
+
+					<div class="col">
+						<img src="/static/img/door-closed.svg" id="sair_partida">
+					</div>
+				</div>
 				
 			</div>
 
@@ -77,23 +97,23 @@
 								<span id="area_admin_jogador_branca"></span>
 							</td>
 							<td>
-								<img src="/static/img/pecas/torre_branca.png" width="25" height="25">
+								<img src="/static/img/pecas/torre_branca.png" alt="icone" width="25" height="25">
 								<span id="status__torre_branca" class="pecas_capturadas">0</span>
 							</td>
 							<td>
-								<img src="/static/img/pecas/cavalo_branca.png" width="25" height="25">
+								<img src="/static/img/pecas/cavalo_branca.png" alt="icone" width="25" height="25">
 								<span id="status__cavalo_branca" class="pecas_capturadas">0</span>
 							</td>
 							<td>
-								<img src="/static/img/pecas/bispo_branca.png" width="25" height="25">
+								<img src="/static/img/pecas/bispo_branca.png" alt="icone" width="25" height="25">
 								<span id="status__bispo_branca" class="pecas_capturadas">0</span>
 							</td>
 							<td>
-								<img src="/static/img/pecas/rainha_branca.png" width="25" height="25">
+								<img src="/static/img/pecas/rainha_branca.png" alt="icone" width="25" height="25">
 								<span id="status__rainha_branca" class="pecas_capturadas">0</span>
 							</td>
 							<td>
-								<img src="/static/img/pecas/peao_branca.png" width="25" height="25">
+								<img src="/static/img/pecas/peao_branca.png" alt="icone" width="25" height="25">
 								<span id="status__peao_branca" class="pecas_capturadas">0</span>
 							</td>
 						</tr>
@@ -105,44 +125,26 @@
 								<span id="area_admin_jogador_preta"></span>
 							</td>
 							<td>
-								<img src="/static/img/pecas/torre_preta.png" width="25" height="25">
+								<img src="/static/img/pecas/torre_preta.png" alt="icone" width="25" height="25">
 								<span id="status__torre_preta" class="pecas_capturadas">0</span>
 							</td>
 							<td>
-								<img src="/static/img/pecas/cavalo_preta.png" width="25" height="25">
+								<img src="/static/img/pecas/cavalo_preta.png" alt="icone" width="25" height="25">
 								<span id="status__cavalo_preta" class="pecas_capturadas">0</span>
 							</td>
 							<td>
-								<img src="/static/img/pecas/bispo_preta.png" width="25" height="25">
+								<img src="/static/img/pecas/bispo_preta.png" alt="icone" width="25" height="25">
 								<span id="status__bispo_preta" class="pecas_capturadas">0</span>
 							</td>
 							<td>
-								<img src="/static/img/pecas/rainha_preta.png" width="25" height="25">
+								<img src="/static/img/pecas/rainha_preta.png" alt="icone" alt="icone" width="25" height="25">
 								<span id="status__rainha_preta" class="pecas_capturadas">0</span>
 							</td>
 							<td>
-								<img src="/static/img/pecas/peao_preta.png" width="25" height="25">
+								<img src="/static/img/pecas/peao_preta.png" alt="icone" width="25" height="25">
 								<span id="status__peao_preta" class="pecas_capturadas">0</span>
 							</td>
 						</tr>
-						<!--
-						<tr>
-							<td id="area_admin_jogador_branca"></td>
-							<td id="status__torre_branca" class="pecas_capturadas">0</td>
-							<td id="status__cavalo_branca" class="pecas_capturadas">0</td>
-							<td id="status__bispo_branca" class="pecas_capturadas">0</td>
-							<td id="status__rainha_branca" class="pecas_capturadas">0</td>
-							<td id="status__peao_branca" class="pecas_capturadas">0</td>
-						</tr>
-						<tr>
-							<td id="area_admin_jogador_preta"></td>
-							<td id="status__torre_preta" class="pecas_capturadas">0</td>
-							<td id="status__cavalo_preta" class="pecas_capturadas">0</td>
-							<td id="status__bispo_preta" class="pecas_capturadas">0</td>
-							<td id="status__rainha_preta" class="pecas_capturadas">0</td>
-							<td id="status__peao_preta" class="pecas_capturadas">0</td>
-						</tr>
-						-->
 					</tbody>
 
 				</table>

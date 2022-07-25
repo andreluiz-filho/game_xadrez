@@ -1,60 +1,42 @@
 body{
-	
+	background-color: #a6b5a6;
 }
 
 #container{
 	margin-top: 10px;
 	text-align: center;
-	height: 300px;
+	height: 10em;
 }
 
 #conteudo{
-	border: 1px solid #999;
+	border: 2px solid black;
 	border-radius: 10px;
-	width: 20%;
-	height: 30%;
+	width: 20em;
+	height: 10em;
 	padding: 20px;
 	margin: 0 auto;
 }
 
-#link_partida{
-	width: 500px;
-}
-
-#btn_link{
-	position: relative;
-	top: 0px;
-	background-color: #999;
-	border-radius: 10px;
-	width: 150px;
-	padding: 10px;
-	cursor: pointer;
-	margin: 0 auto;
-	margin-top: 5px;
-	margin-bottom: 5px;
-}
-
-#btn_link:hover{
-	background-color: #b9b3b3;
-}
-
 label{
 	font-weight: bold;
-	font-size: 100%;
+	font-size: 2em;
 }
 
 #input_usuario{
 	border-radius: 5px;
-	width: 90%;
+	width: 20em;
+	margin-top: 40px;
+	background-color: #dae1da;
 }
 
 #btn_login{
 	border-radius: 5px;
-	width: 40%;
-	margin-top: 5px;
+	width: 10em;
+	margin-top: 40px;
 	padding: 5px;
 	cursor: pointer;
 	font-weight: bold;
+	font-size: 1em;
 }
 
 #btn_login:hover{
@@ -64,7 +46,7 @@ label{
 #mensagem_erro{
 	display: none;
 	position: relative;
-	top: 5%;
+	top: 1.4em;
 	border: 1px solid red;
 	border-radius: 5px;
 	padding: 2px;

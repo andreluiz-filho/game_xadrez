@@ -4,6 +4,7 @@ from flask import url_for
 from datetime import datetime
 import json
 import os
+import shutil
 import secrets
 
 app = Flask(__name__)
@@ -454,45 +455,32 @@ def api_criar_usuario():
 
 #----------------------------------------------------------------------------
 
-@app.route('/teste', methods=['GET', 'POST'])
-def teste():
+@app.route('/finalizar_partida', methods=['POST'])
+def finalizar_partida():
+    
+    if request.data:
+        dados = json.loads(request.data)
+        usuario     = dados['usuario']
+        id_partida  = dados['id_partida']
 
-    #print(request.data)
+        pasta_partida = [i for i in os.listdir(caminho_partidas_em_andamento) if id_partida in i]
+        if pasta_partida:
+            caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
+            arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if id_partida+".json" in i]
+            if arquivo_partida:
+                with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}") as arq:
+                    partida = json.load(arq)
 
-    usuario = "teste01"
-    id_id_partida = "c3ba626e064b94fb70d0"
+                if partida['jogador_branca'] == usuario:
+                    shutil.rmtree(caminho_partidas_em_andamento+pasta_partida[0])
 
-    convite = f"usuario={usuario}, id_partida={id_id_partida}"
-    convite = str.encode(convite)
-
-    arq_key = [i for i in os.listdir("dados/partidas/em_andamento") if 'key.json' in i]
-
-    if arq_key:
-        with open(f"dados/partidas/em_andamento/key.json") as arq:
-            dados = json.load(arq)
-
-        key = dados['key']
-        key_encode = str.encode(key)
+                    return jsonify({"status":"finalizada", "id_partida":id_partida})
+                else:
+                    return jsonify({"erro":"não possui permissão para finalizar a partida"})
         
-        f = Fernet(key_encode)
-        
-        print()
-        print(convite)
-        convite_encrypt = f.encrypt(convite)
-        print(convite_encrypt)
-        print()
-        print(f.decrypt(convite_encrypt))
+            return jsonify({"erro":"erro"})
 
-    else:
-        key = Fernet.generate_key()
-        
-        key = key.decode()
-
-        with open(f"dados/partidas/em_andamento/key.json", "w") as arq:
-            json.dump({"key":key}, arq)
-        
-
-    return jsonify({"status":"sucesso"})
+    return jsonify({"erro":"erro"})
 
 #----------------------------------------------------------------------------
 

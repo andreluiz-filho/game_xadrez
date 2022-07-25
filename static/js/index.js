@@ -20,7 +20,6 @@ if(partidas_em_andamento){
 
 		area_partidas_em_andamento.appendChild(btn)
 	}
-	
 }
 
 if(usuario == null){
@@ -148,8 +147,8 @@ if(usuario == null){
 		area_admin_jogador_branca.textContent = jogador_branca
 		area_admin_jogador_preta.textContent = jogador_preta
 
-		area_admin_jogador_branca_status.style.background = "white"
-		area_admin_jogador_preta_status.style.background = "white"
+		area_admin_jogador_branca_status.style.background = "#a6b5a6"
+		area_admin_jogador_preta_status.style.background = "#a6b5a6"
 
 		if(jogador_da_vez == usuario){
 			area_admin_hide_show.style.background = "blue"
@@ -160,11 +159,11 @@ if(usuario == null){
 
 		if(jogador_da_vez == jogador_branca){
 			area_admin_jogador_branca_status.style.background = "blue"
-			area_admin_jogador_preta_status.style.background = "white"
+			area_admin_jogador_preta_status.style.background = "#a6b5a6"
 		}
 		else if(jogador_da_vez == jogador_preta){
 			area_admin_jogador_preta_status.style.background = "blue"
-			area_admin_jogador_branca_status.style.background = "white"
+			area_admin_jogador_branca_status.style.background = "#a6b5a6"
 		}
 
 		// ---------------------------------------------
@@ -248,6 +247,8 @@ if(usuario == null){
 
 			if(key_data.includes('erro')){
 				
+				sessionStorage.clear()
+				window.location.href = url+'/';
 				
 				//****************************
 				//Adicionar a Mensagem de Erro
@@ -272,6 +273,13 @@ if(usuario == null){
 		})
 		.catch(error => console.error('Error:', error))
 	
+	}
+
+	jogador_branca 	= sessionStorage.getItem('jogador_branca')
+	if(usuario == jogador_branca){
+		finalizar_partida.style.display = "block"
+	}else{
+		finalizar_partida.style.display = "none"
 	}
 
 	if(id_partida && id_partida != 'undefined' && jogador_da_vez){
@@ -339,7 +347,7 @@ if(usuario == null){
 
 			}
 
-			if(e.target.tagName == "IMG"){
+			if(e.target.tagName == "IMG" && e.target.alt != "icone"){
 
 				if(usuario == jogador_da_vez && usuario_cor == cor_da_vez){
 				
@@ -630,6 +638,60 @@ if(usuario == null){
 		})
 
 	}
+
+	//********************************************************
+	//********************************************************
+
+	finalizar_partida.addEventListener("click", (e)=>{
+		confirmacao_finalizar_partida.style.display = "block"
+	})
+
+	finalizar_partida_confirmar.addEventListener("click", (e)=>{
+
+		var recurso = url+"/finalizar_partida"
+		fetch(recurso, {
+			  method: 'POST',
+			  body: JSON.stringify({"usuario":usuario, "id_partida":id_partida}),
+			  headers:{
+			    'Content-Type': 'application/json'
+			  }
+			})
+		.then(res => res.json())
+		.then(function(data){
+
+
+			key_data = Object.keys(data)
+
+			if(key_data.includes('erro')){
+				console.log(data)
+			}else{
+
+				lista_partidas_em_andamento = ""
+				for(i of partidas_em_andamento.split(",")){
+					
+					if(i != data['id_partida']){
+						if(lista_partidas_em_andamento == ""){
+							lista_partidas_em_andamento += i	
+						}else{
+							lista_partidas_em_andamento += ","+i	
+						}
+					}
+				}
+
+				sessionStorage.removeItem('partidas_em_andamento')
+				sessionStorage.setItem('partidas_em_andamento', lista_partidas_em_andamento)
+				window.location.href = url+'/partida';
+
+			}
+
+		})
+		.catch(error => console.error('Error:', error))
+
+	})
+
+	finalizar_partida_cancelar.addEventListener("click", (e)=>{
+		confirmacao_finalizar_partida.style.display = "none"
+	})
 
 	//********************************************************
 	//********************************************************

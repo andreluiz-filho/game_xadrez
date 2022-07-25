@@ -1,5 +1,11 @@
 /*************************************************************/
 
+body{
+	background-color: #a6b5a6;
+}
+
+/*--------------------------------------------------------------*/
+
 #container{
 	text-align: center;
 }
@@ -94,30 +100,48 @@
 }
 
 #area_admin #area_admin_topo{
-
+	border: 1px solid;
 }
 
 #area_admin #area_admin_topo #adicionar_adversario_partida{
 	position: relative;
-	border: 1px solid;
+	border: 3px solid green;
 	border-radius: 10px;
 	height: 30%;
 	font-size: 0.6em;
+	padding: 10px;
+	display: none;
+}
+
+#area_admin #area_admin_topo #confirmacao_finalizar_partida{
+	position: relative;
+	border: 3px solid red;
+	border-radius: 10px;
+	height: 30%;
+	font-size: 0.6em;
+	padding: 10px;
 	display: none;
 }
 
 #area_admin #area_admin_topo #nova_partida{
 	position: relative;
-	left: 0%;
+	
 	cursor: pointer;
-	width: 4%;
+	width: 1em;
 }
 
 #area_admin #area_admin_topo #sair_partida{
 	position: relative;
 	right: 0%;
 	cursor: pointer;
-	width: 5%;
+	width: 1.2em;
+}
+
+#area_admin #area_admin_topo #finalizar_partida{
+	cursor: pointer;
+	width: 1.2em;
+	display: none;
+	margin: 0 auto;
 }
 
 #area_admin #area_admin_conteudo{
@@ -125,8 +149,7 @@
 }
 
 #area_admin #area_admin_jogador_branca_status, #area_admin_jogador_preta_status{
-	position: relative;
-	left: -10px;
+	position: relative;	
 	padding: 0.2em;
 	border-radius: 10px;
 }
@@ -139,6 +162,10 @@
 	border-radius: 10px;
 }
 
+
+#area_admin .entrar_partida{
+	font-size: 0.8em;
+}
 /*--------------------------------------------------------------*/
 
 table.tabuleiro{
