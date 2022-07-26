@@ -4,6 +4,9 @@ body{
 	background-color: #a6b5a6;
 }
 
+.row{
+	margin: 0;
+}
 /*--------------------------------------------------------------*/
 
 #container{
@@ -140,7 +143,6 @@ body{
 #area_admin #area_admin_topo #finalizar_partida{
 	cursor: pointer;
 	width: 1.2em;
-	display: none;
 	margin: 0 auto;
 }
 
@@ -162,9 +164,13 @@ body{
 	border-radius: 10px;
 }
 
-
-#area_admin .entrar_partida{
-	font-size: 0.8em;
+#area_admin #area_partidas_em_andamento{
+	text-align: left;
+}
+#area_admin #area_partidas_em_andamento .entrar_partida{
+	font-size: 0.5em;
+	padding: 0.5em;
+	margin-left: 0.5em;
 }
 /*--------------------------------------------------------------*/
 

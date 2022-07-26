@@ -10,6 +10,9 @@ var api_moverPeca 	= url+'/api_moverPeca'
 usuario 	= sessionStorage.getItem('usuario')
 usuario_cor = sessionStorage.getItem('usuario_cor')
 
+
+// --------------------PARTIDAS EM ANDAMENTO------------------
+
 partidas_em_andamento = sessionStorage.getItem('partidas_em_andamento')
 
 if(partidas_em_andamento){
@@ -21,6 +24,8 @@ if(partidas_em_andamento){
 		area_partidas_em_andamento.appendChild(btn)
 	}
 }
+
+// ----------------------------------------------------------
 
 if(usuario == null){
 
@@ -140,6 +145,7 @@ if(usuario == null){
 	function separaPecas(data){
 
 		// ---------------------------------------------
+
 		jogador_da_vez 	= sessionStorage.getItem('jogador_da_vez')
 		jogador_branca 	= sessionStorage.getItem('jogador_branca')
 		jogador_preta 	= sessionStorage.getItem('jogador_preta')
@@ -187,6 +193,8 @@ if(usuario == null){
 		
 		atualizarPartida(lista_pecas_ativas)	
 		
+		// ----------------------STATUS DAS CAPTURAS DE PEÇAS---------------------
+
 		pecas_capturadas = document.querySelectorAll(".pecas_capturadas")
 		for(i = 0; i < pecas_capturadas.length; i++){
 			status_nome_peca = pecas_capturadas[i].id.split("__")[1]
@@ -199,6 +207,8 @@ if(usuario == null){
 			}
 			pecas_capturadas[i].textContent = qtd
 		}
+
+		// ----------------------------------------------------------------------
 		
 	}
 
@@ -227,10 +237,6 @@ if(usuario == null){
 		if(key_session.includes("visitante")){
 			area_usuario_titulo.textContent = ""
 			area_usuario_titulo.textContent = usuario+" - Visitante"
-		}
-		else{
-			//area_usuario_titulo.textContent = ""
-			//area_usuario_titulo.textContent = usuario
 		}
 
 		fetch(api_partida, {
@@ -270,6 +276,17 @@ if(usuario == null){
 				separaPecas(pecas_partida)
 
 				// ---------------------- ICONE FINALIZAR PARTIDA ------------------------
+				/*
+				jogador_branca 	= sessionStorage.getItem('jogador_branca')
+				if(usuario == jogador_branca){
+					finalizar_partida.style.display = "block"
+				}else{
+					finalizar_partida.style.display = "none"
+				}
+				*/
+				// -----------------------------------------------------------------------
+				/*
+				// ---------------------- ICONE ABANDONAR PARTIDA ------------------------
 
 				jogador_branca 	= sessionStorage.getItem('jogador_branca')
 				if(usuario == jogador_branca){
@@ -277,7 +294,13 @@ if(usuario == null){
 				}else{
 					finalizar_partida.style.display = "none"
 				}
-				
+				*/
+				// -----------------------------------------------------------------------
+
+				// --------------------------TITULO ID PARTIDA----------------------------
+
+				titulo_id_partida.textContent = "ID Partida: "+id_partida
+
 				// -----------------------------------------------------------------------
 			}
 		})
@@ -646,10 +669,6 @@ if(usuario == null){
 	//********************************************************
 	//********************************************************
 
-	finalizar_partida.addEventListener("click", (e)=>{
-		confirmacao_finalizar_partida.style.display = "block"
-	})
-
 	finalizar_partida_confirmar.addEventListener("click", (e)=>{
 
 		var recurso = url+"/finalizar_partida"
@@ -682,7 +701,10 @@ if(usuario == null){
 					}
 				}
 
-				sessionStorage.removeItem('partidas_em_andamento')
+				sessionStorage.clear()
+
+				sessionStorage.setItem('usuario', usuario)
+
 				sessionStorage.setItem('partidas_em_andamento', lista_partidas_em_andamento)
 				window.location.href = url+'/partida';
 
@@ -691,6 +713,10 @@ if(usuario == null){
 		})
 		.catch(error => console.error('Error:', error))
 
+	})
+
+	finalizar_partida.addEventListener("click", (e)=>{
+		confirmacao_finalizar_partida.style.display = "block"
 	})
 
 	finalizar_partida_cancelar.addEventListener("click", (e)=>{

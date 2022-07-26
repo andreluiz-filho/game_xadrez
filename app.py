@@ -475,6 +475,14 @@ def finalizar_partida():
                     shutil.rmtree(caminho_partidas_em_andamento+pasta_partida[0])
 
                     return jsonify({"status":"finalizada", "id_partida":id_partida})
+                
+                if partida['jogador_preta'] == usuario:
+                    partida['jogador_preta'] = ""
+
+                    with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}", "w") as arq:
+                        json.dump(partida, arq)
+
+                    return jsonify({"status":"Abandonada", "id_partida":id_partida})
                 else:
                     return jsonify({"erro":"não possui permissão para finalizar a partida"})
         
@@ -482,6 +490,38 @@ def finalizar_partida():
 
     return jsonify({"erro":"erro"})
 
+#----------------------------------------------------------------------------
+"""
+@app.route('/abandonar_partida', methods=['POST'])
+def abandonar_partida():
+    
+    if request.data:
+        dados = json.loads(request.data)
+        usuario     = dados['usuario']
+        id_partida  = dados['id_partida']
+
+        pasta_partida = [i for i in os.listdir(caminho_partidas_em_andamento) if id_partida in i]
+        if pasta_partida:
+            caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
+            arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if id_partida+".json" in i]
+            if arquivo_partida:
+                with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}") as arq:
+                    partida = json.load(arq)
+
+                if partida['jogador_preta'] == usuario:
+                    partida['jogador_preta'] = ""
+
+                    with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}", "w") as arq:
+                        json.dump(partida, arq)
+
+                    return jsonify({"status":"Abandonada", "id_partida":id_partida})
+                else:
+                    return jsonify({"erro":"não possui permissão para finalizar a partida"})
+        
+            return jsonify({"erro":"erro"})
+
+    return jsonify({"erro":"erro"})
+"""
 #----------------------------------------------------------------------------
 
 """
