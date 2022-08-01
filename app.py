@@ -288,15 +288,15 @@ def api_moverPeca():
 
     #---------------------------------------------------------------------
 
-    def salva_ultima_jogada(data):
-        id_partida = data['id_partida']
+    def salva_ultima_jogada(id_partida, partida):
+        #id_partida = data['id_partida']
 
         caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
 
         arq_ultima_jogada = f"ultima_jogada__{id_partida}.json"
         
         with open(f"{caminho_pasta_partida}/{arq_ultima_jogada}", "w") as arq:
-            json.dump(data, arq)    
+            json.dump(partida, arq)  
         
     #---------------------------------------------------------------------
 
@@ -312,6 +312,9 @@ def api_moverPeca():
     partida = consulta_Partida()
     
     if partida:
+
+        salva_ultima_jogada(id_partida, partida)
+
         jogador_da_vez = partida['jogador_da_vez']
 
         if usuario == jogador_da_vez:
@@ -319,7 +322,7 @@ def api_moverPeca():
             peca_selecionada_cor = peca_selecionada_nome.split("_")[0]
 
             if peca_selecionada_cor == usuario_cor:
-                
+
                 if peca_selecionada['funcao'] == 'capturar':
                     
                     peca_target_nome  = peca_selecionada['peca_target_nome']
@@ -353,7 +356,7 @@ def api_moverPeca():
                             nome_peca = i['nome_peca']
                             posicao_peca = i['posicao']
                             target_posicao_peca = target_posicao
-
+                            """
                             ultima_jogada = {
                                             'usuario':usuario, 
                                             'id_partida':id_partida,
@@ -361,10 +364,10 @@ def api_moverPeca():
                                             'posicao_peca':posicao_peca,
                                             'target_posicao_peca':target_posicao_peca
                                             }
+                            """
+                                
 
-                            salva_ultima_jogada(ultima_jogada)
-
-                            i["posicao"] = target_posicao
+                            i["posicao"] = target_posicao_peca
 
                             if usuario_cor == 'branca':
                                 partida['jogador_da_vez'] = partida['jogador_preta']
@@ -377,7 +380,7 @@ def api_moverPeca():
 
                     salva_Partida(partida)
                     
-                    partida['ultima_jogada'] = ultima_jogada
+                    #partida['ultima_jogada'] = ultima_jogada
                     
                     return jsonify(partida)
 
@@ -491,6 +494,15 @@ def finalizar_partida():
     return jsonify({"erro":"erro"})
 
 #----------------------------------------------------------------------------
+
+@app.route('/voltar_jogada', methods=['POST'])
+def voltar_jogada():
+
+    
+
+    return jsonify({"status":"sucesso"})
+#----------------------------------------------------------------------------
+
 """
 @app.route('/abandonar_partida', methods=['POST'])
 def abandonar_partida():

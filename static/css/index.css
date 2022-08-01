@@ -175,6 +175,7 @@ body{
 /*--------------------------------------------------------------*/
 
 table.tabuleiro{
+	position: relative;
 	margin: 0 auto;
 }
 
@@ -187,6 +188,20 @@ table.tabuleiro td{
 	text-align: center;
 	border: 1px solid;
 	padding: 5px;
+}
+
+table.tabuleiro img{
+	position: relative;
+	left: -0.1em;
+	top: -0.1em;
+}
+
+.letra_casa{
+	position: relative;
+	left: 0px;
+	top: 0;
+	float: left;
+	z-index: 11;
 }
 
 /*--------------------------------------------------------------*/
