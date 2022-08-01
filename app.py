@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, redirect, jsonify
+from flask_socketio import SocketIO, emit
 from cryptography.fernet import Fernet
 from flask import url_for
 from datetime import datetime
@@ -13,6 +14,8 @@ app.config.update(
     SECRET_KEY="secret_sauce",
 )
 
+io = SocketIO(app)
+
 caminho_partidas = "dados/partidas"
 caminho_partidas_em_andamento = caminho_partidas+"/em_andamento/"
 
@@ -26,7 +29,7 @@ def login():
 
 @app.route("/partida")
 def index():
-    return render_template("index.html") 
+    return render_template("index.html")
 
 #----------------------------------------------------------------------------
 
@@ -501,7 +504,136 @@ def voltar_jogada():
     
 
     return jsonify({"status":"sucesso"})
+
 #----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+
+@io.on('socket_moverPeca')
+def socket_moverPeca(dados):
+
+    #---------------------------------------------------------------------------------------------------
+
+    peca_selecionada = dados
+    
+    usuario                 = peca_selecionada['usuario']
+    usuario_cor             = peca_selecionada['usuario_cor']
+    id_partida              = peca_selecionada['id_partida']
+
+    peca_selecionada_nome   = peca_selecionada['peca_selecionada_nome']
+    target_posicao          = peca_selecionada['target_posicao']
+
+    #---------------------------------------------------------------------
+
+    def consulta_Partida():
+        pasta_partida = [i for i in os.listdir(caminho_partidas_em_andamento) if id_partida in i]
+        if pasta_partida:
+            caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
+            arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if id_partida+".json" in i]
+            if arquivo_partida:
+                with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}") as arq:
+                    partida = json.load(arq)
+                return partida
+
+    #---------------------------------------------------------------------
+    
+    def salva_Partida(data):
+        caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
+        arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if id_partida+'.json' in i]
+        with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}", "w") as arq:
+            json.dump(data, arq)
+
+    #---------------------------------------------------------------------
+
+    def salva_ultima_jogada(id_partida, partida):
+
+        caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
+
+        arq_ultima_jogada = f"ultima_jogada__{id_partida}.json"
+        
+        with open(f"{caminho_pasta_partida}/{arq_ultima_jogada}", "w") as arq:
+            json.dump(partida, arq)  
+        
+    #---------------------------------------------------------------------
+
+    partida = consulta_Partida()
+    
+    if partida:
+
+        salva_ultima_jogada(id_partida, partida)
+
+        jogador_da_vez = partida['jogador_da_vez']
+
+        if usuario == jogador_da_vez:
+
+            peca_selecionada_cor = peca_selecionada_nome.split("_")[0]
+
+            if peca_selecionada_cor == usuario_cor:
+
+                if peca_selecionada['funcao'] == 'capturar':
+                    
+                    peca_target_nome  = peca_selecionada['peca_target_nome']
+
+                    for i in partida['pecas']:
+
+                        if peca_target_nome == i['nome_peca']:
+                            i['capturada'] = 'true'
+
+                        if peca_selecionada_nome == i['nome_peca']:
+                            i['posicao'] = target_posicao
+
+                        if usuario_cor == 'branca':
+                            partida['jogador_da_vez'] = partida['jogador_preta']
+                            partida['cor_da_vez'] = 'preta'
+                            
+
+                        elif usuario_cor == 'preta':
+                            partida['jogador_da_vez'] = partida['jogador_branca']
+                            partida['cor_da_vez'] = 'branca'
+                        
+                    salva_Partida(partida)
+                    emit('getPartida', partida, broadcast=True)
+                    
+                    return jsonify(partida)
+
+                    
+                elif peca_selecionada['funcao'] == 'mover':
+
+                    for i in partida['pecas']:
+                        if peca_selecionada_nome == i['nome_peca']:
+                            nome_peca = i['nome_peca']
+                            posicao_peca = i['posicao']
+                            target_posicao_peca = target_posicao
+
+                            i["posicao"] = target_posicao_peca
+
+                            if usuario_cor == 'branca':
+                                partida['jogador_da_vez'] = partida['jogador_preta']
+                                partida['cor_da_vez'] = 'preta'
+                                
+
+                            elif usuario_cor == 'preta':
+                                partida['jogador_da_vez'] = partida['jogador_branca']
+                                partida['cor_da_vez'] = 'branca'
+
+                    salva_Partida(partida)
+                    
+                    emit('getPartida', partida, broadcast=True)
+                    return jsonify(partida)
+
+            else:
+                return jsonify({'erro':'Não pode mover essa Peça'})  
+        else:
+            return jsonify({'erro':'Não é a sua vez'})        
+    else:
+        return jsonify({"erro":"partida não existe"})
+
+#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+
+
+
 
 """
 @app.route('/abandonar_partida', methods=['POST'])
@@ -648,3 +780,6 @@ def update_record():
     return jsonify(dados)
 """
 #----------------------------------------------------------------------------
+
+if __name__ == "__main__":
+    io.run(app, debug=True)

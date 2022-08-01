@@ -2,7 +2,8 @@
 //********************************************************
 //********************************************************
 
-var url = window.location.origin
+const url 		= window.location.origin
+const socket 	= io(url)
 
 var api_partida 	= url+'/api_partida'
 var api_moverPeca 	= url+'/api_moverPeca'
@@ -309,16 +310,35 @@ if(usuario == null){
 	}
 
 
-	if(id_partida && id_partida != 'undefined' && jogador_da_vez){
+	socket.on('getPartida', (data) => {
+
+		key_data = Object.keys(data)
+
+		if(key_data.includes('erro')){
+
+			erro_mover_captura.textContent = data['erro']
+			sessionStorage.removeItem('peca_selecionada')
+		}
+		else{
+
+			if(key_data.includes('ultima_jogada')){
+				console.log("***", data['ultima_jogada'])
+			}
 			
-		// --------------------------------------------------------------
+			status_partida 	= data['status']
+			pecas_partida 	= data['pecas']
 
+			func_api_partida()
+
+			sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
+			sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
+		}
+
+	})
+
+	if(id_partida && id_partida != 'undefined' && jogador_da_vez){
 		func_api_partida();
-
-		setInterval(function() {func_api_partida()}, 5000);
-
-		// --------------------------------------------------------------
-	
+		//setInterval(function() {func_api_partida()}, 5000);
 	}
 
 	//********************************************************
@@ -336,6 +356,11 @@ if(usuario == null){
 			jogador_branca = sessionStorage.getItem('jogador_branca')
 			jogador_preta = sessionStorage.getItem('jogador_preta')
 
+			function socket_moverPeca(dados){
+				socket.emit('socket_moverPeca', dados)	
+			}
+
+			/*
 			function moverPeca(dados){
 
 				fetch(api_moverPeca, {
@@ -373,6 +398,7 @@ if(usuario == null){
 				.catch(error => console.error('Error:', error))	
 
 			}
+			*/
 
 			if(e.target.tagName == "IMG" && e.target.alt != "icone"){
 
@@ -410,7 +436,8 @@ if(usuario == null){
 															'funcao':'capturar'
 														}
 										
-										moverPeca(data_capturar_peca)
+										socket_moverPeca(data_capturar_peca)
+										//moverPeca(data_capturar_peca)
 									
 									}
 								}
@@ -477,7 +504,8 @@ if(usuario == null){
 															'funcao':'capturar'
 														}
 										
-										moverPeca(data_capturar_peca)
+										socket_moverPeca(data_capturar_peca)
+										//moverPeca(data_capturar_peca)
 										
 									}						
 								}
@@ -516,7 +544,9 @@ if(usuario == null){
 										'jogador_preta':jogador_preta, 
 										'funcao':'mover'
 									}
-					moverPeca(data_mover_peca)
+
+					socket_moverPeca(data_mover_peca)
+					//moverPeca(data_mover_peca)
 				}
 			
 			}
