@@ -24,9 +24,10 @@ function login_usuario(){
 	})
 	.then(res => res.json())
 	.then(function(data){
-		
+
 		key_data = Object.keys(data)
 
+		
 		if(key_data.includes('erro')){
 			mensagem_erro.style.display = "grid"
 			mensagem_erro.innerHTML = 'Falha no Login'
@@ -59,6 +60,7 @@ function login_usuario(){
 
 			window.location.href = url+'/partida';
 		}
+		
 		
 	})
 	.catch(error => console.error('Error:', error))

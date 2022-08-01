@@ -220,21 +220,19 @@ if(usuario == null){
 		as peças e seus atributos
 	*/
 
+	if(id_partida && id_partida != 'undefined' && jogador_da_vez){
 
-	function func_api_partida(){
-		
 		sessionStorage.removeItem('peca_selecionada')
 
-		usuario 	= sessionStorage.getItem('usuario')
-		usuario_cor = sessionStorage.getItem('usuario_cor')
-
-		jogador_branca = sessionStorage.getItem('jogador_branca')
-		jogador_preta = sessionStorage.getItem('jogador_preta')
-
+		usuario 		= sessionStorage.getItem('usuario')
+		usuario_cor 	= sessionStorage.getItem('usuario_cor')
+		jogador_branca 	= sessionStorage.getItem('jogador_branca')
+		jogador_preta 	= sessionStorage.getItem('jogador_preta')
 		jogador_da_vez 	= sessionStorage.getItem('jogador_da_vez')
 		cor_da_vez 		= sessionStorage.getItem('cor_da_vez')
 
 		key_session = Object.keys(sessionStorage)
+
 		if(key_session.includes("visitante")){
 			area_usuario_titulo.textContent = ""
 			area_usuario_titulo.textContent = usuario+" - Visitante"
@@ -249,7 +247,7 @@ if(usuario == null){
 		})
 		.then(res => res.json())
 		.then(function(data){
-
+			
 			key_data = Object.keys(data)
 
 			if(key_data.includes('erro')){
@@ -276,28 +274,6 @@ if(usuario == null){
 
 				separaPecas(pecas_partida)
 
-				// ---------------------- ICONE FINALIZAR PARTIDA ------------------------
-				/*
-				jogador_branca 	= sessionStorage.getItem('jogador_branca')
-				if(usuario == jogador_branca){
-					finalizar_partida.style.display = "block"
-				}else{
-					finalizar_partida.style.display = "none"
-				}
-				*/
-				// -----------------------------------------------------------------------
-				/*
-				// ---------------------- ICONE ABANDONAR PARTIDA ------------------------
-
-				jogador_branca 	= sessionStorage.getItem('jogador_branca')
-				if(usuario == jogador_branca){
-					finalizar_partida.style.display = "block"
-				}else{
-					finalizar_partida.style.display = "none"
-				}
-				*/
-				// -----------------------------------------------------------------------
-
 				// --------------------------TITULO ID PARTIDA----------------------------
 
 				titulo_id_partida.textContent = "ID Partida: "+id_partida
@@ -309,6 +285,7 @@ if(usuario == null){
 	
 	}
 
+	// ---------------------------------WEBSOCKET---------------------------------
 
 	socket.on('getPartida', (data) => {
 
@@ -320,27 +297,23 @@ if(usuario == null){
 			sessionStorage.removeItem('peca_selecionada')
 		}
 		else{
-
-			if(key_data.includes('ultima_jogada')){
-				console.log("***", data['ultima_jogada'])
-			}
 			
 			status_partida 	= data['status']
 			pecas_partida 	= data['pecas']
 
-			func_api_partida()
-
 			sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
 			sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
-		}
 
+			sessionStorage.setItem('jogador_branca', data['jogador_branca'])
+			sessionStorage.setItem('jogador_preta', data['jogador_preta'])
+
+			separaPecas(pecas_partida)
+
+		}
 	})
 
-	if(id_partida && id_partida != 'undefined' && jogador_da_vez){
-		func_api_partida();
-		//setInterval(function() {func_api_partida()}, 5000);
-	}
-
+	//---------------------------------------------------------------------------
+	
 	//********************************************************
 	//*********************MOVER/CAPTURAR*********************
 
@@ -359,46 +332,6 @@ if(usuario == null){
 			function socket_moverPeca(dados){
 				socket.emit('socket_moverPeca', dados)	
 			}
-
-			/*
-			function moverPeca(dados){
-
-				fetch(api_moverPeca, {
-					  method: 'POST',
-					  body: JSON.stringify(dados),
-					  headers:{
-					    'Content-Type': 'application/json'
-					  }
-					})
-				.then(res => res.json())
-				.then(function(data){
-
-					key_data = Object.keys(data)
-
-					if(key_data.includes('erro')){
-
-						erro_mover_captura.textContent = data['erro']
-						sessionStorage.removeItem('peca_selecionada')
-					}
-					else{
-
-						if(key_data.includes('ultima_jogada')){
-							console.log("***", data['ultima_jogada'])
-						}
-						
-						status_partida 	= data['status']
-						pecas_partida 	= data['pecas']
-
-						func_api_partida()
-
-						sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
-						sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
-					}
-				})
-				.catch(error => console.error('Error:', error))	
-
-			}
-			*/
 
 			if(e.target.tagName == "IMG" && e.target.alt != "icone"){
 
@@ -546,11 +479,16 @@ if(usuario == null){
 									}
 
 					socket_moverPeca(data_mover_peca)
-					//moverPeca(data_mover_peca)
+
 				}
 			
 			}
 		});	
+
+		casa.addEventListener('dblclick', (e) => {
+			e.target.style.border = "none"
+			sessionStorage.removeItem('peca_selecionada')
+		});
 	
 	}
 
@@ -579,17 +517,20 @@ if(usuario == null){
 
 	}
 
-	// ------------------- ENTRAR PARTIDA -------------------
-	/*
-	entrar_partida = document.querySelector('.entrar_partida')
-	entrar_partida.addEventListener("click", (e)=>{
-		
-		var recurso = url+"/entrarPartida"
-		if(link_partida.value != ""){
+	//********************************************************
+	//********************************************************
 
+	// ------------------- ENTRAR PARTIDA -------------------
+
+	entrar_partida = document.querySelectorAll(".entrar_partida")
+	for(i = 0; i < entrar_partida.length; i++){
+
+		entrar_partida[i].addEventListener("click", (e)=>{
+
+			var recurso = url+"/entrarPartida"
 			fetch(recurso, {
 				  method: 'POST',
-				  body: JSON.stringify({"usuario":usuario, "id_partida":link_partida.value}),
+				  body: JSON.stringify({"usuario":usuario, "id_partida":e.target.textContent}),
 				  headers:{
 				    'Content-Type': 'application/json'
 				  }
@@ -602,13 +543,17 @@ if(usuario == null){
 				sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
 				sessionStorage.setItem('usuario_cor', data['usuario_cor'])
 
+				sessionStorage.setItem('jogador_branca', data['jogador_branca'])
+				sessionStorage.setItem('jogador_preta', data['jogador_preta'])
+
 				window.location.href = url+'/partida';
 			})
 			.catch(error => console.error('Error:', error))
-		}
-	
-	});
-	*/
+
+
+		})
+
+	}
 	//********************************************************
 	//********************************************************
 
@@ -642,9 +587,9 @@ if(usuario == null){
 			sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
 			sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
 			sessionStorage.setItem('usuario_cor', data['usuario_cor'])
-
 			sessionStorage.setItem('jogador_branca', data['jogador_branca'])
 			sessionStorage.setItem('jogador_preta', data['jogador_preta'])
+			sessionStorage.setItem('partidas_em_andamento', data['id_partida'])
 
 			window.location.href = url+'/partida';
 		})
@@ -662,39 +607,6 @@ if(usuario == null){
 		window.location.href = url+'/';
 	
 	});
-	
-	//********************************************************
-	//********************************************************
-
-	entrar_partida = document.querySelectorAll(".entrar_partida")
-	for(i = 0; i < entrar_partida.length; i++){
-
-		entrar_partida[i].addEventListener("click", (e)=>{
-
-			var recurso = url+"/entrarPartida"
-			fetch(recurso, {
-				  method: 'POST',
-				  body: JSON.stringify({"usuario":usuario, "id_partida":e.target.textContent}),
-				  headers:{
-				    'Content-Type': 'application/json'
-				  }
-				})
-			.then(res => res.json())
-			.then(function(data){
-
-				sessionStorage.setItem('id_partida', data['id_partida'])
-				sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
-				sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
-				sessionStorage.setItem('usuario_cor', data['usuario_cor'])
-
-				window.location.href = url+'/partida';
-			})
-			.catch(error => console.error('Error:', error))
-
-
-		})
-
-	}
 
 	//********************************************************
 	//********************************************************
