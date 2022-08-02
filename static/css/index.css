@@ -178,10 +178,24 @@ body{
 	text-align: left;
 }
 #area_admin #area_partidas_em_andamento .entrar_partida{
-	font-size: 0.5em;
+	font-size: 0.8em;
 	padding: 0.5em;
-	margin-left: 0.5em;
+	margin-left: 0.1em;
+	margin-right: 0.1em;
 }
+
+
+#area_admin #area_partidas_em_andamento .box_partidas_em_andamento{
+	text-align: center;
+}
+
+
+#area_admin #area_partidas_em_andamento .btn_jogada_anterior, .btn_jogada_proxima{
+	font-size: 0.7em;
+	padding: 0.7em;
+	display: none;
+}
+
 /*--------------------------------------------------------------*/
 
 table.tabuleiro{

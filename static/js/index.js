@@ -55,20 +55,21 @@ if(usuario == null){
 
 			var div_andamento = document.createElement("div")
 
-			div_andamento.id = "partidas_em_andamento_btn"
+			div_andamento.className = "box_partidas_em_andamento"
 
 			var btn_anterior = document.createElement("button")
 			var btn = document.createElement("button")
 			var btn_proximo = document.createElement("button")
 
 			btn_anterior.textContent = "<"
-			btn_anterior.id = "jogada_anterior"
+			btn_anterior.className = "btn btn-secondary btn_jogada_anterior"
+
 
 			btn.textContent = i
 			btn.className = " btn btn-secondary entrar_partida"
 
 			btn_proximo.textContent = ">"
-			btn_proximo.id = "jogada_proxima"
+			btn_proximo.className = "btn btn-secondary btn_jogada_proxima"
 
 			div_andamento.appendChild(btn_anterior)
 			div_andamento.appendChild(btn)
@@ -299,6 +300,22 @@ if(usuario == null){
 				titulo_id_partida.textContent = "ID Partida: "+id_partida
 
 				// -----------------------------------------------------------------------
+
+				box_partidas_em_andamento = document.querySelectorAll(".box_partidas_em_andamento")
+				for(i = 0; i < box_partidas_em_andamento.length; i++){
+					box = box_partidas_em_andamento[i]
+					
+					btn_jogada_anterior = box.querySelector(".btn_jogada_anterior")
+					btn_entrar_partida = box.querySelector(".entrar_partida")
+					btn_jogada_proxima = box.querySelector(".btn_jogada_proxima")
+
+					if(btn_entrar_partida.textContent == id_partida){
+						btn_jogada_anterior.style.display = "initial"
+						btn_jogada_proxima.style.display = "initial"
+					}
+
+				}
+				//console.log(box_partidas_em_andamento)
 			}
 		})
 		.catch(error => console.error('Error:', error))
@@ -308,7 +325,7 @@ if(usuario == null){
 	// ---------------------------------WEBSOCKET---------------------------------
 
 	socket.on('getPartida', (data) => {
-		console.log(data)
+		
 		key_data = Object.keys(data)
 
 		if(key_data.includes('erro')){
@@ -552,7 +569,7 @@ if(usuario == null){
 	for(i = 0; i < entrar_partida.length; i++){
 
 		entrar_partida[i].addEventListener("click", (e)=>{
-			console.log(entrar_partida)
+			
 			var recurso = url+"/entrarPartida"
 			fetch(recurso, {
 				  method: 'POST',
@@ -710,10 +727,17 @@ if(usuario == null){
 
 	//********************************************************
 	//********************************************************
+
 	if(partidas_em_andamento){
-		jogada_anterior.addEventListener("click", (e)=>{
-			confirmacao_jogada_anterior.style.display = "block"
-		})	
+		btn_jogada_anterior = document.querySelectorAll(".btn_jogada_anterior")
+
+		for(i = 0; i < btn_jogada_anterior.length; i++){
+			btn_jogada_anterior[i].addEventListener("click", (e)=>{
+				if(usuario == jogador_da_vez){
+					confirmacao_jogada_anterior.style.display = "grid"
+				}
+			})	
+		}
 	}
 	
 

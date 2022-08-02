@@ -371,15 +371,6 @@ def finalizar_partida():
     return jsonify({"erro":"erro"})
 
 #----------------------------------------------------------------------------
-
-@app.route('/voltar_jogada', methods=['POST'])
-def voltar_jogada():
-
-    
-
-    return jsonify({"status":"sucesso"})
-
-#----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
 
@@ -523,6 +514,7 @@ def socket_jogada_anterior(dados):
                     partida = json.load(arq)
                 return partida
     
+
     def consulta_partida_jogada_anterior():
         pasta_partida = [i for i in os.listdir(caminho_partidas_em_andamento) if id_partida in i]
         if pasta_partida:
@@ -535,7 +527,7 @@ def socket_jogada_anterior(dados):
     
     partida = consulta_partida()
     partida_jogada_anterior = consulta_partida_jogada_anterior()
-    
+
     #---------------------------------------------------------------------
     
     def salva_Partida(data):
@@ -544,7 +536,8 @@ def socket_jogada_anterior(dados):
         with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}", "w") as arq:
             json.dump(data, arq)
 
-    salva_Partida(partida_jogada_anterior)
+    if(partida_jogada_anterior != None):
+        salva_Partida(partida_jogada_anterior)
 
     #---------------------------------------------------------------------
     
@@ -556,15 +549,13 @@ def socket_jogada_anterior(dados):
             if arquivo_partida:
                 with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}", "w") as arq:
                     json.dump(data, arq)
-        
+    
     salva_ultima_jogada(partida)
 
     #---------------------------------------------------------------------
     
     partida = consulta_partida()
     emit('getPartida', partida, broadcast=True)
-
-    #return jsonify({"status": "Sucesso"})
 
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
@@ -626,9 +617,10 @@ def socket_abandonar_partida(dados):
             if arquivo_partida:
                 with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}", "w") as arq:
                     json.dump(data, arq)
-        
-    partida_jogada_anterior['jogador_preta'] = "NULL"
-    salva_ultima_jogada(partida_jogada_anterior)
+    
+    if(partida_jogada_anterior != None):
+        partida_jogada_anterior['jogador_preta'] = "NULL"
+        salva_ultima_jogada(partida_jogada_anterior)
 
     #---------------------------------------------------------------------
 
