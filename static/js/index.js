@@ -133,7 +133,13 @@ if(usuario == null){
 			imagens[im].remove()
 		}
 
-		var casas = table.querySelectorAll("td")
+		ultima_jogada_posicao = sessionStorage.getItem('ultima_jogada_posicao')
+		
+		ultima_jogada_posicao = ultima_jogada_posicao.split(",")
+		de = ultima_jogada_posicao[0].replace(" ", "")
+		para = ultima_jogada_posicao[1].replace(" ", "")
+
+		var casas = table.querySelectorAll(".casa")
 		
 		for(i = 0; i < casas.length; i++){
 
@@ -158,6 +164,11 @@ if(usuario == null){
 					casas[i].appendChild(img);
 				}
 			}
+
+			if(casas[i].id == de | casas[i].id == para){
+				casas[i].style.border = "thin solid yellow";
+			}
+
 		}
 	}
 
@@ -239,7 +250,7 @@ if(usuario == null){
 	/*
 		Esse bloco de código acessa a API e consulta todas 
 		as peças e seus atributos
-	*/
+	*/	
 
 	if(id_partida && id_partida != 'undefined' && jogador_da_vez){
 
@@ -284,7 +295,6 @@ if(usuario == null){
 			}
 			else if(key_data.includes('pecas')){
 
-				sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
 				sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
 
 				sessionStorage.setItem('jogador_branca', data['jogador_branca'])
@@ -305,6 +315,7 @@ if(usuario == null){
 				for(i = 0; i < box_partidas_em_andamento.length; i++){
 					box = box_partidas_em_andamento[i]
 					
+					sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
 					btn_jogada_anterior = box.querySelector(".btn_jogada_anterior")
 					btn_entrar_partida = box.querySelector(".entrar_partida")
 					btn_jogada_proxima = box.querySelector(".btn_jogada_proxima")
@@ -315,7 +326,24 @@ if(usuario == null){
 					}
 
 				}
-				//console.log(box_partidas_em_andamento)
+				
+				// -----------------------------------------------------------------------
+
+				if(jogador_preta == "NULL"){
+
+					area_admin_hide_show.style.background = "red"
+
+					if(data['jogador_da_vez'] != usuario){
+						sessionStorage.setItem('jogador_da_vez', "NULL")
+					}
+					else{
+						sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
+					}
+
+				}
+
+				// -----------------------------------------------------------------------
+
 			}
 		})
 		.catch(error => console.error('Error:', error))
@@ -324,6 +352,8 @@ if(usuario == null){
 
 	// ---------------------------------WEBSOCKET---------------------------------
 
+	var casas = document.querySelectorAll(".casa")
+	
 	socket.on('getPartida', (data) => {
 		
 		key_data = Object.keys(data)
@@ -338,19 +368,41 @@ if(usuario == null){
 			status_partida 	= data['status']
 			pecas_partida 	= data['pecas']
 
-			sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
 			sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
-
+			sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
 			sessionStorage.setItem('jogador_branca', data['jogador_branca'])
 			sessionStorage.setItem('jogador_preta', data['jogador_preta'])
 
 			separaPecas(pecas_partida)
 
 			if(jogador_preta == "NULL"){
-				area_admin_hide_show.style.background = "red"
-			}
-			
 
+				area_admin_hide_show.style.background = "red"
+
+				if(data['jogador_da_vez'] != usuario){
+					sessionStorage.setItem('jogador_da_vez', "NULL")
+				}
+				else{
+					sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
+				}
+			}
+		}
+	})
+
+	socket.on('getUltimoMovimento', (data) => {
+
+		ultima_jogada_posicao = `${data[0]}, ${data[1]}`
+
+		sessionStorage.setItem('ultima_jogada_posicao', ultima_jogada_posicao)
+
+		
+		for(casa of casas){
+			if(casa.id == data[0] | casa.id == data[1]){
+				casa.style.border = "thin solid yellow";
+			}
+			else{
+				casa.style.border = "thin solid black";
+			}	
 		}
 	})
 
@@ -358,8 +410,6 @@ if(usuario == null){
 	
 	//********************************************************
 	//*********************MOVER/CAPTURAR*********************
-
-	var casas = document.querySelectorAll("td")
 
 	for(casa of casas){
 
@@ -495,7 +545,7 @@ if(usuario == null){
 					e.target.style.borderRadius = "30px";
 					
 					setInterval(function() {
-						e.target.style.border = "thick solid #ccc";
+						e.target.style.border = "none";
 					}, 1000);
 				}
 

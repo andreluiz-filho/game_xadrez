@@ -445,7 +445,11 @@ def socket_moverPeca(dados):
                             i['capturada'] = 'true'
 
                         if peca_selecionada_nome == i['nome_peca']:
+                            posicao_atual = i['posicao']
                             i['posicao'] = target_posicao
+
+                            ultimo_movimento = [posicao_atual, target_posicao]
+                            emit('getUltimoMovimento', ultimo_movimento, broadcast=True)
 
                         if usuario_cor == 'branca':
                             partida['jogador_da_vez'] = partida['jogador_preta']
@@ -469,6 +473,11 @@ def socket_moverPeca(dados):
                             nome_peca = i['nome_peca']
                             posicao_peca = i['posicao']
                             target_posicao_peca = target_posicao
+
+                            posicao_atual = i['posicao']
+                            ultimo_movimento = [posicao_atual, target_posicao]
+                            
+                            emit('getUltimoMovimento', ultimo_movimento, broadcast=True)
 
                             i["posicao"] = target_posicao_peca
 
