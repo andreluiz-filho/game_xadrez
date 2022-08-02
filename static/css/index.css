@@ -126,6 +126,16 @@ body{
 	display: none;
 }
 
+#area_admin #area_admin_topo #confirmacao_jogada_anterior{
+	position: relative;
+	border: 3px solid red;
+	border-radius: 10px;
+	height: 30%;
+	font-size: 0.6em;
+	padding: 10px;
+	display: none;
+}
+
 #area_admin #area_admin_topo #nova_partida{
 	position: relative;
 	

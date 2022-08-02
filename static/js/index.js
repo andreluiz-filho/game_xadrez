@@ -12,22 +12,6 @@ usuario 	= sessionStorage.getItem('usuario')
 usuario_cor = sessionStorage.getItem('usuario_cor')
 
 
-// --------------------PARTIDAS EM ANDAMENTO------------------
-
-partidas_em_andamento = sessionStorage.getItem('partidas_em_andamento')
-
-if(partidas_em_andamento){
-	for(i of partidas_em_andamento.split(",")){
-		var btn = document.createElement("button")
-		btn.textContent = i
-		btn.className = " btn btn-secondary entrar_partida"
-
-		area_partidas_em_andamento.appendChild(btn)
-	}
-}
-
-// ----------------------------------------------------------
-
 if(usuario == null){
 
 	key_session = Object.keys(sessionStorage)
@@ -60,6 +44,42 @@ if(usuario == null){
 	}
 
 }else{
+
+	// ----------------------------------------------------------
+	// --------------------PARTIDAS EM ANDAMENTO------------------
+
+	partidas_em_andamento = sessionStorage.getItem('partidas_em_andamento')
+
+	if(partidas_em_andamento){
+		for(i of partidas_em_andamento.split(",")){
+
+			var div_andamento = document.createElement("div")
+
+			div_andamento.id = "partidas_em_andamento_btn"
+
+			var btn_anterior = document.createElement("button")
+			var btn = document.createElement("button")
+			var btn_proximo = document.createElement("button")
+
+			btn_anterior.textContent = "<"
+			btn_anterior.id = "jogada_anterior"
+
+			btn.textContent = i
+			btn.className = " btn btn-secondary entrar_partida"
+
+			btn_proximo.textContent = ">"
+			btn_proximo.id = "jogada_proxima"
+
+			div_andamento.appendChild(btn_anterior)
+			div_andamento.appendChild(btn)
+			div_andamento.appendChild(btn_proximo)
+
+			area_partidas_em_andamento.appendChild(div_andamento)
+		}
+	}
+
+	// ----------------------------------------------------------
+	// ----------------------------------------------------------
 
 	id_partida 		= sessionStorage.getItem('id_partida')
 	jogador_da_vez 	= sessionStorage.getItem('jogador_da_vez')
@@ -523,6 +543,7 @@ if(usuario == null){
 	// ------------------- ENTRAR PARTIDA -------------------
 
 	entrar_partida = document.querySelectorAll(".entrar_partida")
+
 	for(i = 0; i < entrar_partida.length; i++){
 
 		entrar_partida[i].addEventListener("click", (e)=>{
@@ -613,47 +634,80 @@ if(usuario == null){
 
 	finalizar_partida_confirmar.addEventListener("click", (e)=>{
 
-		var recurso = url+"/finalizar_partida"
-		fetch(recurso, {
-			  method: 'POST',
-			  body: JSON.stringify({"usuario":usuario, "id_partida":id_partida}),
-			  headers:{
-			    'Content-Type': 'application/json'
-			  }
-			})
-		.then(res => res.json())
-		.then(function(data){
+		if(usuario == jogador_branca){
+
+			var recurso = url+"/finalizar_partida"
+			fetch(recurso, {
+				  method: 'POST',
+				  body: JSON.stringify({"usuario":usuario, "id_partida":id_partida}),
+				  headers:{
+				    'Content-Type': 'application/json'
+				  }
+				})
+			.then(res => res.json())
+			.then(function(data){
 
 
-			key_data = Object.keys(data)
+				key_data = Object.keys(data)
 
-			if(key_data.includes('erro')){
-				console.log(data)
-			}else{
+				if(key_data.includes('erro')){
+					console.log(data)
+				}else{
 
-				lista_partidas_em_andamento = ""
-				for(i of partidas_em_andamento.split(",")){
-					
-					if(i != data['id_partida']){
-						if(lista_partidas_em_andamento == ""){
-							lista_partidas_em_andamento += i	
-						}else{
-							lista_partidas_em_andamento += ","+i	
+					lista_partidas_em_andamento = ""
+					for(i of partidas_em_andamento.split(",")){
+						
+						if(i != data['id_partida']){
+							if(lista_partidas_em_andamento == ""){
+								lista_partidas_em_andamento += i	
+							}else{
+								lista_partidas_em_andamento += ","+i	
+							}
 						}
 					}
+
+					sessionStorage.clear()
+
+					sessionStorage.setItem('usuario', usuario)
+
+					sessionStorage.setItem('partidas_em_andamento', lista_partidas_em_andamento)
+					window.location.href = url+'/partida';
+
 				}
 
-				sessionStorage.clear()
+			})
+			.catch(error => console.error('Error:', error))
 
-				sessionStorage.setItem('usuario', usuario)
+		}
+		else if(usuario == jogador_preta){
+			console.log("Jogador Preta: Abandonar Partida")
 
-				sessionStorage.setItem('partidas_em_andamento', lista_partidas_em_andamento)
-				window.location.href = url+'/partida';
+			var recurso = url+"/abandonar_partida"
+			fetch(recurso, {
+				  method: 'POST',
+				  body: JSON.stringify({"usuario":usuario, "id_partida":id_partida}),
+				  headers:{
+				    'Content-Type': 'application/json'
+				  }
+				})
+			.then(res => res.json())
+			.then(function(data){
 
-			}
 
-		})
-		.catch(error => console.error('Error:', error))
+				key_data = Object.keys(data)
+
+				if(key_data.includes('erro')){
+					console.log(data)
+				}else{
+
+					sessionStorage.clear()
+					window.location.href = url+'/';
+
+				}
+
+			})
+			.catch(error => console.error('Error:', error))
+		}
 
 	})
 
@@ -663,6 +717,32 @@ if(usuario == null){
 
 	finalizar_partida_cancelar.addEventListener("click", (e)=>{
 		confirmacao_finalizar_partida.style.display = "none"
+	})
+
+	//********************************************************
+	//********************************************************
+
+	jogada_anterior.addEventListener("click", (e)=>{
+		confirmacao_jogada_anterior.style.display = "block"
+	})
+
+	jogada_anterior_confirmar.addEventListener("click", (e)=>{
+
+		if(usuario == jogador_da_vez){
+			function socket_jogada_anterior(dados){
+				socket.emit('socket_jogada_anterior', dados)
+			}
+			dados = {"usuario":usuario, "id_partida":id_partida}
+			
+			socket_jogada_anterior(dados)
+
+			confirmacao_jogada_anterior.style.display = "none"
+		}
+
+	})
+
+	jogada_anterior_cancelar.addEventListener("click", (e)=>{
+		confirmacao_jogada_anterior.style.display = "none"
 	})
 
 	//********************************************************
