@@ -134,10 +134,12 @@ if(usuario == null){
 		}
 
 		ultima_jogada_posicao = sessionStorage.getItem('ultima_jogada_posicao')
-		
-		ultima_jogada_posicao = ultima_jogada_posicao.split(",")
-		de = ultima_jogada_posicao[0].replace(" ", "")
-		para = ultima_jogada_posicao[1].replace(" ", "")
+
+		if(ultima_jogada_posicao){
+			ultima_jogada_posicao = ultima_jogada_posicao.split(",")
+			de = ultima_jogada_posicao[0].replace(" ", "")
+			para = ultima_jogada_posicao[1].replace(" ", "")	
+		}
 
 		var casas = table.querySelectorAll(".casa")
 		
@@ -165,10 +167,12 @@ if(usuario == null){
 				}
 			}
 
-			if(casas[i].id == de | casas[i].id == para){
-				casas[i].style.border = "thin solid yellow";
+			if(ultima_jogada_posicao){
+				if(casas[i].id == de | casas[i].id == para){
+					casas[i].style.border = "thin solid yellow";
+				}	
 			}
-
+			
 		}
 	}
 
