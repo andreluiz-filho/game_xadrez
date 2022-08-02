@@ -572,98 +572,69 @@ def socket_jogada_anterior(dados):
 
 # IMPLEMENTAR A FUNÇÃO ABANDONAR PARTIDA
 
-@app.route('/abandonar_partida', methods=['POST'])
-def abandonar_partida():
+@io.on('socket_abandonar_partida')
+def socket_abandonar_partida(dados):
 
-    if request.data:
-        dados = json.loads(request.data)
-        usuario     = dados['usuario']
-        id_partida  = dados['id_partida']
-
-        #---------------------------------------------------------------------
-
-        def consulta_partida():
-            pasta_partida = [i for i in os.listdir(caminho_partidas_em_andamento) if id_partida in i]
-            if pasta_partida:
-                caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
-                arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if id_partida+".json" in i and "ultima_jogada" not in i]
-                if arquivo_partida:
-                    with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}") as arq:
-                        partida = json.load(arq)
-                    return partida
-        
-        def consulta_partida_jogada_anterior():
-            pasta_partida = [i for i in os.listdir(caminho_partidas_em_andamento) if id_partida in i]
-            if pasta_partida:
-                caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
-                arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if "ultima_jogada" in i]
-                if arquivo_partida:
-                    with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}") as arq:
-                        partida = json.load(arq)
-                    return partida
-        
-        partida = consulta_partida()
-        partida_jogada_anterior = consulta_partida_jogada_anterior()
-        
-        #---------------------------------------------------------------------
-        
-        def salva_Partida(data):
-            caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
-            arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if id_partida+".json" in i and "ultima_jogada" not in i]
-            with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}", "w") as arq:
-                json.dump(data, arq)
-
-        partida['jogador_preta'] = ""
-        salva_Partida(partida)
-
-        #---------------------------------------------------------------------
-        
-        def salva_ultima_jogada(data):
-            pasta_partida = [i for i in os.listdir(caminho_partidas_em_andamento) if id_partida in i]
-            if pasta_partida:
-                caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
-                arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if "ultima_jogada" in i]
-                if arquivo_partida:
-                    with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}", "w") as arq:
-                        json.dump(data, arq)
-            
-        partida_jogada_anterior['jogador_preta'] = ""
-        salva_ultima_jogada(partida_jogada_anterior)
-
-        #---------------------------------------------------------------------
-
-    return jsonify({"status":"Abandonada", "id_partida":id_partida})
-"""
-@app.route('/abandonar_partida', methods=['POST'])
-def abandonar_partida():
+    peca_selecionada = dados
     
-    if request.data:
-        dados = json.loads(request.data)
-        usuario     = dados['usuario']
-        id_partida  = dados['id_partida']
+    usuario     = peca_selecionada['usuario']
+    id_partida  = peca_selecionada['id_partida']
 
+    #---------------------------------------------------------------------
+
+    def consulta_partida():
         pasta_partida = [i for i in os.listdir(caminho_partidas_em_andamento) if id_partida in i]
         if pasta_partida:
             caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
-            arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if id_partida+".json" in i]
+            arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if id_partida+".json" in i and "ultima_jogada" not in i]
             if arquivo_partida:
                 with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}") as arq:
                     partida = json.load(arq)
+                return partida
+    
+    def consulta_partida_jogada_anterior():
+        pasta_partida = [i for i in os.listdir(caminho_partidas_em_andamento) if id_partida in i]
+        if pasta_partida:
+            caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
+            arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if "ultima_jogada" in i]
+            if arquivo_partida:
+                with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}") as arq:
+                    partida = json.load(arq)
+                return partida
+    
+    partida = consulta_partida()
+    partida_jogada_anterior = consulta_partida_jogada_anterior()
+    
+    #---------------------------------------------------------------------
+    
+    def salva_Partida(data):
+        caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
+        arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if id_partida+".json" in i and "ultima_jogada" not in i]
+        with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}", "w") as arq:
+            json.dump(data, arq)
 
-                if partida['jogador_preta'] == usuario:
-                    partida['jogador_preta'] = ""
+    partida['jogador_preta'] = "NULL"
+    salva_Partida(partida)
 
-                    with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}", "w") as arq:
-                        json.dump(partida, arq)
-
-                    return jsonify({"status":"Abandonada", "id_partida":id_partida})
-                else:
-                    return jsonify({"erro":"não possui permissão para finalizar a partida"})
+    #---------------------------------------------------------------------
+    
+    def salva_ultima_jogada(data):
+        pasta_partida = [i for i in os.listdir(caminho_partidas_em_andamento) if id_partida in i]
+        if pasta_partida:
+            caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
+            arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if "ultima_jogada" in i]
+            if arquivo_partida:
+                with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}", "w") as arq:
+                    json.dump(data, arq)
         
-            return jsonify({"erro":"erro"})
+    partida_jogada_anterior['jogador_preta'] = "NULL"
+    salva_ultima_jogada(partida_jogada_anterior)
 
-    return jsonify({"erro":"erro"})
-"""
+    #---------------------------------------------------------------------
+
+    partida = consulta_partida()
+    emit('getPartida', partida, broadcast=True)
+
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
 

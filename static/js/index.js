@@ -282,7 +282,7 @@ if(usuario == null){
 
 			}
 			else if(key_data.includes('pecas')){
-				
+
 				sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
 				sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
 
@@ -308,7 +308,7 @@ if(usuario == null){
 	// ---------------------------------WEBSOCKET---------------------------------
 
 	socket.on('getPartida', (data) => {
-
+		console.log(data)
 		key_data = Object.keys(data)
 
 		if(key_data.includes('erro')){
@@ -328,6 +328,11 @@ if(usuario == null){
 			sessionStorage.setItem('jogador_preta', data['jogador_preta'])
 
 			separaPecas(pecas_partida)
+
+			if(jogador_preta == "NULL"){
+				area_admin_hide_show.style.background = "red"
+			}
+			
 
 		}
 	})
@@ -547,7 +552,7 @@ if(usuario == null){
 	for(i = 0; i < entrar_partida.length; i++){
 
 		entrar_partida[i].addEventListener("click", (e)=>{
-
+			console.log(entrar_partida)
 			var recurso = url+"/entrarPartida"
 			fetch(recurso, {
 				  method: 'POST',
@@ -680,33 +685,17 @@ if(usuario == null){
 
 		}
 		else if(usuario == jogador_preta){
-			console.log("Jogador Preta: Abandonar Partida")
 
-			var recurso = url+"/abandonar_partida"
-			fetch(recurso, {
-				  method: 'POST',
-				  body: JSON.stringify({"usuario":usuario, "id_partida":id_partida}),
-				  headers:{
-				    'Content-Type': 'application/json'
-				  }
-				})
-			.then(res => res.json())
-			.then(function(data){
+			function socket_abandonar_partida(dados){
+				socket.emit('socket_abandonar_partida', dados)
+			}
+			dados = {"usuario":usuario, "id_partida":id_partida}
+			
+			socket_abandonar_partida(dados)
 
+			sessionStorage.clear()
+			window.location.href = url+'/';
 
-				key_data = Object.keys(data)
-
-				if(key_data.includes('erro')){
-					console.log(data)
-				}else{
-
-					sessionStorage.clear()
-					window.location.href = url+'/';
-
-				}
-
-			})
-			.catch(error => console.error('Error:', error))
 		}
 
 	})
@@ -721,29 +710,35 @@ if(usuario == null){
 
 	//********************************************************
 	//********************************************************
+	if(partidas_em_andamento){
+		jogada_anterior.addEventListener("click", (e)=>{
+			confirmacao_jogada_anterior.style.display = "block"
+		})	
+	}
+	
 
-	jogada_anterior.addEventListener("click", (e)=>{
-		confirmacao_jogada_anterior.style.display = "block"
-	})
+	if(partidas_em_andamento){
+		jogada_anterior_confirmar.addEventListener("click", (e)=>{
 
-	jogada_anterior_confirmar.addEventListener("click", (e)=>{
+			if(usuario == jogador_da_vez){
+				function socket_jogada_anterior(dados){
+					socket.emit('socket_jogada_anterior', dados)
+				}
+				dados = {"usuario":usuario, "id_partida":id_partida}
+				
+				socket_jogada_anterior(dados)
 
-		if(usuario == jogador_da_vez){
-			function socket_jogada_anterior(dados){
-				socket.emit('socket_jogada_anterior', dados)
+				confirmacao_jogada_anterior.style.display = "none"
 			}
-			dados = {"usuario":usuario, "id_partida":id_partida}
-			
-			socket_jogada_anterior(dados)
 
+		})
+	}
+
+	if(partidas_em_andamento){
+		jogada_anterior_cancelar.addEventListener("click", (e)=>{
 			confirmacao_jogada_anterior.style.display = "none"
-		}
-
-	})
-
-	jogada_anterior_cancelar.addEventListener("click", (e)=>{
-		confirmacao_jogada_anterior.style.display = "none"
-	})
+		})
+	}
 
 	//********************************************************
 	//********************************************************
