@@ -410,6 +410,25 @@ if(usuario == null){
 		}
 	})
 
+	socket.on('getChat', (data) => {
+
+		de = data['de']
+		para = data['para']
+		mensagem = data['mensagem']
+		id_partida_mensagem = data['id_partida']
+
+		if(id_partida_mensagem == id_partida){
+			var span = document.createElement("span")
+			var br = document.createElement("br")
+			span.className = "span_mensagem"
+			span.textContent = `${de}: ${mensagem}`
+
+			area_mensagens.appendChild(span)
+			area_mensagens.appendChild(br)
+		}
+
+	})
+
 	//---------------------------------------------------------------------------
 	
 	//********************************************************
@@ -816,6 +835,53 @@ if(usuario == null){
 		jogada_anterior_cancelar.addEventListener("click", (e)=>{
 			confirmacao_jogada_anterior.style.display = "none"
 		})
+	}
+
+	//********************************************************
+	//********************************************************
+
+	jogador_branca = sessionStorage.getItem('jogador_branca')
+	jogador_preta = sessionStorage.getItem('jogador_preta')
+
+	if(jogador_branca && jogador_preta){
+
+		if(usuario == jogador_branca){
+			para = jogador_preta
+		}
+		else if(usuario == jogador_preta){
+			para = jogador_branca
+		}
+
+		btn_enviar_mensagem.addEventListener("click", (e)=>{
+			
+			if(input_enviar_mensagem.value){
+
+				input_mensagem = input_enviar_mensagem.value
+				input_enviar_mensagem.value = ""
+
+				function socket_enviar_mensagem_chat(dados){
+					socket.emit('socket_enviar_mensagem_chat', dados)	
+				}
+
+				mensagem = {'de': usuario, 'para': para, "mensagem": input_mensagem, "id_partida": id_partida}
+
+				socket_enviar_mensagem_chat(mensagem)
+
+			}
+			
+		})
+
+	}
+
+	function func_area_chat_hide_show(){
+
+		if(area_chat.style.display == "block"){
+			area_chat.style.display = "none"
+		}
+		else if(area_chat.style.display == "none"){
+			area_chat.style.display = "block"	
+		}
+		
 	}
 
 	//********************************************************

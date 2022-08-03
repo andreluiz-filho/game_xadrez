@@ -570,8 +570,6 @@ def socket_jogada_anterior(dados):
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
 
-# IMPLEMENTAR A FUNÇÃO ABANDONAR PARTIDA
-
 @io.on('socket_abandonar_partida')
 def socket_abandonar_partida(dados):
 
@@ -636,6 +634,15 @@ def socket_abandonar_partida(dados):
     partida = consulta_partida()
     emit('getPartida', partida, broadcast=True)
 
+#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+
+@io.on('socket_enviar_mensagem_chat')
+def socket_enviar_mensagem_chat(dados):
+
+    emit('getChat', dados, broadcast=True)
+
+#----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
 

@@ -97,8 +97,6 @@ body{
 	border: 3px solid #000;
 	border-radius: 5px;
 	height: 20px;
-	/*background-color: #4e82d2;*/
-	/*background-color: #ccc;*/
 	cursor: pointer;
 }
 
@@ -251,6 +249,51 @@ table.tabuleiro img{
 
 #btn_link:hover{
 	background-color: #b9b3b3;
+}
+
+/*--------------------------------------------------------------*/
+
+#area_chat_hide_show{
+	position: relative;
+	top: 0.5em;
+	border: 3px solid #000;
+	border-radius: 5px;
+	width: 24em;
+	height: 20px;
+	cursor: pointer;
+	margin: 0 auto;
+}
+
+#area_chat{
+	position: relative;
+	top: 0.5em;
+	width: 24.1em;
+	border: 1px solid;
+	border-radius: 5px;
+	margin: 0 auto;
+	margin-bottom: 20px;
+}
+
+#input_enviar_mensagem{
+	height: 1em;
+	padding: 10px;
+	border-radius: 5px;
+}
+
+#btn_enviar_mensagem{
+	width: 4em;
+	height: 2em;
+	padding: 0;
+	margin: 0;
+}
+
+#area_mensagens{
+	margin: 10px;
+	text-align: left;
+}
+
+.span_mensagem{
+	
 }
 
 /*************************************************************/
