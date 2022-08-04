@@ -14,7 +14,7 @@ body{
 }
 
 /*--------------------------------------------------------------*/
-
+/*
 #status_partida{
 	position: absolute;
 	border: 3px solid #999;
@@ -23,6 +23,7 @@ body{
 	height: 750px;
 	text-align: center;
 }
+*/
 
 .area_status{
 	border-top: 2px solid;
@@ -216,6 +217,35 @@ table.tabuleiro img{
 	position: relative;
 	left: -0.1em;
 	top: -0.1em;
+	width: 40px;
+}
+
+@media only screen and (max-width: 400px) {
+	table.tabuleiro img{
+		position: relative;
+		top: 0.1em;
+		width: 30px;
+	}
+}
+
+@media only screen and (max-width: 350px) {
+	table.tabuleiro img{
+		position: relative;
+		top: 0.4em;
+		width: 25px;
+	}
+}
+
+@media only screen and (max-width: 300px) {
+	table.tabuleiro img{
+		width: 17px;
+	}
+}
+
+@media only screen and (max-width: 299px) {
+	table.tabuleiro img{
+		width: 14px;
+	}
 }
 
 .letra_casa{

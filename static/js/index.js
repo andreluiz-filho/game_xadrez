@@ -171,6 +171,9 @@ if(usuario == null){
 
 		var casas = table.querySelectorAll(".casa")
 		
+		tamanho_janela_vertical = window.innerHeight;
+		tamanho_janela_horizontal = window.innerWidth;
+
 		for(i = 0; i < casas.length; i++){
 
 			for(peca of data){
@@ -184,10 +187,6 @@ if(usuario == null){
 
 		    	var img = new Image();
 		    	img.src = imagem_peca
-		    	//img.width = "60"
-		    	//img.height = "60"
-		    	img.width = "40"
-		    	img.height = "40"
 		    	img.alt = nome_peca+'___'+posicao_peca
 
 				if(posicao_peca == casas[i].id){
