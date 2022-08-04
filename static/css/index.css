@@ -70,12 +70,13 @@ body{
 	width: 3em; 
 }
 
+/*
 .topo_menu{
 	height: 150px; 
 	width: 70px; 
 	border: 1px solid;
 }
-
+*/
 
 .casa_cor_secundaria{
 	background-color: #AAAAAA;
@@ -97,12 +98,13 @@ body{
 #area_admin #area_admin_hide_show{
 	border: 3px solid #000;
 	border-radius: 5px;
-	height: 20px;
+	height: 35px;
 	cursor: pointer;
 }
 
 #area_admin #area_admin_topo{
 	border: 1px solid;
+	padding: 5px;
 }
 
 #area_admin #area_admin_topo #adicionar_adversario_partida{
@@ -137,26 +139,25 @@ body{
 
 #area_admin #area_admin_topo #nova_partida{
 	position: relative;
-	
 	cursor: pointer;
-	width: 1em;
+	width: 1.3em;
 }
 
 #area_admin #area_admin_topo #sair_partida{
 	position: relative;
 	right: 0%;
 	cursor: pointer;
-	width: 1.2em;
+	width: 1.5em;
 }
 
 #area_admin #area_admin_topo #finalizar_partida{
 	cursor: pointer;
-	width: 1.2em;
+	width: 1.5em;
 	margin: 0 auto;
 }
 
 #area_admin #area_admin_conteudo{
-	position: relative;
+
 }
 
 #area_admin #area_admin_jogador_branca_status, #area_admin_jogador_preta_status{
@@ -218,34 +219,6 @@ table.tabuleiro img{
 	left: -0.1em;
 	top: -0.1em;
 	width: 40px;
-}
-
-@media only screen and (max-width: 400px) {
-	table.tabuleiro img{
-		position: relative;
-		top: 0.1em;
-		width: 30px;
-	}
-}
-
-@media only screen and (max-width: 350px) {
-	table.tabuleiro img{
-		position: relative;
-		top: 0.4em;
-		width: 25px;
-	}
-}
-
-@media only screen and (max-width: 300px) {
-	table.tabuleiro img{
-		width: 17px;
-	}
-}
-
-@media only screen and (max-width: 299px) {
-	table.tabuleiro img{
-		width: 14px;
-	}
 }
 
 .letra_casa{
@@ -330,6 +303,122 @@ table.tabuleiro img{
 .span_mensagem{
 	position: relative;
 	left: 0.5em;
+}
+
+/*--------------------------------------------------------------*/
+
+
+@media only screen and (max-width: 400px) {
+	
+	#area_admin{
+		width: 23em; 
+	}
+
+	table.tabuleiro img{
+		position: relative;
+		top: 0.1em;
+		width: 30px;
+	}
+
+	.casa{
+		height: 2.8em; 
+		width: 2.8em; 
+	}
+
+	#area_chat_hide_show{
+		width: 23em;
+	}
+
+	#area_chat{
+		width: 23em;	
+	}
+}
+
+@media only screen and (max-width: 381px) {
+	#area_admin{
+		width: 21em;
+	}
+
+	.casa{
+		height: 2.6em; 
+		width: 2.6em; 
+	}
+
+	#area_chat_hide_show{
+		width: 21em;
+	}
+
+	#area_chat{
+		width: 21em;
+	}
+}
+
+@media only screen and (max-width: 350px) {
+
+	#area_admin{
+		width: 20em;
+	}
+
+	table.tabuleiro img{
+		width: 25px;
+	}
+
+	.casa{
+		height: 2.4em; 
+		width: 2.4em; 
+	}
+
+	#area_chat_hide_show{
+		width: 20em;
+	}
+
+	#area_chat{
+		width: 20em;	
+	}
+}
+
+@media only screen and (max-width: 330px) {
+	#area_admin{
+		width: 19em;
+	}
+
+	.casa{
+		height: 2.3em; 
+		width: 2.3em; 
+	}
+
+	#area_chat_hide_show{
+		width: 19em;
+	}
+
+	#area_chat{
+		width: 19em;	
+	}
+}
+
+@media only screen and (max-width: 330px) {
+	#area_admin{
+		width: 18em;
+	}
+
+	.casa{
+		height: 2.2em; 
+		width: 2.2em; 
+	}
+
+	#area_chat_hide_show{
+		width: 18em;
+	}
+
+	#area_chat{
+		width: 18em;
+	}
+}
+
+@media only screen and (max-width: 300px) {
+	table.tabuleiro img{
+		width: 25px;
+	}
 }
 
 /*************************************************************/

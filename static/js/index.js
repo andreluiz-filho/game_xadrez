@@ -170,9 +170,6 @@ if(usuario == null){
 		}
 
 		var casas = table.querySelectorAll(".casa")
-		
-		tamanho_janela_vertical = window.innerHeight;
-		tamanho_janela_horizontal = window.innerWidth;
 
 		for(i = 0; i < casas.length; i++){
 
