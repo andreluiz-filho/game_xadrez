@@ -100,6 +100,13 @@ body{
 	border-radius: 5px;
 	height: 35px;
 	cursor: pointer;
+	color: black;
+	font-weight: bold;
+}
+
+#area_admin #area_admin_hide_show #div_titulo_id_partida{
+	position: relative;
+	top: 0.2em;
 }
 
 #area_admin #area_admin_topo{
@@ -129,7 +136,7 @@ body{
 
 #area_admin #area_admin_topo #confirmacao_jogada_anterior{
 	position: relative;
-	border: 3px solid red;
+	border: 3px solid blue;
 	border-radius: 10px;
 	height: 30%;
 	font-size: 0.6em;
@@ -140,7 +147,18 @@ body{
 #area_admin #area_admin_topo #nova_partida{
 	position: relative;
 	cursor: pointer;
-	width: 1.3em;
+	border: 3px solid green;
+	padding: 2px;
+	width: 1.5em;
+}
+
+#area_admin #area_admin_topo #finalizar_partida{
+	cursor: pointer;
+	margin: 0 auto;
+	display: none;
+	border: 3px solid red;
+	padding: 2px;
+	width: 1.4em;
 }
 
 #area_admin #area_admin_topo #sair_partida{
@@ -148,12 +166,6 @@ body{
 	right: 0%;
 	cursor: pointer;
 	width: 1.5em;
-}
-
-#area_admin #area_admin_topo #finalizar_partida{
-	cursor: pointer;
-	width: 1.5em;
-	margin: 0 auto;
 }
 
 #area_admin #area_admin_conteudo{
@@ -176,7 +188,17 @@ body{
 
 #area_admin #area_partidas_em_andamento{
 	text-align: left;
+	min-height: 2.5em;
 }
+
+#area_btn_atualizar_partidas_em_andamento{
+
+}
+
+#btn_atualizar_partidas_em_andamento{
+	position: absolute;
+}
+
 #area_admin #area_partidas_em_andamento .entrar_partida{
 	font-size: 0.8em;
 	padding: 0.5em;
@@ -193,7 +215,6 @@ body{
 #area_admin #area_partidas_em_andamento .btn_jogada_anterior, .btn_jogada_proxima{
 	font-size: 0.7em;
 	padding: 0.7em;
-	display: none;
 }
 
 /*--------------------------------------------------------------*/

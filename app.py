@@ -254,14 +254,6 @@ def api_partida():
     #-------------------------------------------------------------------------------------------------
     
     pasta_partida = [i for i in os.listdir(caminho_partidas_em_andamento) if id_partida in i]
-    arquivo_mensagem = [i for i in os.listdir(caminho_pasta_partida) if "mensagens_chat.json" in i]
-    
-    if arquivo_mensagem:
-        
-        with open(f"{caminho_pasta_partida}/{arquivo_mensagem[0]}") as arq:
-            dados_load = json.load(arq)
-    
-    #-------------------------------------------------------------------------------------------------
 
     if pasta_partida:
         arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if id_partida+".json" in i and "ultima_jogada" not in i]
@@ -269,11 +261,20 @@ def api_partida():
             with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}") as arq:
                 partida = json.load(arq)
             
-            if arquivo_mensagem:
-                partida["mensagem"] = []
-                partida["mensagem"] = dados_load
+            if partida['status'] != 'finalizada':
+                arquivo_mensagem = [i for i in os.listdir(caminho_pasta_partida) if "mensagens_chat.json" in i]
 
-            return jsonify(partida)
+                if arquivo_mensagem:
+
+                    with open(f"{caminho_pasta_partida}/{arquivo_mensagem[0]}") as arq:
+                        dados_load = json.load(arq)
+
+                    partida["mensagem"] = []
+                    partida["mensagem"] = dados_load
+
+                return jsonify(partida)
+            else:
+                return jsonify({"status":"Partida Finalizada"})
         else:
             return jsonify({"erro":"ID da Partida Inválido"})
 
@@ -314,11 +315,12 @@ def api_login_usuario():
                     with open(caminho_partidas_em_andamento+p+"/"+arq_partida) as arq:
                         dados = json.load(arq)
 
-                    jogador_branca  = dados['jogador_branca']
-                    jogador_preta   = dados['jogador_preta']
+                    if dados['status'] != 'finalizada':
+                        jogador_branca  = dados['jogador_branca']
+                        jogador_preta   = dados['jogador_preta']
 
-                    if usuario == jogador_branca or usuario == jogador_preta:
-                        partidas_em_andamento.append(p)
+                        if usuario == jogador_branca or usuario == jogador_preta:
+                            partidas_em_andamento.append(p)
 
             return jsonify({"usuario":usuario, "partidas_em_andamento":partidas_em_andamento})
         
@@ -366,7 +368,11 @@ def finalizar_partida():
                     partida = json.load(arq)
 
                 if partida['jogador_branca'] == usuario:
-                    shutil.rmtree(caminho_partidas_em_andamento+pasta_partida[0])
+                    #shutil.rmtree(caminho_partidas_em_andamento+pasta_partida[0])
+                    partida['status'] = 'finalizada'
+
+                    with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}", "w") as arq:
+                        json.dump(partida, arq)
 
                     return jsonify({"status":"finalizada", "id_partida":id_partida})
                 
@@ -383,6 +389,10 @@ def finalizar_partida():
             return jsonify({"erro":"erro"})
 
     return jsonify({"erro":"erro"})
+
+#----------------------------------------------------------------------------
+
+
 
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------

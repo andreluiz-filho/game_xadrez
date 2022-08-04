@@ -45,39 +45,84 @@ if(usuario == null){
 
 }else{
 
-	// ----------------------------------------------------------
+	// -----------------------------------------------------------
 	// --------------------PARTIDAS EM ANDAMENTO------------------
 
-	partidas_em_andamento = sessionStorage.getItem('partidas_em_andamento')
+	id_partida = sessionStorage.getItem('id_partida')
+	function func_partidas_em_andamento(partidas_em_andamento){
 
-	if(partidas_em_andamento){
-		for(i of partidas_em_andamento.split(",")){
+		area_partidas_em_andamento_itens.innerHTML = ""
 
-			var div_andamento = document.createElement("div")
+		if(partidas_em_andamento){
 
-			div_andamento.className = "box_partidas_em_andamento"
+			for(i of partidas_em_andamento.split(",")){
+				
+				var div_andamento = document.createElement("div")
 
-			var btn_anterior = document.createElement("button")
-			var btn = document.createElement("button")
-			var btn_proximo = document.createElement("button")
+				div_andamento.className = "box_partidas_em_andamento"
+				
+				var btn = document.createElement("button")
+				btn.className = " btn btn-secondary entrar_partida"
+				btn.textContent = i
 
-			btn_anterior.textContent = "<"
-			btn_anterior.className = "btn btn-secondary btn_jogada_anterior"
+				//----------------------------------------------------------------------------------
+				
+				btn.addEventListener("click", (e)=>{
+					
+					var recurso = url+"/entrarPartida"
+					fetch(recurso, {
+						  method: 'POST',
+						  body: JSON.stringify({"usuario":usuario, "id_partida":e.target.textContent}),
+						  headers:{
+						    'Content-Type': 'application/json'
+						  }
+						})
+					.then(res => res.json())
+					.then(function(data){
 
+						sessionStorage.setItem('id_partida', data['id_partida'])
+						sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
+						sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
+						sessionStorage.setItem('usuario_cor', data['usuario_cor'])
 
-			btn.textContent = i
-			btn.className = " btn btn-secondary entrar_partida"
+						sessionStorage.setItem('jogador_branca', data['jogador_branca'])
+						sessionStorage.setItem('jogador_preta', data['jogador_preta'])
 
-			btn_proximo.textContent = ">"
-			btn_proximo.className = "btn btn-secondary btn_jogada_proxima"
+						window.location.href = url+'/partida';
+					})
+					.catch(error => console.error('Error:', error))
 
-			div_andamento.appendChild(btn_anterior)
-			div_andamento.appendChild(btn)
-			div_andamento.appendChild(btn_proximo)
+				})
+				
+				//----------------------------------------------------------------------------------
 
-			area_partidas_em_andamento.appendChild(div_andamento)
+				if(i == id_partida){
+
+					var btn_anterior = document.createElement("button")
+					var btn_proximo = document.createElement("button")
+
+					btn_anterior.textContent = "<"
+					btn_anterior.className = "btn btn-secondary btn_jogada_anterior"
+
+					btn_proximo.textContent = ">"
+					btn_proximo.className = "btn btn-secondary btn_jogada_proxima"
+
+					div_andamento.appendChild(btn_anterior)
+					div_andamento.appendChild(btn)
+					div_andamento.appendChild(btn_proximo)
+
+					area_partidas_em_andamento_itens.appendChild(div_andamento)	
+
+				}else{
+					div_andamento.appendChild(btn)
+					area_partidas_em_andamento_itens.appendChild(div_andamento)	
+				}
+			}
 		}
 	}
+
+	partidas_em_andamento = sessionStorage.getItem('partidas_em_andamento')
+	func_partidas_em_andamento(partidas_em_andamento)
 
 	// ----------------------------------------------------------
 	//------------------------CHAT MENSAGENS---------------------
@@ -334,27 +379,14 @@ if(usuario == null){
 				separaPecas(pecas_partida)
 
 				// --------------------------TITULO ID PARTIDA----------------------------
+				var div_titulo_id_partida = document.createElement("div")
+				div_titulo_id_partida.id = "div_titulo_id_partida"
+				div_titulo_id_partida.textContent = "ID Partida: "+id_partida
+				//titulo_id_partida.textContent = "ID Partida: "+id_partida
+				//area_admin_hide_show.textContent  = "ID Partida: "+id_partida
 
-				titulo_id_partida.textContent = "ID Partida: "+id_partida
+				area_admin_hide_show.appendChild(div_titulo_id_partida)
 
-				// -----------------------------------------------------------------------
-
-				box_partidas_em_andamento = document.querySelectorAll(".box_partidas_em_andamento")
-				for(i = 0; i < box_partidas_em_andamento.length; i++){
-					box = box_partidas_em_andamento[i]
-					
-					sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
-					btn_jogada_anterior = box.querySelector(".btn_jogada_anterior")
-					btn_entrar_partida = box.querySelector(".entrar_partida")
-					btn_jogada_proxima = box.querySelector(".btn_jogada_proxima")
-
-					if(btn_entrar_partida.textContent == id_partida){
-						btn_jogada_anterior.style.display = "initial"
-						btn_jogada_proxima.style.display = "initial"
-					}
-
-				}
-				
 				// -----------------------------------------------------------------------
 
 				if(jogador_preta == "NULL"){
@@ -376,6 +408,18 @@ if(usuario == null){
 					chat_mensagens(data['mensagem'])
 				}
 
+				// -----------------------------------------------------------------------
+
+				if(id_partida){
+					finalizar_partida.style.display = "block"	
+				}
+
+				// -----------------------------------------------------------------------
+
+			}
+			else if(key_data.includes('status')){
+				sessionStorage.clear()
+				sessionStorage.setItem('usuario', usuario)
 			}
 		})
 		.catch(error => console.error('Error:', error))
@@ -649,9 +693,9 @@ if(usuario == null){
 	//********************************************************
 
 	// ------------------- ENTRAR PARTIDA -------------------
-
+	/*
 	entrar_partida = document.querySelectorAll(".entrar_partida")
-
+	console.log("entrar_partida", entrar_partida)
 	for(i = 0; i < entrar_partida.length; i++){
 
 		entrar_partida[i].addEventListener("click", (e)=>{
@@ -683,6 +727,9 @@ if(usuario == null){
 		})
 
 	}
+	*/
+
+
 	//********************************************************
 	//********************************************************
 
@@ -739,6 +786,13 @@ if(usuario == null){
 
 	//********************************************************
 	//********************************************************
+
+	finalizar_partida.addEventListener("click", (e)=>{
+		confirmacao_finalizar_partida.style.display = "block"
+		if(usuario == jogador_preta){
+			confirmacao_finalizar_partida.querySelector("label").textContent = "Abandonar a Partida?"
+		}
+	})
 
 	finalizar_partida_confirmar.addEventListener("click", (e)=>{
 
@@ -803,16 +857,61 @@ if(usuario == null){
 
 	})
 
-	finalizar_partida.addEventListener("click", (e)=>{
-		confirmacao_finalizar_partida.style.display = "block"
-	})
-
 	finalizar_partida_cancelar.addEventListener("click", (e)=>{
 		confirmacao_finalizar_partida.style.display = "none"
 	})
 
 	//********************************************************
 	//********************************************************
+	
+	btn_atualizar_partidas_em_andamento.addEventListener("click", (e)=>{
+
+		var api_login_usuario = url+'/api_login_usuario'
+
+		dados = {"usuario":usuario}
+
+		fetch(api_login_usuario, {
+			method: 'POST',
+			body: JSON.stringify(dados),
+			headers:{
+			'Content-Type': 'application/json'
+			}
+		})
+		.then(res => res.json())
+		.then(function(data){
+
+			key_data = Object.keys(data)
+
+			if(key_data.includes('partidas_em_andamento')){
+
+				sessionStorage.removeItem("partidas_em_andamento")
+				sessionStorage.setItem("partidas_em_andamento", data['partidas_em_andamento'])
+
+				lista_partidas_em_andamento_selecionada = []
+				lista_partidas_em_andamento = []
+				for(p of data['partidas_em_andamento']){
+					
+					if(p == id_partida){
+						lista_partidas_em_andamento_selecionada.push(p)
+					}else{
+						lista_partidas_em_andamento.push(p)
+					}
+				}
+
+				
+				partidas_em_andamento = lista_partidas_em_andamento_selecionada+","+lista_partidas_em_andamento
+				func_partidas_em_andamento(partidas_em_andamento)
+			}
+			
+		})
+		.catch(error => console.error('Error:', error))
+			
+
+	})
+
+	//********************************************************
+	//********************************************************
+	partidas_em_andamento = sessionStorage.getItem('partidas_em_andamento')
 
 	if(partidas_em_andamento){
 		btn_jogada_anterior = document.querySelectorAll(".btn_jogada_anterior")
@@ -826,7 +925,6 @@ if(usuario == null){
 		}
 	}
 	
-
 	if(partidas_em_andamento){
 		jogada_anterior_confirmar.addEventListener("click", (e)=>{
 

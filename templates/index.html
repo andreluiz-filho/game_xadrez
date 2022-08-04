@@ -63,7 +63,7 @@
 
 				<div id="confirmacao_finalizar_partida">
 					<div>
-						<label style="font-size: 2em; font-weight: bold;">Tem certeza que deseja Finalizar a Partida?</label>
+						<label style="font-size: 2em; font-weight: bold;">Finalizar a Partida?</label>
 					</div>
 					<div style="margin-top: 0.5em;">
 						<button type="button" class="btn btn-secondary" id="finalizar_partida_confirmar" style="font-size: 1.5em">Finalizar</button>
@@ -73,7 +73,7 @@
 
 				<div id="confirmacao_jogada_anterior">
 					<div>
-						<label style="font-size: 2em; font-weight: bold;">Tem certeza que deseja Refazer a Jogada Anterior?</label>
+						<label style="font-size: 2em; font-weight: bold;">Refazer a Jogada Atual?</label>
 					</div>
 					<div style="margin-top: 0.5em;">
 						<button type="button" class="btn btn-secondary" id="jogada_anterior_confirmar" style="font-size: 1.5em">Confirmar</button>
@@ -95,7 +95,7 @@
 						</div>
 
 						<div class="col">
-							<img src="/static/img/close.svg" id="finalizar_partida">
+							<img src="/static/img/excluir.svg" id="finalizar_partida">
 						</div>
 
 						<div class="col">
@@ -170,8 +170,22 @@
 
 				</table>
 
-				<div id="area_partidas_em_andamento"></div>
+				<div id="area_partidas_em_andamento">
+					
+					<div id="area_btn_atualizar_partidas_em_andamento">
+						<button type="button" class="btn btn-primary" id="btn_atualizar_partidas_em_andamento">
+							<img src="/static/img/atualizar.svg">
+						</button>
+					</div>
+
+					<span style="clear: both;"></span>
+
+					<div class="col" id="area_partidas_em_andamento_itens">
+						
+					</div>
+				</div>
 				<div style="clear: both"></div>
+			
 			</div>
 
 		</div>
