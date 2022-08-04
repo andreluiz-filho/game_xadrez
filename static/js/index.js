@@ -56,67 +56,70 @@ if(usuario == null){
 		if(partidas_em_andamento){
 
 			for(i of partidas_em_andamento.split(",")){
-				
-				var div_andamento = document.createElement("div")
 
-				div_andamento.className = "box_partidas_em_andamento"
-				
-				var btn = document.createElement("button")
-				btn.className = " btn btn-secondary entrar_partida"
-				btn.textContent = i
+				if(i){
+					var div_andamento = document.createElement("div")
 
-				//----------------------------------------------------------------------------------
-				
-				btn.addEventListener("click", (e)=>{
+					div_andamento.className = "box_partidas_em_andamento"
 					
-					var recurso = url+"/entrarPartida"
-					fetch(recurso, {
-						  method: 'POST',
-						  body: JSON.stringify({"usuario":usuario, "id_partida":e.target.textContent}),
-						  headers:{
-						    'Content-Type': 'application/json'
-						  }
+					var btn = document.createElement("button")
+					btn.className = " btn btn-secondary entrar_partida"
+					btn.textContent = i
+
+					//----------------------------------------------------------------------------------
+					
+					btn.addEventListener("click", (e)=>{
+						
+						var recurso = url+"/entrarPartida"
+						fetch(recurso, {
+							  method: 'POST',
+							  body: JSON.stringify({"usuario":usuario, "id_partida":e.target.textContent}),
+							  headers:{
+							    'Content-Type': 'application/json'
+							  }
+							})
+						.then(res => res.json())
+						.then(function(data){
+
+							sessionStorage.setItem('id_partida', data['id_partida'])
+							sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
+							sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
+							sessionStorage.setItem('usuario_cor', data['usuario_cor'])
+
+							sessionStorage.setItem('jogador_branca', data['jogador_branca'])
+							sessionStorage.setItem('jogador_preta', data['jogador_preta'])
+
+							window.location.href = url+'/partida';
 						})
-					.then(res => res.json())
-					.then(function(data){
+						.catch(error => console.error('Error:', error))
 
-						sessionStorage.setItem('id_partida', data['id_partida'])
-						sessionStorage.setItem('jogador_da_vez', data['jogador_da_vez'])
-						sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
-						sessionStorage.setItem('usuario_cor', data['usuario_cor'])
-
-						sessionStorage.setItem('jogador_branca', data['jogador_branca'])
-						sessionStorage.setItem('jogador_preta', data['jogador_preta'])
-
-						window.location.href = url+'/partida';
 					})
-					.catch(error => console.error('Error:', error))
+					
+					//----------------------------------------------------------------------------------
 
-				})
-				
-				//----------------------------------------------------------------------------------
+					if(i == id_partida){
 
-				if(i == id_partida){
+						var btn_anterior = document.createElement("button")
+						var btn_proximo = document.createElement("button")
 
-					var btn_anterior = document.createElement("button")
-					var btn_proximo = document.createElement("button")
+						btn_anterior.textContent = "<"
+						btn_anterior.className = "btn btn-secondary btn_jogada_anterior"
 
-					btn_anterior.textContent = "<"
-					btn_anterior.className = "btn btn-secondary btn_jogada_anterior"
+						btn_proximo.textContent = ">"
+						btn_proximo.className = "btn btn-secondary btn_jogada_proxima"
 
-					btn_proximo.textContent = ">"
-					btn_proximo.className = "btn btn-secondary btn_jogada_proxima"
+						div_andamento.appendChild(btn_anterior)
+						div_andamento.appendChild(btn)
+						div_andamento.appendChild(btn_proximo)
 
-					div_andamento.appendChild(btn_anterior)
-					div_andamento.appendChild(btn)
-					div_andamento.appendChild(btn_proximo)
+						area_partidas_em_andamento_itens.appendChild(div_andamento)	
 
-					area_partidas_em_andamento_itens.appendChild(div_andamento)	
-
-				}else{
-					div_andamento.appendChild(btn)
-					area_partidas_em_andamento_itens.appendChild(div_andamento)	
+					}else{
+						div_andamento.appendChild(btn)
+						area_partidas_em_andamento_itens.appendChild(div_andamento)	
+					}
 				}
+				
 			}
 		}
 	}
