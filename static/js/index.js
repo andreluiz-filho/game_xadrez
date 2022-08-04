@@ -80,6 +80,31 @@ if(usuario == null){
 	}
 
 	// ----------------------------------------------------------
+	//------------------------CHAT MENSAGENS---------------------
+
+	function chat_mensagens(data){
+
+		area_mensagens.innerHTML = ""
+
+		for(i of data){
+			de = i['de']
+			para = i['para']
+			mensagem = i['mensagem']
+			id_partida_mensagem = i['id_partida']
+
+			if(id_partida_mensagem == id_partida){
+				var span = document.createElement("span")
+				var br = document.createElement("br")
+				span.className = "span_mensagem"
+				span.innerHTML += `<strong>${de}:</strong> ${mensagem}`
+
+				area_mensagens.appendChild(span)
+				area_mensagens.appendChild(br)
+			}
+		}
+	}
+
+	// ----------------------------------------------------------
 	// ----------------------------------------------------------
 
 	id_partida 		= sessionStorage.getItem('id_partida')
@@ -348,6 +373,10 @@ if(usuario == null){
 
 				// -----------------------------------------------------------------------
 
+				if(key_data.includes('mensagem')){
+					chat_mensagens(data['mensagem'])
+				}
+
 			}
 		})
 		.catch(error => console.error('Error:', error))
@@ -411,22 +440,7 @@ if(usuario == null){
 	})
 
 	socket.on('getChat', (data) => {
-
-		de = data['de']
-		para = data['para']
-		mensagem = data['mensagem']
-		id_partida_mensagem = data['id_partida']
-
-		if(id_partida_mensagem == id_partida){
-			var span = document.createElement("span")
-			var br = document.createElement("br")
-			span.className = "span_mensagem"
-			span.textContent = `${de}: ${mensagem}`
-
-			area_mensagens.appendChild(span)
-			area_mensagens.appendChild(br)
-		}
-
+		chat_mensagens(data)
 	})
 
 	//---------------------------------------------------------------------------

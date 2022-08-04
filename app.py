@@ -249,16 +249,30 @@ def api_partida():
 
     id_partida = id_partida['id_partida']
 
-    pasta_partida = [i for i in os.listdir(caminho_partidas_em_andamento) if id_partida in i]
+    caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
 
+    #-------------------------------------------------------------------------------------------------
     
+    pasta_partida = [i for i in os.listdir(caminho_partidas_em_andamento) if id_partida in i]
+    arquivo_mensagem = [i for i in os.listdir(caminho_pasta_partida) if "mensagens_chat.json" in i]
+    
+    if arquivo_mensagem:
+        
+        with open(f"{caminho_pasta_partida}/{arquivo_mensagem[0]}") as arq:
+            dados_load = json.load(arq)
+    
+    #-------------------------------------------------------------------------------------------------
+
     if pasta_partida:
-        caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
         arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if id_partida+".json" in i and "ultima_jogada" not in i]
         if arquivo_partida:
             with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}") as arq:
                 partida = json.load(arq)
             
+            if arquivo_mensagem:
+                partida["mensagem"] = []
+                partida["mensagem"] = dados_load
+
             return jsonify(partida)
         else:
             return jsonify({"erro":"ID da Partida Inválido"})
@@ -293,7 +307,7 @@ def api_login_usuario():
             pastas_partidas = [i for i in os.listdir(caminho_partidas_em_andamento) if ".json" not in i]
             
             for p in pastas_partidas:
-                partidas = [i for i in os.listdir(caminho_partidas_em_andamento+p) if "ultima_jogada" not in i]
+                partidas = [i for i in os.listdir(caminho_partidas_em_andamento+p) if "ultima_jogada" not in i and "mensagens_chat" not in i]
                 
                 for arq_partida in partidas:
 
@@ -640,7 +654,27 @@ def socket_abandonar_partida(dados):
 @io.on('socket_enviar_mensagem_chat')
 def socket_enviar_mensagem_chat(dados):
 
-    emit('getChat', dados, broadcast=True)
+    caminho_pasta_partida = caminho_partidas_em_andamento+dados['id_partida']
+    arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if "mensagens_chat.json" in i]
+    
+    if arquivo_partida:
+        
+        with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}") as arq:
+            dados_load = json.load(arq)
+        
+        dados_load.append(dados)
+
+        with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}", "w") as arq:
+            json.dump(dados_load, arq)
+
+        emit('getChat', dados_load, broadcast=True)
+        
+    else:
+        dados_load = [dados]
+        with open(f"{caminho_pasta_partida}/mensagens_chat.json", "w") as arq:
+            json.dump(dados_load, arq)
+        
+        emit('getChat', dados_load, broadcast=True)
 
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
