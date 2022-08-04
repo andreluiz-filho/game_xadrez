@@ -93,6 +93,7 @@ if(usuario == null){
 			id_partida_mensagem = i['id_partida']
 
 			if(id_partida_mensagem == id_partida){
+				
 				var span = document.createElement("span")
 				var br = document.createElement("br")
 				span.className = "span_mensagem"
@@ -100,6 +101,8 @@ if(usuario == null){
 
 				area_mensagens.appendChild(span)
 				area_mensagens.appendChild(br)
+				area_mensagens.scrollTop = area_mensagens.scrollHeight - area_mensagens.clientHeight
+				
 			}
 		}
 	}
