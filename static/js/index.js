@@ -663,7 +663,8 @@ if(usuario == null){
 					peca_selecionada_posicao	= peca_selecionada.split('___')[1]
 					target_posicao 				= e.target.id
 
-					data_mover_peca = {
+					if(peca_selecionada_posicao != target_posicao){
+						data_mover_peca = {
 										'usuario':usuario,
 										'usuario_cor':usuario_cor,
 										'id_partida':id_partida, 
@@ -674,7 +675,11 @@ if(usuario == null){
 										'funcao':'mover'
 									}
 
-					socket_moverPeca(data_mover_peca)
+						socket_moverPeca(data_mover_peca)
+					}
+					else if(peca_selecionada_posicao == target_posicao){
+						console.log("Não pode andar para a mesma Casa")
+					}
 
 				}
 			
