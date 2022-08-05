@@ -978,6 +978,7 @@ if(usuario == null){
 
 	//********************************************************
 	//********************************************************
+	// --------------------- AREA CHAT -----------------------
 
 	jogador_branca = sessionStorage.getItem('jogador_branca')
 	jogador_preta = sessionStorage.getItem('jogador_preta')
@@ -991,6 +992,7 @@ if(usuario == null){
 			para = jogador_branca
 		}
 
+		// ----------------------------------------------------
 		btn_enviar_mensagem.addEventListener("click", (e)=>{
 			
 			if(input_enviar_mensagem.value){
@@ -1009,8 +1011,32 @@ if(usuario == null){
 			}
 			
 		})
+		// ----------------------------------------------------
+		input_enviar_mensagem.addEventListener("keyup", (e)=>{
+
+			if(e.key == "Enter"){
+				if(input_enviar_mensagem.value != ""){
+
+					input_mensagem = input_enviar_mensagem.value
+					input_enviar_mensagem.value = ""
+
+					function socket_enviar_mensagem_chat(dados){
+						socket.emit('socket_enviar_mensagem_chat', dados)	
+					}
+
+					mensagem = {'de': usuario, 'para': para, "mensagem": input_mensagem, "id_partida": id_partida}
+
+					socket_enviar_mensagem_chat(mensagem)
+
+				}
+			}
+		})
+		// ----------------------------------------------------
 
 	}
+
+	//********************************************************
+	//********************************************************
 
 	function func_area_chat_hide_show(){
 
