@@ -471,7 +471,7 @@ def socket_moverPeca(dados):
                             target_posicao_peca = target_posicao
 
                             posicao_atual = i['posicao']
-                            
+
                             ultimo_movimento = [posicao_atual, target_posicao]
                             partida['ultimo_movimento'] = ultimo_movimento
 
@@ -641,16 +641,16 @@ def socket_abandonar_partida(dados):
 def socket_enviar_mensagem_chat(dados):
 
     caminho_pasta_partida = caminho_partidas_em_andamento+dados['id_partida']
-    arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if "mensagens_chat.json" in i]
+    arquivo_chat = [i for i in os.listdir(caminho_pasta_partida) if "mensagens_chat.json" in i]
     
-    if arquivo_partida:
+    if arquivo_chat:
         
-        with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}") as arq:
+        with open(f"{caminho_pasta_partida}/{arquivo_chat[0]}") as arq:
             dados_load = json.load(arq)
         
         dados_load.append(dados)
 
-        with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}", "w") as arq:
+        with open(f"{caminho_pasta_partida}/{arquivo_chat[0]}", "w") as arq:
             json.dump(dados_load, arq)
 
         emit('getChat', dados_load, broadcast=True)

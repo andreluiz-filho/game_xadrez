@@ -151,6 +151,32 @@ if(usuario == null){
 
 	function chat_mensagens(data){
 
+		// --------------------------------------------------
+
+		area_chat_hide_show.style.background = "orange"
+
+		setTimeout(function () {
+			area_chat_hide_show.style.background = ""
+		}, 1000);
+		
+		setTimeout(function () {
+			area_chat_hide_show.style.background = "orange"
+		}, 2000);
+
+		setTimeout(function () {
+			area_chat_hide_show.style.background = ""
+		}, 3000);
+	
+		setTimeout(function () {
+			area_chat_hide_show.style.background = "orange"
+		}, 4000);		
+
+		setTimeout(function () {
+			area_chat_hide_show.style.background = ""
+		}, 5000);
+
+		// --------------------------------------------------
+
 		area_mensagens.innerHTML = ""
 
 		for(i of data){
