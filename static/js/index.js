@@ -246,6 +246,22 @@ if(usuario == null){
 			}
 			
 		}
+
+		xeque_mate = sessionStorage.getItem('xeque_mate')
+		xeque_mate_usuario = sessionStorage.getItem('xeque_mate_usuario')
+
+		if(xeque_mate){
+
+			if(xeque_mate == "true"){
+
+				if(xeque_mate_usuario == usuario){
+					alert("Voce Ganhou")
+				}
+				else if(xeque_mate_usuario != usuario){
+					alert("Voce Perdeu")
+				}
+			}
+		}
 	}
 
 	//********************************************************
@@ -371,6 +387,9 @@ if(usuario == null){
 			}
 			else if(key_data.includes('pecas')){
 
+				sessionStorage.setItem('xeque_mate', data['xeque_mate'])
+				sessionStorage.setItem('xeque_mate_usuario', data['xeque_mate_usuario'])
+
 				sessionStorage.setItem('cor_da_vez', data['cor_da_vez'])
 
 				sessionStorage.setItem('jogador_branca', data['jogador_branca'])
@@ -444,6 +463,9 @@ if(usuario == null){
 		}
 		else{
 			
+			sessionStorage.setItem('xeque_mate', data['xeque_mate'])
+			sessionStorage.setItem('xeque_mate_usuario', data['xeque_mate_usuario'])
+
 			status_partida 	= data['status']
 			pecas_partida 	= data['pecas']
 
@@ -488,7 +510,7 @@ if(usuario == null){
 	socket.on('getChat', (data) => {
 		chat_mensagens(data)
 	})
-
+	
 	//---------------------------------------------------------------------------
 	
 	//********************************************************
@@ -561,8 +583,8 @@ if(usuario == null){
 							
 							}
 						
-						}else{
-							console.log("Não é possivel Movimentar Essa Peça")
+						}
+						else if(usuario_cor != peca_target_cor){
 
 							e.target.style.border = "thick solid red";
 							e.target.style.borderRadius = "30px";
@@ -572,9 +594,8 @@ if(usuario == null){
 							}, 1000);
 						}
 
-					}else{
-						
-						console.log("Não é possivel Movimentar Essa Peça")
+					}
+					else if(cor_da_vez != peca_target_cor){
 
 						e.target.style.border = "thick solid red";
 						e.target.style.borderRadius = "30px";

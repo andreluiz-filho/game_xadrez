@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, redirect, jsonify
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, join_room
 from cryptography.fernet import Fernet
 from flask import url_for
 from datetime import datetime
@@ -18,6 +18,18 @@ io = SocketIO(app)
 
 caminho_partidas = "dados/partidas"
 caminho_partidas_em_andamento = caminho_partidas+"/em_andamento/"
+
+#----------------------------------------------------------------------------
+
+lista_clientes_conectados = []
+"""
+{
+    "id_partida": "3ye3yuihkehdkqhbekbjq",
+    "clientes": ["websocket1", "websocket2"]
+    }
+"""
+
+#----------------------------------------------------------------------------
 
 #----------------------------------------------------------------------------
 
@@ -127,52 +139,11 @@ def nova_partida():
         if user:
             
             id_partida = secrets.token_hex(10)
-            """
-            partida = {
-                        "status": "aberta",
-                        "jogador_branca":usuario, 
-                        "jogador_preta":"",
-                        "jogador_da_vez":usuario,
-                        "cor_da_vez":"branca",
-                        "pecas":[
-                            {"nome_peca": "branca__torre_1", "posicao":"a1", "imagem":"static/img/pecas/branca_torre.png", "capturada":"false"}, 
-                            {"nome_peca": "branca__cavalo_1", "posicao":"b1", "imagem":"static/img/pecas/branca_cavalo.png", "capturada":"false"}, 
-                            {"nome_peca": "branca__bispo_1", "posicao":"c1", "imagem":"static/img/pecas/branca_bispo.png", "capturada":"false"}, 
-                            {"nome_peca": "branca__rainha", "posicao":"d1", "imagem":"static/img/pecas/branca_rainha.png", "capturada":"false"},
-                            {"nome_peca": "branca__rei", "posicao":"e1", "imagem":"static/img/pecas/branca_rei.png", "capturada":"false"},
-                            {"nome_peca": "branca__bispo_2", "posicao":"f1", "imagem":"static/img/pecas/branca_bispo.png", "capturada":"false"},
-                            {"nome_peca": "branca__cavalo_2", "posicao":"g1", "imagem":"static/img/pecas/branca_cavalo.png", "capturada":"false"},
-                            {"nome_peca": "branca__torre_2", "posicao":"h1", "imagem":"static/img/pecas/branca_torre.png", "capturada":"false"},
-                            {"nome_peca": "branca__peao_1", "posicao":"a2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
-                            {"nome_peca": "branca__peao_2", "posicao":"b2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
-                            {"nome_peca": "branca__peao_3", "posicao":"c2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
-                            {"nome_peca": "branca__peao_4", "posicao":"d2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
-                            {"nome_peca": "branca__peao_5", "posicao":"e2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
-                            {"nome_peca": "branca__peao_6", "posicao":"f2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
-                            {"nome_peca": "branca__peao_7", "posicao":"g2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
-                            {"nome_peca": "branca__peao_8", "posicao":"h2", "imagem":"static/img/pecas/branca_peao.png", "capturada":"false"},
-                            {"nome_peca": "preta__torre_1", "posicao":"a8", "imagem":"static/img/pecas/preta_torre.png", "capturada":"false"}, 
-                            {"nome_peca": "preta__cavalo_1", "posicao":"b8", "imagem":"static/img/pecas/preta_cavalo.png", "capturada":"false"}, 
-                            {"nome_peca": "preta__bispo_1", "posicao":"c8", "imagem":"static/img/pecas/preta_bispo.png", "capturada":"false"}, 
-                            {"nome_peca": "preta__rainha", "posicao":"d8", "imagem":"static/img/pecas/preta_rainha.png", "capturada":"false"},
-                            {"nome_peca": "preta__rei", "posicao":"e8", "imagem":"static/img/pecas/preta_rei.png", "capturada":"false"},
-                            {"nome_peca": "preta__bispo_2", "posicao":"f8", "imagem":"static/img/pecas/preta_bispo.png", "capturada":"false"},
-                            {"nome_peca": "preta__cavalo_2", "posicao":"g8", "imagem":"static/img/pecas/preta_cavalo.png", "capturada":"false"},
-                            {"nome_peca": "preta__torre_2", "posicao":"h8", "imagem":"static/img/pecas/preta_torre.png", "capturada":"false"},
-                            {"nome_peca": "preta__peao_1", "posicao":"a7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
-                            {"nome_peca": "preta__peao_2", "posicao":"b7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
-                            {"nome_peca": "preta__peao_3", "posicao":"c7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
-                            {"nome_peca": "preta__peao_4", "posicao":"d7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
-                            {"nome_peca": "preta__peao_5", "posicao":"e7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
-                            {"nome_peca": "preta__peao_6", "posicao":"f7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
-                            {"nome_peca": "preta__peao_7", "posicao":"g7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
-                            {"nome_peca": "preta__peao_8", "posicao":"h7", "imagem":"static/img/pecas/preta_peao.png", "capturada":"false", "rainha":"false"},
-                        ]
-                }
-            """
 
             partida = {
                         "status": "aberta",
+                        "xeque_mate": "false",
+                        "xeque_mate_usuario": "",
                         "jogador_branca":usuario, 
                         "jogador_preta":usuario_adversario,
                         "jogador_da_vez":usuario,
@@ -216,14 +187,7 @@ def nova_partida():
             os.mkdir(f"dados/partidas/em_andamento/{id_partida}")
             with open(f"dados/partidas/em_andamento/{id_partida}/{id_partida}.json", "w") as arq:
                 json.dump(partida, arq)
-            """
-            dados_returno = {
-                    "id_partida":id_partida, 
-                    "jogador_da_vez":partida['jogador_da_vez'], 
-                    "cor_da_vez":partida['cor_da_vez'],
-                    "usuario_cor":"branca"
-                    }
-            """
+            
             dados_returno = {
                         "usuario":usuario,
                         "usuario_cor":"branca",
@@ -391,10 +355,11 @@ def finalizar_partida():
     return jsonify({"erro":"erro"})
 
 #----------------------------------------------------------------------------
-
-
-
 #----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+
+
+
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
 
@@ -460,13 +425,18 @@ def socket_moverPeca(dados):
             if peca_selecionada_cor == usuario_cor:
 
                 if peca_selecionada['funcao'] == 'capturar':
-                    
+
                     peca_target_nome  = peca_selecionada['peca_target_nome']
 
                     for i in partida['pecas']:
 
                         if peca_target_nome == i['nome_peca']:
+                            
                             i['capturada'] = 'true'
+
+                            if "rei" in peca_target_nome:
+                                partida['xeque_mate'] = "true"
+                                partida['xeque_mate_usuario'] = usuario
 
                         if peca_selecionada_nome == i['nome_peca']:
                             posicao_atual = i['posicao']
@@ -517,6 +487,7 @@ def socket_moverPeca(dados):
                     salva_Partida(partida)
                     
                     emit('getPartida', partida, broadcast=True)
+                    
                     return jsonify(partida)
 
             else:
@@ -526,6 +497,8 @@ def socket_moverPeca(dados):
     else:
         return jsonify({"erro":"partida não existe"})
 
+#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
 
 @io.on('socket_jogada_anterior')
 def socket_jogada_anterior(dados):
@@ -590,7 +563,6 @@ def socket_jogada_anterior(dados):
     partida = consulta_partida()
     emit('getPartida', partida, broadcast=True)
 
-#----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
 #----------------------------------------------------------------------------
 
