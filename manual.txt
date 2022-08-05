@@ -4,3 +4,25 @@ Servidor Gunicorn com WebSocket:
 gunicorn -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker -w 1 app:app
 
 -----------------------------------------------------------------------------------
+
+Lista de Funcionalidades:
+	-> possibilidade de informar o Xeque
+
+	-> possibilidade de jogar o Rock
+
+	-> criar partida para simulação/treino(com possibilidade de colocar as peças quando e onde quiser no tabuleiro,
+		para facilitar o treino de posições especificas)
+	
+	-> Na partida atual, possibilitar criar um snapshot da posição e disponibilizar na area de partinas em andamento, 
+	para simular ou testar uma ideia de jogada
+	
+	-> Criar temporizador de partida e de jogada, podendo ser configurado ao criar a partida, 
+	então caso os jogadores queiram, pode criar uma partida com tempo limite de 10 min, ou criar uma partida
+	com tempo de 10 segundos para cada jogada, ou criar uma partida livre.
+
+	-> Criar temas para o tabuleiro, para que o jogador possa escolher o tema que preferir,
+	Ex: cores (Verde com Cinza), (Laranja com Cinza), Etc...
+
+	-> Quando selecionar a peça, informar o nome da Casa
+
+	-> Adicionar sons quando mover/capturar
