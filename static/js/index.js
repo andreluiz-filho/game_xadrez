@@ -537,7 +537,7 @@ if(usuario == null){
 					peca_selecionada = sessionStorage.getItem('peca_selecionada')
 					peca_target_cor = e.target.alt.split("__")[0]
 
-					if(cor_da_vez == peca_target_cor){
+					if(peca_target_cor == cor_da_vez){
 
 						if(usuario_cor == peca_target_cor){
 
@@ -570,6 +570,10 @@ if(usuario == null){
 										//moverPeca(data_capturar_peca)
 									
 									}
+								}
+								else if(peca_selecionada_nome == peca_target_nome){
+									e.target.style.border = "none"
+									sessionStorage.removeItem('peca_selecionada')
 								}
 								
 							}else{
@@ -685,11 +689,6 @@ if(usuario == null){
 			
 			}
 		});	
-
-		casa.addEventListener('dblclick', (e) => {
-			e.target.style.border = "none"
-			sessionStorage.removeItem('peca_selecionada')
-		});
 	
 	}
 
