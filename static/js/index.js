@@ -730,6 +730,11 @@ if(usuario == null){
 
 	}
 
+	id_partida 		= sessionStorage.getItem('id_partida')
+	if(id_partida){
+		func_area_admin_hide_show()
+	}
+
 	//********************************************************
 	//********************************************************
 

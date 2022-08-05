@@ -283,7 +283,7 @@ table.tabuleiro img{
 	border: 3px solid #000;
 	border-radius: 5px;
 	width: 24em;
-	height: 20px;
+	height: 2em;
 	cursor: pointer;
 	margin: 0 auto;
 }
