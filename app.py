@@ -144,6 +144,8 @@ def nova_partida():
                         "status": "aberta",
                         "xeque_mate": "false",
                         "xeque_mate_usuario": "",
+                        "xeque_mate_usuario": "",
+                        "ultimo_movimento":[],
                         "jogador_branca":usuario, 
                         "jogador_preta":usuario_adversario,
                         "jogador_da_vez":usuario,
@@ -469,8 +471,10 @@ def socket_moverPeca(dados):
                             target_posicao_peca = target_posicao
 
                             posicao_atual = i['posicao']
-                            ultimo_movimento = [posicao_atual, target_posicao]
                             
+                            ultimo_movimento = [posicao_atual, target_posicao]
+                            partida['ultimo_movimento'] = ultimo_movimento
+
                             emit('getUltimoMovimento', ultimo_movimento, broadcast=True)
 
                             i["posicao"] = target_posicao_peca

@@ -46,6 +46,25 @@ if(usuario == null){
 }else{
 
 	// -----------------------------------------------------------
+	// ------------------------ULTIMA JOGADA----------------------
+
+	function ultima_jogada(jogada){
+
+		ultima_jogada_posicao = `${jogada[0]}, ${jogada[1]}`
+
+		sessionStorage.setItem('ultima_jogada_posicao', ultima_jogada_posicao)
+
+		for(casa of casas){
+			if(casa.id == jogada[0] | casa.id == jogada[1]){
+				casa.style.border = "thin solid yellow";
+			}
+			else{
+				casa.style.border = "thin solid black";
+			}	
+		}	
+	}
+
+	// -----------------------------------------------------------
 	// --------------------PARTIDAS EM ANDAMENTO------------------
 
 	id_partida = sessionStorage.getItem('id_partida')
@@ -432,6 +451,12 @@ if(usuario == null){
 
 				// -----------------------------------------------------------------------
 
+				if(key_data.includes('ultimo_movimento')){
+					ultima_jogada(data['ultimo_movimento'])
+				}
+
+				// -----------------------------------------------------------------------
+
 				if(id_partida){
 					finalizar_partida.style.display = "block"	
 				}
@@ -491,20 +516,8 @@ if(usuario == null){
 	})
 
 	socket.on('getUltimoMovimento', (data) => {
-
-		ultima_jogada_posicao = `${data[0]}, ${data[1]}`
-
-		sessionStorage.setItem('ultima_jogada_posicao', ultima_jogada_posicao)
-
+		ultima_jogada(data)
 		
-		for(casa of casas){
-			if(casa.id == data[0] | casa.id == data[1]){
-				casa.style.border = "thin solid yellow";
-			}
-			else{
-				casa.style.border = "thin solid black";
-			}	
-		}
 	})
 
 	socket.on('getChat', (data) => {
