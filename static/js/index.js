@@ -220,6 +220,8 @@ if(usuario == null){
 	
 	cols = [...Array(8).keys()]
 	
+	tema_casas_primaria = sessionStorage.getItem('tema_casas_primaria')
+	tema_casas_secundaria = sessionStorage.getItem('tema_casas_secundaria')
 
 	for(row of rows){
 
@@ -230,9 +232,17 @@ if(usuario == null){
 			var td = document.createElement('td');
 
 			if(row % 2 == col % 2){
-				td.className = " casa casa_cor_secundaria col";
+				if(tema_casas_secundaria){
+					td.className = `col casa ${tema_casas_secundaria}`;	
+				}else{
+					td.className = "col casa tema_default_secundaria";	
+				}
 			}else{
-				td.className = " casa casa_cor_primaria col";
+				if(tema_casas_primaria){
+					td.className = `col casa ${tema_casas_primaria}`;	
+				}else{
+					td.className = "col casa tema_default_primaria";
+				}
 			}
 
 			nome_casa = letras[col]+row
@@ -978,8 +988,40 @@ if(usuario == null){
 		})
 		.catch(error => console.error('Error:', error))
 			
-
 	})
+
+	// -----------FAZ APARECER AS OPÇÕES DE TEMAS DISPONIVEIS------------
+
+	btn_temas.addEventListener("click", (e)=>{
+		if(area_lista_temas.style.display == "none"){
+			area_lista_temas.style.display = "block"
+		}
+		else if(area_lista_temas.style.display == "block"){
+			area_lista_temas.style.display = "none"
+		}
+		
+	})
+
+	btn_temas = lista_temas.querySelectorAll("button")
+	for(i = 0; i < btn_temas.length; i++){
+		btn_temas[i].addEventListener("click", (e)=>{
+
+			console.log(e.target.id)
+			if(e.target.id == "resete_tema"){
+				sessionStorage.removeItem('tema_casas_primaria')
+				sessionStorage.removeItem('tema_casas_secundaria')
+			}else{
+				tema_cor_primaria = e.target.id.split(" ")[0].split("__")[1]
+				tema_cor_secundaria = e.target.id.split(" ")[1].split("__")[1]
+
+				sessionStorage.setItem('tema_casas_primaria', tema_cor_primaria)
+				sessionStorage.setItem('tema_casas_secundaria', tema_cor_secundaria)
+			}
+
+			window.location.href = url+'/partida';
+			
+		})
+	}
 
 	//********************************************************
 	//********************************************************

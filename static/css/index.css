@@ -78,12 +78,42 @@ body{
 }
 */
 
+/*
 .casa_cor_secundaria{
 	background-color: #AAAAAA;
 }
 
 .casa_cor_primaria{
 	background-color: #588658;
+}
+*/
+/*-----------------------------------*/
+.tema_default_primaria{
+	background-color: #588658;
+}
+
+.tema_default_secundaria{
+	background-color: #AAAAAA;
+}
+
+/*-----------------------------------*/
+
+.tema_laranja_primaria{
+	background-color: #cc880c;
+}
+
+.tema_laranja_secundaria{
+	background-color: #AAAAAA;
+}
+
+/*-----------------------------------*/
+
+.tema_azul_primaria{
+	background-color: #3b3b84;
+}
+
+.tema_azul_secundaria{
+	background-color: #AAAAAA;
 }
 
 /*--------------------------------------------------------------*/
@@ -144,6 +174,14 @@ body{
 	display: none;
 }
 
+#area_admin #area_admin_topo  #area_lista_temas{
+	position: relative;
+	border: 3px solid #999;
+	border-radius: 10px;
+	height: 30%;
+	padding: 10px;
+}
+
 #area_admin #area_admin_topo #nova_partida{
 	position: relative;
 	cursor: pointer;
@@ -193,6 +231,16 @@ body{
 
 #area_btn_atualizar_partidas_em_andamento{
 
+}
+
+#area_btn_temas{
+	position: relative;
+	top: -2.1em;
+	float: right;
+}
+
+#area_btn_temas button{
+	color: black;
 }
 
 #btn_atualizar_partidas_em_andamento{
