@@ -1001,12 +1001,13 @@ if(usuario == null){
 		}
 		
 	})
+	
+	// ----------- ALTERA O TEMA DAS CASAS ------------	
 
 	btn_temas = lista_temas.querySelectorAll("button")
 	for(i = 0; i < btn_temas.length; i++){
 		btn_temas[i].addEventListener("click", (e)=>{
 
-			console.log(e.target.id)
 			if(e.target.id == "resete_tema"){
 				sessionStorage.removeItem('tema_casas_primaria')
 				sessionStorage.removeItem('tema_casas_secundaria')
