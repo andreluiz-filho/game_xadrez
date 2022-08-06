@@ -116,6 +116,48 @@ body{
 	background-color: #AAAAAA;
 }
 
+/*-----------------------------------*/
+
+.tema_rosa_primaria{
+	background-color: #cc0cae;
+}
+
+.tema_rosa_secundaria{
+	background-color: #AAAAAA;
+}
+
+/*-----------------------------------*/
+
+.tema_vermelho_primaria{
+	background-color: #cc0c0c;
+}
+
+.tema_vermelho_secundaria{
+	background-color: #AAAAAA;
+}
+
+/*-----------------------------------*/
+
+.tema_verde_musgo_primaria{
+	background-color: #0d372f;
+}
+
+.tema_verde_musgo_secundaria{
+	background-color: #AAAAAA;
+}
+
+/*-----------------------------------*/
+
+.tema_marrom_primaria{
+	background-color: #964B00;
+}
+
+.tema_marrom_secundaria{
+	background-color: #AAAAAA;
+}
+
+/*-----------------------------------*/
+
 /*--------------------------------------------------------------*/
 
 #area_admin{
