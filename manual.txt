@@ -20,9 +20,6 @@ Lista de Funcionalidades:
 	então caso os jogadores queiram, pode criar uma partida com tempo limite de 10 min, ou criar uma partida
 	com tempo de 10 segundos para cada jogada, ou criar uma partida livre.
 
-	-> Criar temas para o tabuleiro, para que o jogador possa escolher o tema que preferir,
-	Ex: cores (Verde com Cinza), (Laranja com Cinza), Etc...
-
 	-> Quando selecionar a peça, informar o nome da Casa
 
 	-> Adicionar sons quando mover/capturar
