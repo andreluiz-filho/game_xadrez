@@ -6,7 +6,6 @@ gunicorn -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker -w 1 app:app
 -----------------------------------------------------------------------------------
 
 Lista de Funcionalidades:
-	-> possibilidade de informar o Xeque
 
 	-> possibilidade de jogar o Rock
 
