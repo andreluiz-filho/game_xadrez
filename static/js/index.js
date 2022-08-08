@@ -461,8 +461,6 @@ if(usuario == null){
 				var div_titulo_id_partida = document.createElement("div")
 				div_titulo_id_partida.id = "div_titulo_id_partida"
 				div_titulo_id_partida.textContent = "ID Partida: "+id_partida
-				//titulo_id_partida.textContent = "ID Partida: "+id_partida
-				//area_admin_hide_show.textContent  = "ID Partida: "+id_partida
 
 				area_admin_hide_show.appendChild(div_titulo_id_partida)
 
@@ -560,6 +558,44 @@ if(usuario == null){
 
 	socket.on('getChat', (data) => {
 		chat_mensagens(data)
+	})
+
+	socket.on('getXeque', (data) => {
+		if(data['xeque'] == 'true'){
+
+			posicao_rei = data['posicao_rei']
+			casa_rei = document.querySelector(`#${posicao_rei}`)
+
+			//-----------------------------------------------------------------------------------------------
+			jogador_branca = sessionStorage.getItem('jogador_branca')
+			jogador_preta = sessionStorage.getItem('jogador_preta')
+
+			if(data['usuario'] == jogador_branca){
+				para = jogador_preta
+			}
+			else if(data['usuario'] == jogador_preta){
+				para = jogador_branca
+			}
+
+			/*
+			input_mensagem = "(Xeque)"
+			mensagem = {'de': data['usuario'], 'para': para, "mensagem": input_mensagem, "id_partida": id_partida}
+			
+			socket.emit('socket_enviar_mensagem_chat', mensagem)
+			*/
+			//-----------------------------------------------------------------------------------------------
+
+			casa_rei.style.background = "red"
+
+			if(usuario != data['usuario']){
+				alert("Xeque !")
+			}
+
+			setTimeout(function () {
+				casa_rei.style.background = ""
+			}, 3000);
+			
+		}
 	})
 	
 	//---------------------------------------------------------------------------
@@ -698,6 +734,7 @@ if(usuario == null){
 					}
 
 				}else{
+					
 					console.log("Não é a sua vez")
 					
 					e.target.style.border = "thick solid red";
@@ -739,7 +776,21 @@ if(usuario == null){
 				}
 			
 			}
-		});	
+		});
+
+		casa.addEventListener("dblclick", (e)=> {
+			peca_target_nome = e.target.alt.split("___")[0]
+			peca_target_posicao = e.target.alt.split("___")[1]
+			peca_target_tipo = e.target.alt.split("__")[1]
+			peca_target_cor = e.target.alt.split("__")[0]
+
+			if(usuario_cor != peca_target_cor){
+				if(peca_target_tipo == "rei"){
+					socket.emit('socket_xeque', {'usuario': usuario, 'xeque': 'true', 'cor_do_xeque': peca_target_cor, 'posicao_rei': peca_target_posicao})
+				}
+			}
+			
+		})
 	
 	}
 
@@ -1089,13 +1140,8 @@ if(usuario == null){
 				input_mensagem = input_enviar_mensagem.value
 				input_enviar_mensagem.value = ""
 
-				function socket_enviar_mensagem_chat(dados){
-					socket.emit('socket_enviar_mensagem_chat', dados)	
-				}
-
 				mensagem = {'de': usuario, 'para': para, "mensagem": input_mensagem, "id_partida": id_partida}
-
-				socket_enviar_mensagem_chat(mensagem)
+				socket.emit('socket_enviar_mensagem_chat', mensagem)
 
 			}
 			
@@ -1109,13 +1155,8 @@ if(usuario == null){
 					input_mensagem = input_enviar_mensagem.value
 					input_enviar_mensagem.value = ""
 
-					function socket_enviar_mensagem_chat(dados){
-						socket.emit('socket_enviar_mensagem_chat', dados)	
-					}
-
 					mensagem = {'de': usuario, 'para': para, "mensagem": input_mensagem, "id_partida": id_partida}
-
-					socket_enviar_mensagem_chat(mensagem)
+					socket.emit('socket_enviar_mensagem_chat', mensagem)
 
 				}
 			}
