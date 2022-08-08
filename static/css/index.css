@@ -276,8 +276,8 @@ body{
 }
 
 #area_btn_temas{
-	position: relative;
-	top: -2.1em;
+	/*position: relative;
+	top: -2.1em;*/
 	float: right;
 }
 
@@ -298,6 +298,9 @@ body{
 
 
 #area_admin #area_partidas_em_andamento .box_partidas_em_andamento{
+	position: relative;
+	left: 4em;
+	width: 15em;
 	text-align: center;
 }
 

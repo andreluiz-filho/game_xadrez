@@ -56,10 +56,12 @@ if(usuario == null){
 
 		for(casa of casas){
 			if(casa.id == jogada[0] | casa.id == jogada[1]){
-				casa.style.border = "thin solid yellow";
+				casa.style.border = "thin solid black";
+				casa.style.background = "yellow";
 			}
 			else{
 				casa.style.border = "thin solid black";
+				casa.style.background = "";
 			}	
 		}	
 	}
@@ -296,7 +298,7 @@ if(usuario == null){
 
 			if(ultima_jogada_posicao){
 				if(casas[i].id == de | casas[i].id == para){
-					casas[i].style.border = "thin solid yellow";
+					casas[i].style.border = "thin solid black";
 				}	
 			}
 			
