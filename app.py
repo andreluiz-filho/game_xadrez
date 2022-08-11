@@ -66,11 +66,11 @@ def entrar_partida():
             if pasta_partida:
                 caminho_pasta_partida = caminho_partidas_em_andamento+id_partida
 
-                arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if "ultima_jogada" not in i]
+                arquivo_partida = [i for i in os.listdir(caminho_pasta_partida) if "ultima_jogada" not in i and "mensagens_chat" not in i]
 
                 with open(f"{caminho_pasta_partida}/{arquivo_partida[0]}") as arq:
                     partida = json.load(arq)
-
+                
                 if partida['jogador_branca'] == usuario:
 
                     id_partida = id_partida.split(".")[0]
@@ -116,7 +116,7 @@ def entrar_partida():
                     }
 
                     return render_template("index.html", dados_returno=dados_returno)
-
+                
                 
     return jsonify({"erro": "Falha ao Entrar na  Partida"})
 
