@@ -748,15 +748,65 @@ if(usuario == null){
 			}else if(e.target.tagName == "TD"){
 
 				peca_selecionada = sessionStorage.getItem('peca_selecionada')
-				
+
 				if(peca_selecionada){
-					
+
 					peca_selecionada_nome		= peca_selecionada.split('___')[0]
 					peca_selecionada_posicao	= peca_selecionada.split('___')[1]
 					target_posicao 				= e.target.id
 
-					if(peca_selecionada_posicao != target_posicao){
-						data_mover_peca = {
+					if(peca_selecionada == "branca__rei___e1"){
+						if(!e.target.querySelector("img")){
+							if(e.target.id == "g1"){
+								img_h1 = h1.querySelector("img")
+								if(img_h1){
+									if(img_h1.alt == "branca__torre_2___h1"){
+										if(!f1.querySelector("img")){
+											console.log("Executar o Pequeno Rock")
+
+											data_mover_peca = {
+												'usuario':usuario,
+												'usuario_cor':usuario_cor,
+												'id_partida':id_partida, 
+												'peca_selecionada_nome':peca_selecionada_nome,
+												'target_posicao':target_posicao, 
+												'jogador_branca':jogador_branca, 
+												'jogador_preta':jogador_preta, 
+												'funcao':'mover'
+											}
+
+											socket_moverPeca(data_mover_peca)
+										}
+									}
+								}
+							}
+							else if(e.target.id == "c1"){
+								img_a1 = a1.querySelector("img")
+								if(img_a1){
+									if(img_a1.alt == "branca__torre_1___a1"){
+										if(!b1.querySelector("img") && !d1.querySelector("img")){
+											console.log("Executar o Grande Rock")
+
+											data_mover_peca = {
+												'usuario':usuario,
+												'usuario_cor':usuario_cor,
+												'id_partida':id_partida, 
+												'peca_selecionada_nome':peca_selecionada_nome,
+												'target_posicao':target_posicao, 
+												'jogador_branca':jogador_branca, 
+												'jogador_preta':jogador_preta, 
+												'funcao':'mover'
+											}
+
+											socket_moverPeca(data_mover_peca)
+										}
+									}
+								}
+							}
+							else{
+
+								if(peca_selecionada_posicao != target_posicao){
+									data_mover_peca = {
 										'usuario':usuario,
 										'usuario_cor':usuario_cor,
 										'id_partida':id_partida, 
@@ -767,12 +817,109 @@ if(usuario == null){
 										'funcao':'mover'
 									}
 
-						socket_moverPeca(data_mover_peca)
+									socket_moverPeca(data_mover_peca)
+								}
+								else if(peca_selecionada_posicao == target_posicao){
+									console.log("Não pode andar para a mesma Casa")
+								}
+							}
+						}
+						
 					}
-					else if(peca_selecionada_posicao == target_posicao){
-						console.log("Não pode andar para a mesma Casa")
-					}
+					else if(peca_selecionada == "preta__rei___e8"){
+						if(!e.target.querySelector("img")){
+							if(e.target.id == "g8"){
+								img_h8 = h8.querySelector("img")
+								if(img_h8){
+									if(img_h8.alt == "preta__torre_2___h8"){
+										if(!f8.querySelector("img")){
+											console.log("Executar o Pequeno Rock")
 
+											data_mover_peca = {
+												'usuario':usuario,
+												'usuario_cor':usuario_cor,
+												'id_partida':id_partida, 
+												'peca_selecionada_nome':peca_selecionada_nome,
+												'target_posicao':target_posicao, 
+												'jogador_branca':jogador_branca, 
+												'jogador_preta':jogador_preta, 
+												'funcao':'mover'
+											}
+
+											socket_moverPeca(data_mover_peca)
+										}
+									}
+								}
+							}
+							else if(e.target.id == "c8"){
+								img_a8 = a8.querySelector("img")
+								if(img_a8){
+									if(img_a8.alt == "preta__torre_1___a8"){
+										if(!b8.querySelector("img") && !d8.querySelector("img")){
+											console.log("Executar o Grande Rock")
+
+											data_mover_peca = {
+												'usuario':usuario,
+												'usuario_cor':usuario_cor,
+												'id_partida':id_partida, 
+												'peca_selecionada_nome':peca_selecionada_nome,
+												'target_posicao':target_posicao, 
+												'jogador_branca':jogador_branca, 
+												'jogador_preta':jogador_preta, 
+												'funcao':'mover'
+											}
+
+											socket_moverPeca(data_mover_peca)
+										}
+									}
+								}
+							}
+							else{
+
+								if(peca_selecionada_posicao != target_posicao){
+									data_mover_peca = {
+										'usuario':usuario,
+										'usuario_cor':usuario_cor,
+										'id_partida':id_partida, 
+										'peca_selecionada_nome':peca_selecionada_nome,
+										'target_posicao':target_posicao, 
+										'jogador_branca':jogador_branca, 
+										'jogador_preta':jogador_preta, 
+										'funcao':'mover'
+									}
+
+									socket_moverPeca(data_mover_peca)
+								}
+								else if(peca_selecionada_posicao == target_posicao){
+									console.log("Não pode andar para a mesma Casa")
+								}
+							}
+						}
+					}
+					else{
+						peca_selecionada_nome		= peca_selecionada.split('___')[0]
+						peca_selecionada_posicao	= peca_selecionada.split('___')[1]
+						target_posicao 				= e.target.id
+
+						if(peca_selecionada_posicao != target_posicao){
+							data_mover_peca = {
+											'usuario':usuario,
+											'usuario_cor':usuario_cor,
+											'id_partida':id_partida, 
+											'peca_selecionada_nome':peca_selecionada_nome,
+											'target_posicao':target_posicao, 
+											'jogador_branca':jogador_branca, 
+											'jogador_preta':jogador_preta, 
+											'funcao':'mover'
+										}
+
+							socket_moverPeca(data_mover_peca)
+						}
+						else if(peca_selecionada_posicao == target_posicao){
+							console.log("Não pode andar para a mesma Casa")
+						}
+					}
+					
 				}
 			
 			}

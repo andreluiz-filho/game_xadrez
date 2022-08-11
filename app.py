@@ -466,18 +466,46 @@ def socket_moverPeca(dados):
 
                     for i in partida['pecas']:
                         if peca_selecionada_nome == i['nome_peca']:
+                            
                             nome_peca = i['nome_peca']
                             posicao_peca = i['posicao']
                             target_posicao_peca = target_posicao
 
                             posicao_atual = i['posicao']
 
+                            i["posicao"] = target_posicao_peca
+
                             ultimo_movimento = [posicao_atual, target_posicao]
                             partida['ultimo_movimento'] = ultimo_movimento
 
-                            emit('getUltimoMovimento', ultimo_movimento, broadcast=True)
+                            # ********************** JOGADA ESPECIAL (ROCK) **********************
+                            
+                            if nome_peca == 'branca__rei':
+                                
+                                if target_posicao == 'g1':
+                                    for j in partida['pecas']:
+                                        if j['nome_peca'] == 'branca__torre_2' and j['posicao'] == 'h1':
+                                            j['posicao'] = 'f1'
 
-                            i["posicao"] = target_posicao_peca
+                                elif target_posicao == 'c1':
+                                    for j in partida['pecas']:
+                                        if j['nome_peca'] == 'branca__torre_1' and j['posicao'] == 'a1':
+                                            j['posicao'] = 'd1'
+
+                            elif nome_peca == 'preta__rei':
+                                if target_posicao == 'g8':
+                                    for j in partida['pecas']:
+                                        if j['nome_peca'] == 'preta__torre_2' and j['posicao'] == 'h8':
+                                            j['posicao'] = 'f8'
+
+                                elif target_posicao == 'c8':
+                                    for j in partida['pecas']:
+                                        if j['nome_peca'] == 'preta__torre_1' and j['posicao'] == 'a8':
+                                            j['posicao'] = 'd8'
+
+                            # *******************************************************************
+                            
+                            emit('getUltimoMovimento', ultimo_movimento, broadcast=True)
 
                             if usuario_cor == 'branca':
                                 partida['jogador_da_vez'] = partida['jogador_preta']
@@ -487,6 +515,7 @@ def socket_moverPeca(dados):
                             elif usuario_cor == 'preta':
                                 partida['jogador_da_vez'] = partida['jogador_branca']
                                 partida['cor_da_vez'] = 'branca'
+                            
 
                     salva_Partida(partida)
                     
