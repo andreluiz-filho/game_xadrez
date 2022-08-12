@@ -755,6 +755,17 @@ if(usuario == null){
 					peca_selecionada_posicao	= peca_selecionada.split('___')[1]
 					target_posicao 				= e.target.id
 
+					if(peca_selecionada.search("branca__peao") != -1){
+						if(target_posicao.split("")[1] == 8){
+							alert("Promoção do Peão Branco")
+						}
+					}
+					else if(peca_selecionada.search("preta__peao") != -1){
+						if(target_posicao.split("")[1] == 1){
+							alert("Promoção do Peão Preto")
+						}
+					}
+
 					if(peca_selecionada == "branca__rei___e1"){
 						if(!e.target.querySelector("img")){
 							if(e.target.id == "g1"){
